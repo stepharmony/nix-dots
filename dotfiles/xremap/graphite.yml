@@ -4,7 +4,60 @@
 # Key names: https://github.com/emberian/evdev/blob/1d020f11b283b0648427a2844b6b980f1a268221/src/scancodes.rs
 # KEY_ prefix optional, case-insensitive.
 
+# Apps that get plain QWERTY instead of Graphite (games). xremap uses the first
+# matching definition, so the gated modmap below shadows the Graphite block.
+# Grow this list per app: launch it, then journalctl --user -u xremap | grep "active window"
+games: &games
+  - /steam_app_/
+  - /umu_/
+
 modmap:
+  # Plain QWERTY for the apps listed above — identity restores for every key
+  # the graphite block touches. First match wins, so this must stay FIRST.
+  - name: qwerty-for-games
+    application:
+      only: *games
+    remap:
+      # Number row
+      KEY_MINUS: KEY_MINUS
+      KEY_EQUAL: KEY_EQUAL
+
+      # Top row
+      KEY_Q: KEY_Q
+      KEY_W: KEY_W
+      KEY_E: KEY_E
+      KEY_R: KEY_R
+      KEY_T: KEY_T
+      KEY_Y: KEY_Y
+      KEY_U: KEY_U
+      KEY_I: KEY_I
+      KEY_O: KEY_O
+      KEY_P: KEY_P
+      KEY_LEFTBRACE: KEY_LEFTBRACE
+      KEY_RIGHTBRACE: KEY_RIGHTBRACE
+
+      # Home row — full QWERTY: capslock is capslock here, not backspace
+      KEY_CAPSLOCK: KEY_CAPSLOCK
+      KEY_A: KEY_A
+      KEY_S: KEY_S
+      KEY_D: KEY_D
+      KEY_F: KEY_F
+      KEY_H: KEY_H
+      KEY_J: KEY_J
+      KEY_K: KEY_K
+      KEY_L: KEY_L
+      KEY_SEMICOLON: KEY_SEMICOLON
+      KEY_APOSTROPHE: KEY_APOSTROPHE
+
+      # Bottom row (Angle Mod)
+      KEY_Z: KEY_Z
+      KEY_X: KEY_X
+      KEY_B: KEY_B
+      KEY_N: KEY_N
+      KEY_M: KEY_M
+      KEY_COMMA: KEY_COMMA
+      KEY_DOT: KEY_DOT
+
   - name: graphite
     remap:
       # Number row: - → [ , = → ]
@@ -52,23 +105,15 @@ modmap:
 # emitted from keymap do NOT inherit the held Shift — the modifier must be on
 # the right-hand side explicitly (Shift-KEY_X). Shift+, falls through to the
 # natural '>'.
+# Excluded from QWERTY apps: there the identity restore above feeds these
+# combos natural QWERTY shifted output, which the entries would clobber.
 keymap:
   - name: graphite-shifted-punctuation
     exact_match: true
+    application:
+      not: *games
     remap:
       Shift-KEY_APOSTROPHE: Shift-KEY_MINUS # phys Shift+Y → _
       Shift-KEY_COMMA: Shift-KEY_SLASH # phys Shift+' → ?
       Shift-KEY_MINUS: Shift-KEY_APOSTROPHE # phys Shift+. → "
       Shift-KEY_SLASH: Shift-KEY_COMMA # phys Shift+/ → <
-
-# Remap specific applications (e.g. games) back to QWERTY by adding a gated
-# modmap block — see TIPS.md "Remap specific apps (games) to QWERTY":
-#
-# games: &games [/steam_app_/]
-#
-# modmap:
-#   - application:
-#       only: *games
-#     remap:
-#       KEY_B: KEY_Q
-#       # ... the exact inverse of the mappings above
