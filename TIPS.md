@@ -193,8 +193,30 @@ relevant when the groups change again (fresh installs are unaffected).
 Already wired in `dotfiles/xremap/graphite.yml`: a `shared: games: &games`
 list, an app-gated QWERTY identity modmap (first block — xremap uses the first
 matching definition), and the shifted-punctuation keymap excluded via
-`not: *games`. To add an app, just extend the list — exact names and regexes
-(`/steam_app_/`) both work:
+`not: *games`. Making another app QWERTY is a four-step loop:
+
+**1. Detect** — tail the live log, focus the app you care about, read the
+`class` field (the `caption` is the window title, `class` is what you match on):
+
+```bash
+journalctl --user -u xremap -f | grep "active window"
+# active window: caption: 'Momentum Mod - DX11', class: 'steam_app_1802710'
+```
+
+**2. Decide** — real-world casebook from the config's first week:
+
+| class | verdict | why |
+|---|---|---|
+| `steam_app_1802710` | add (already covered) | Steam game window |
+| `steam_app_default` | add (already covered) | umu/faugus game with unset `GAMEID` — the regex catches it too |
+| `steam` | **don't** | the Steam client itself — you type in it, keep Graphite |
+| `faugus-launcher` | **don't** | launcher GUI, same reasoning |
+| `zenity` | **don't blanket-add** | generic dialog toolkit; protonfixes uses it but so does half the desktop |
+| `steam_proton` | **don't** (yet) | empty-caption launch-transition shells, nothing to type |
+
+Rule of thumb: revert *game windows*, keep *anything you read or type in*.
+
+**3. Add** — exact names or `/regex/` in `dotfiles/xremap/graphite.yml`:
 
 ```yaml
 shared:
@@ -207,13 +229,12 @@ shared:
 (YAML anchors must live under `shared:` — xremap rejects unknown top-level
 fields.)
 
-Discover the window class of any app on KDE Wayland: launch it, then read
+**4. Apply + verify** — `systemctl --user restart xremap` (or let the switch
+trigger do it), refocus the app, type-test, and confirm the journal shows the
+class as expected.
 
-```bash
-journalctl --user -u xremap | grep "active window"
-```
-
-(Config changes need a service restart — or wire a reload key combo:)
+Optional quality-of-life: wire a reload combo so YAML tweaks don't need a
+restart at all:
 
 ```yaml
 keymap:
