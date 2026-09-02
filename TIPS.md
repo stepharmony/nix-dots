@@ -184,6 +184,9 @@ journalctl --user -u xremap -f    # live log; also prints "active window: class:
 ```
 
 If the service fails, keys pass through unremapped (QWERTY) — nothing breaks.
+Heads-up from the first activation: adding the `input`/`uinput` groups to an
+already-running session required a **full reboot**, not just re-login. Only
+relevant when the groups change again (fresh installs are unaffected).
 
 ### Remap specific apps (games) to QWERTY
 

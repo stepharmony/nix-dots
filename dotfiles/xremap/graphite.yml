@@ -48,15 +48,18 @@ modmap:
       KEY_DOT: KEY_MINUS
 
 # Graphite custom shifted punctuation (Kanata-fork style). keymap entries match
-# on the *modmapped* key, so the physical source keys never collide; the
-# physically-held Shift applies to the emitted key.
+# on the *modmapped* key, so the physical source keys never collide. Note: keys
+# emitted from keymap do NOT inherit the held Shift — the modifier must be on
+# the right-hand side explicitly (Shift-KEY_X). Shift+, falls through to the
+# natural '>'.
 keymap:
   - name: graphite-shifted-punctuation
+    exact_match: true
     remap:
-      Shift-KEY_APOSTROPHE: KEY_MINUS # phys Shift+Y → _
-      Shift-KEY_COMMA: KEY_SLASH # phys Shift+' → ?
-      Shift-KEY_DOT: KEY_APOSTROPHE # phys Shift+. → "
-      Shift-KEY_SLASH: KEY_COMMA # phys Shift+/ → <
+      Shift-KEY_APOSTROPHE: Shift-KEY_MINUS # phys Shift+Y → _
+      Shift-KEY_COMMA: Shift-KEY_SLASH # phys Shift+' → ?
+      Shift-KEY_MINUS: Shift-KEY_APOSTROPHE # phys Shift+. → "
+      Shift-KEY_SLASH: Shift-KEY_COMMA # phys Shift+/ → <
 
 # Remap specific applications (e.g. games) back to QWERTY by adding a gated
 # modmap block — see TIPS.md "Remap specific apps (games) to QWERTY":
