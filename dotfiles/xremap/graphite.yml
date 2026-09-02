@@ -1,0 +1,71 @@
+# Graphite layout for xremap (converted from the dormant dotfiles/keyd/graphite.conf).
+# Applied inside the graphical session only — TTYs and the SDDM greeter stay QWERTY.
+#
+# Key names: https://github.com/emberian/evdev/blob/1d020f11b283b0648427a2844b6b980f1a268221/src/scancodes.rs
+# KEY_ prefix optional, case-insensitive.
+
+modmap:
+  - name: graphite
+    remap:
+      # Number row: - → [ , = → ]
+      KEY_MINUS: KEY_LEFTBRACE
+      KEY_EQUAL: KEY_RIGHTBRACE
+
+      # Top row
+      KEY_Q: KEY_B
+      KEY_W: KEY_L
+      KEY_E: KEY_D
+      KEY_R: KEY_W
+      KEY_T: KEY_Z
+      KEY_Y: KEY_APOSTROPHE
+      KEY_U: KEY_F
+      KEY_I: KEY_O
+      KEY_O: KEY_U
+      KEY_P: KEY_J
+      KEY_LEFTBRACE: KEY_SEMICOLON
+      KEY_RIGHTBRACE: KEY_EQUAL
+
+      # Home row (capslock = backspace)
+      KEY_CAPSLOCK: KEY_BACKSPACE
+      KEY_A: KEY_N
+      KEY_S: KEY_R
+      KEY_D: KEY_T
+      KEY_F: KEY_S
+      KEY_H: KEY_Y
+      KEY_J: KEY_H
+      KEY_K: KEY_A
+      KEY_L: KEY_E
+      KEY_SEMICOLON: KEY_I
+      KEY_APOSTROPHE: KEY_COMMA
+
+      # Bottom row (Angle Mod) — c, v, / are identity in Graphite
+      KEY_Z: KEY_X
+      KEY_X: KEY_M
+      KEY_B: KEY_Q
+      KEY_N: KEY_P
+      KEY_M: KEY_K
+      KEY_COMMA: KEY_DOT
+      KEY_DOT: KEY_MINUS
+
+# Graphite custom shifted punctuation (Kanata-fork style). keymap entries match
+# on the *modmapped* key, so the physical source keys never collide; the
+# physically-held Shift applies to the emitted key.
+keymap:
+  - name: graphite-shifted-punctuation
+    remap:
+      Shift-KEY_APOSTROPHE: KEY_MINUS # phys Shift+Y → _
+      Shift-KEY_COMMA: KEY_SLASH # phys Shift+' → ?
+      Shift-KEY_DOT: KEY_APOSTROPHE # phys Shift+. → "
+      Shift-KEY_SLASH: KEY_COMMA # phys Shift+/ → <
+
+# Remap specific applications (e.g. games) back to QWERTY by adding a gated
+# modmap block — see TIPS.md "Remap specific apps (games) to QWERTY":
+#
+# games: &games [/steam_app_/]
+#
+# modmap:
+#   - application:
+#       only: *games
+#     remap:
+#       KEY_B: KEY_Q
+#       # ... the exact inverse of the mappings above

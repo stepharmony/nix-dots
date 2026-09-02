@@ -16,6 +16,9 @@
     ./music-prod.nix
     ./hardware/nvidia.nix
     ./hardware/intel.nix
+    # Graphite layout inside the graphical session (TTYs/SDDM stay QWERTY);
+    # config at dotfiles/xremap/graphite.yml, keyd conf kept as reference.
+    ./xremap.nix
   ];
 
   # Bootloader.
@@ -58,15 +61,6 @@
 
   # weekly TRIM — btrfs mounts use noatime, never discard
   services.fstrim.enable = true;
-
-  # Graphite layout on every keyboard (TTYs, X11 and Wayland).
-  # Content of dotfiles/keyd/graphite.conf is installed as /etc/keyd/default.conf;
-  # keyd restarts on rebuild whenever the file changes.
-  services.keyd.enable = true;
-  environment.etc."keyd/default.conf".text = builtins.readFile ../dotfiles/keyd/graphite.conf;
-  systemd.services.keyd.restartTriggers = [
-    (builtins.hashString "sha256" config.environment.etc."keyd/default.conf".text)
-  ];
 
   # Enable CUPS to print documents.
   services.printing.enable = true;

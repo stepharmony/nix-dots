@@ -176,12 +176,48 @@ cat /sys/power/state                                       # spectre must list "
 systemctl hibernate                                        # spectre only
 ```
 
-### Keyd (Graphite layout)
+### xremap (Graphite layout, graphical session only)
 
 ```bash
-systemctl status keyd
-keyd monitor              # live view of what keyd sees/sends
+systemctl --user status xremap    # service health
+journalctl --user -u xremap -f    # live log; also prints "active window: class: ..."
 ```
+
+If the service fails, keys pass through unremapped (QWERTY) — nothing breaks.
+
+### Remap specific apps (games) to QWERTY
+
+Add a gated modmap block to `dotfiles/xremap/graphite.yml` with the *inverse*
+of the layout. Share the game list via a YAML anchor; both exact names and
+regexes work:
+
+```yaml
+games: &games [/steam_app_/, SomeGame.exe]
+
+modmap:
+  - application:
+      only: *games
+    remap:
+      KEY_B: KEY_Q
+      KEY_L: KEY_W
+      # ... the exact inverse of the modmap above
+```
+
+Discover the window class of any app on KDE Wayland: launch it, then read
+
+```bash
+journalctl --user -u xremap | grep "active window"
+```
+
+(the class is only printed once the config contains at least one application
+filter). Config changes need a service restart — or wire a reload key combo:
+
+```yaml
+keymap:
+  - remap:
+      F9: { action: reload }
+```
+
 
 ## Finding things in nixpkgs
 

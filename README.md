@@ -29,7 +29,8 @@ modules/
                            # re-enable by importing ./desktop/qtile.nix in a host config
 overlays/                  # packages pinned ahead of nixpkgs (protonplus); wired via core.nix
 pkgs/                      # custom package expressions used by overlays (see TIPS.md)
-dotfiles/                  # keyd Graphite layout (wired via core.nix), kanata keymap (dormant)
+dotfiles/                  # xremap Graphite layout (user service via core.nix),
+                           # keyd conf (dormant reference), kanata keymap (dormant)
 ```
 
 Disk layout (both hosts): GPT on `/dev/nvme0n1` — 1G ESP at `/boot`, then btrfs with subvolumes
@@ -135,10 +136,10 @@ passwd rykard
 exit
 ```
 
-Why here: the installed system runs keyd from first boot, which remaps every
-keyboard to the Graphite layout — including the console TTYs. Typing passwords
-there means typing in Graphite before you have muscle memory for it. The ISO
-environment is QWERTY.
+Why here: inside the graphical session xremap remaps to Graphite, but the
+console TTYs and the SDDM greeter stay **QWERTY** — xremap only runs inside a
+logged-in session. Setting the password in the ISO means never having to type
+it blind on a TTY, and the QWERTY TTYs match plain muscle memory anyway.
 
 Then:
 
@@ -149,7 +150,8 @@ reboot
 1. Remove the USB stick. Boot into NixOS (systemd-boot menu).
 2. Log in directly as **rykard** with the password just set — no root login needed.
 3. Forgot to set it? Boot, log in as root with the step-4 password, run
-   `passwd rykard` — but note the console TTY will be Graphite-remapped.
+   `passwd rykard` — the console TTY is plain QWERTY (xremap only remaps
+   inside the graphical session).
 4. (Optional hardening, later: lock the root password with `sudo passwd -l root`
    once you are sure `rykard` + sudo work.)
 
@@ -173,7 +175,8 @@ reboot
 - [ ] Time sync + timezone: `timedatectl` (NTP service should show chronyd; on spectre the
       timezone is managed by automatic-timezoned, see `systemctl status automatic-timezoned`)
 - [ ] Weekly TRIM timer: `systemctl status fstrim.timer`
-- [ ] keyd active with the Graphite layout: `systemctl status keyd` and `cat /etc/keyd/default.conf`
+- [ ] xremap active with the Graphite layout inside the session:
+      `systemctl --user status xremap` (TTYs and SDDM stay QWERTY by design)
 - [ ] `nix fmt` and `nix flake check` work from the repo
 
 **manus (desktop) only:**
