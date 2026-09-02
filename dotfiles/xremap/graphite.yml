@@ -7,9 +7,11 @@
 # Apps that get plain QWERTY instead of Graphite (games). xremap uses the first
 # matching definition, so the gated modmap below shadows the Graphite block.
 # Grow this list per app: launch it, then journalctl --user -u xremap | grep "active window"
-games: &games
-  - /steam_app_/
-  - /umu_/
+# NOTE: anchors must live under `shared:` — xremap rejects unknown top-level fields.
+shared:
+  games: &games
+    - /steam_app_/
+    - /umu_/
 
 modmap:
   # Plain QWERTY for the apps listed above — identity restores for every key

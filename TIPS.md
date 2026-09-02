@@ -190,18 +190,22 @@ relevant when the groups change again (fresh installs are unaffected).
 
 ### Remap specific apps (games) to QWERTY
 
-Already wired in `dotfiles/xremap/graphite.yml`: a `games: &games` list at the
-top, an app-gated QWERTY identity modmap (first block — xremap uses the first
+Already wired in `dotfiles/xremap/graphite.yml`: a `shared: games: &games`
+list, an app-gated QWERTY identity modmap (first block — xremap uses the first
 matching definition), and the shifted-punctuation keymap excluded via
 `not: *games`. To add an app, just extend the list — exact names and regexes
 (`/steam_app_/`) both work:
 
 ```yaml
-games: &games
-  - /steam_app_/
-  - /umu_/
-  - Cyberpunk2077.exe
+shared:
+  games: &games
+    - /steam_app_/
+    - /umu_/
+    - Cyberpunk2077.exe
 ```
+
+(YAML anchors must live under `shared:` — xremap rejects unknown top-level
+fields.)
 
 Discover the window class of any app on KDE Wayland: launch it, then read
 
