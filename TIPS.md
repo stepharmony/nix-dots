@@ -100,7 +100,9 @@ Once the channel reports a version >= your pin, the overlay is redundant.
 **How to delete one:**
 
 1. Remove the entry from `overlays/default.nix` (or the whole overlay file if
-   it was the only one), and `pkgs/<name>/` with it.
+   it was the only one). Move `pkgs/<name>/` to `pkgs/dormant/<name>/` if the
+   expression is worth keeping as a reference (the formatter keeps it valid),
+   or delete it outright if not.
 2. `nh os switch` — the nixpkgs version takes over again.
 3. Leaving a stale overlay in place is harmless at first but will silently
    shadow future nixpkgs updates, so don't forget this step.

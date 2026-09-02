@@ -1,8 +1,8 @@
-# Copy of nixpkgs master's expression, pinning protonplus ahead of
-# nixos-unstable (which still ships 0.5.21).
-#
-# DELETE ME once nixos-unstable ships >= 0.6.5 — check with:
-#   nix eval nixpkgs#protonplus.version
+# DORMANT — reference copy of nixpkgs master's protonplus expression (0.6.5).
+# Retired 2026-09: nixos-unstable caught up, so the overlay entry was disabled.
+# Not built, not imported; kept as a working template for pinning packages
+# ahead of nixpkgs. To re-enable: move back to pkgs/protonplus/package.nix and
+# uncomment the overlay line in overlays/default.nix.
 # (see TIPS.md "Custom packages & overlays" for the full workflow)
 {
   lib,

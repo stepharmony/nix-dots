@@ -15,6 +15,9 @@
       prismlauncher
       protonplus
       faugus-launcher
+      gpu-screen-recorder
+      gpu-screen-recorder-ui
+      gpu-screen-recorder-notification
     ];
   };
 }

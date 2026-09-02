@@ -111,6 +111,7 @@
     unrar
     google-chrome
     git
+    btop
   ];
 
   # Allow unfree packages
