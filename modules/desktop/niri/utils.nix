@@ -17,6 +17,16 @@ let
     awww img /home/rykard/my-nixos-config/dotfiles/niri/wallpaper.png
   '';
 
+  # Hibernate, guarded: manus has no hibernation support (no resumeDevice),
+  # spectre does. Check /sys/power/state at click time so the shared power
+  # menu stays honest on both hosts.
+  hibernate = pkgs.writeShellScriptBin "hibernate" ''
+    if grep -q disk /sys/power/state; then
+      exec systemctl hibernate
+    fi
+    notify-send "Hibernate" "Hibernation is not supported on this host"
+  '';
+
   # Wallpaper picker: rofi over ~/Pictures/Wallpapers with image previews.
   # Entries carry \0icon\x1fthumbnail:// icons (rofi dmenu protocol) which
   # rofi renders via the XDG thumbnailer installed below (cached in
@@ -56,6 +66,7 @@ in
       gdk-pixbuf # provides gdk-pixbuf-thumbnailer on PATH
       wallpaper
       wallpaperPicker
+      hibernate
       thumbnailer
     ];
   };
