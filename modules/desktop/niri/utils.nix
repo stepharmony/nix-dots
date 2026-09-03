@@ -27,6 +27,15 @@ let
     notify-send "Hibernate" "Hibernation is not supported on this host"
   '';
 
+  # Sleep with a deterministic lock: swayidle's before-sleep hook is flaky on
+  # this stack, so lock first and give swaylock a second to present its frame
+  # before the compositor freezes.
+  suspend = pkgs.writeShellScriptBin "suspend" ''
+    swaylock -C /home/rykard/my-nixos-config/dotfiles/niri/swaylock.conf &
+    sleep 1
+    systemctl suspend
+  '';
+
   # Wallpaper picker: rofi over ~/Pictures/Wallpapers with image previews.
   # Entries carry \0icon\x1fthumbnail:// icons (rofi dmenu protocol) which
   # rofi renders via the XDG thumbnailer installed below (cached in
@@ -67,6 +76,7 @@ in
       wallpaper
       wallpaperPicker
       hibernate
+      suspend
       thumbnailer
     ];
   };

@@ -15,7 +15,7 @@
           "orientation": "vertical",
           "class": "power-menu",
           "widgets": [
-            { "type": "button", "label": "Sleep", "on_click": "!systemctl suspend" },
+            { "type": "button", "label": "Sleep", "on_click": "!suspend" },
             { "type": "button", "label": "Hibernate", "on_click": "!hibernate" },
             { "type": "button", "label": "Shutdown", "on_click": "!systemctl poweroff" },
             { "type": "button", "label": "Restart", "on_click": "!systemctl reboot" },
