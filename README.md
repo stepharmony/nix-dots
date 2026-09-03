@@ -175,8 +175,9 @@ reboot
 - [ ] Time sync + timezone: `timedatectl` (NTP service should show chronyd; on spectre the
       timezone is managed by automatic-timezoned, see `systemctl status automatic-timezoned`)
 - [ ] Weekly TRIM timer: `systemctl status fstrim.timer`
-- [ ] xremap active with the Graphite layout inside the session:
-      `systemctl --user status xremap` (TTYs and SDDM stay QWERTY by design)
+- [ ] xremap active with the Graphite layout: `systemctl status xremap` (system daemon)
+      and `systemctl --user status xremap-bridge` (session bridge; TTYs and SDDM stay
+      QWERTY by design)
 - [ ] `nix fmt` and `nix flake check` work from the repo
 
 **manus (desktop) only:**

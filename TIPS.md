@@ -178,15 +178,18 @@ systemctl hibernate                                        # spectre only
 
 ### xremap (Graphite layout, graphical session only)
 
+Two units, official multi-DE architecture:
+
 ```bash
-systemctl --user status xremap    # service health
-journalctl --user -u xremap -f    # live log; also prints "active window: class: ..."
+systemctl status xremap               # system daemon (dedicated `xremap` user)
+systemctl --user status xremap-bridge # per-session bridge (kde/niri variant, auto-picked)
+journalctl -u xremap -f               # daemon log
+journalctl --user -u xremap-bridge -f # bridge log; "active window: class:" lines
 ```
 
-If the service fails, keys pass through unremapped (QWERTY) — nothing breaks.
-Heads-up from the first activation: adding the `input`/`uinput` groups to an
-already-running session required a **full reboot**, not just re-login. Only
-relevant when the groups change again (fresh installs are unaffected).
+If either fails, keys pass through unremapped (QWERTY) — nothing breaks.
+Heads-up from the first activation: adding groups to an already-running
+session requires a **full reboot**, not just re-login.
 
 ### Remap specific apps (games) to QWERTY
 
@@ -199,7 +202,7 @@ matching definition), and the shifted-punctuation keymap excluded via
 `class` field (the `caption` is the window title, `class` is what you match on):
 
 ```bash
-journalctl --user -u xremap -f | grep "active window"
+journalctl --user -u xremap-bridge -f | grep "active window"
 # active window: caption: 'Momentum Mod - DX11', class: 'steam_app_1802710'
 ```
 

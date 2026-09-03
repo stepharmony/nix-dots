@@ -1,40 +1,107 @@
-# xremap — Graphite key remapping inside the graphical session.
-# Replaces keyd (dormant: dotfiles/keyd/graphite.conf); note that TTYs and the
-# SDDM greeter stay QWERTY — xremap only runs inside a graphical session.
+# xremap — Graphite key remapping, official multi-DE architecture:
+#
+#   systemd.services.xremap       (system, dedicated `xremap` user)
+#     socket-variant daemon doing the actual remapping (evdev → uinput)
+#
+#   systemd.user.services.xremap-bridge  (per graphical session)
+#     feeds the active window from the running DE to the system service,
+#     so application filters work under both KDE and Niri. The bridge
+#     binary variant must match the running DE — picked at start.
+#
+# Replaces the old user-service setup; TTYs and the SDDM greeter stay QWERTY.
+# Config: dotfiles/xremap/graphite.yml; keyd conf kept as reference.
 {
   username,
+  config,
   pkgs,
   ...
 }:
 
 let
+  xremapKde = pkgs.xremap.passthru.kde;
+  xremapNiri = pkgs.xremap.passthru.niri;
+  xremapSocket = pkgs.xremap.passthru.socket;
+
+  # The bridge variant must match the running DE; detect from the session env
+  # (both Plasma and Niri import it into the systemd user manager).
+  bridgeWrapper = pkgs.writeShellScriptBin "xremap-bridge" ''
+    if [ "$XDG_CURRENT_DESKTOP" = "niri" ] || [ -n "$NIRI_SOCKET" ]; then
+      exec ${xremapNiri}/bin/xremap --bridge
+    fi
+    exec ${xremapKde}/bin/xremap --bridge
+  '';
+
   configFile = builtins.readFile ../dotfiles/xremap/graphite.yml;
 in
 {
-  # xremap injects remapped keys through uinput.
   hardware.uinput.enable = true;
 
-  # Give the logged-in user access to input devices and uinput.
+  # /dev/input/event* → input group; /dev/uinput → uinput group.
+  # Only the dedicated system user needs device access — not the desktop user.
   services.udev.extraRules = ''
-    KERNEL=="uinput", MODE="0660", GROUP="input", TAG+="uaccess"
+    KERNEL=="uinput", MODE="0660", GROUP="input"
   '';
-  users.users.${username}.extraGroups = [
-    "input"
-    "uinput"
-  ];
 
-  systemd.user.services.xremap = {
+  users.users.xremap = {
+    isSystemUser = true;
+    group = "xremap";
+    extraGroups = [
+      "input"
+      "uinput"
+    ];
+    description = "xremap key remapper daemon";
+  };
+  users.groups.xremap = { };
+  users.groups."xremap-${username}" = { };
+
+  # The desktop user only needs socket access — no device access.
+  users.users.${username}.extraGroups = [ "xremap-${username}" ];
+
+  environment.etc."xremap/config.yml".source = ../dotfiles/xremap/graphite.yml;
+
+  systemd.services.xremap = {
     description = "xremap key remapper (Graphite layout)";
-    documentation = [ "https://github.com/xremap/xremap" ];
+    documentation = [ "https://github.com/xremap/xremap/blob/master/doc/running_as_system_service.md" ];
+    wantedBy = [ "multi-user.target" ];
+    after = [ "systemd-udevd.service" ];
+    serviceConfig = {
+      User = "xremap";
+      Group = "xremap";
+      SupplementaryGroups = [
+        "input"
+        "uinput"
+        "xremap-${username}"
+      ];
+      ExecStart = "${xremapSocket}/bin/xremap --watch=device /etc/xremap/config.yml";
+      # per-user socket dir, writable by the bridge (xremap-rykard group)
+      RuntimeDirectory = "xremap";
+      RuntimeDirectoryMode = "0755";
+      RuntimeDirectoryPreserve = true;
+      ExecStartPre =
+        "+"
+        + (pkgs.writeShellScript "xremap-socket-dir" ''
+          install --directory --mode 2770 --owner xremap --group xremap-${username} \
+            "/run/xremap/$(id -u ${username})"
+        '').outPath;
+      Restart = "always";
+      RestartSec = 2;
+    };
+    # restart the daemon whenever the layout file changes
+    restartTriggers = [ (builtins.hashString "sha256" configFile) ];
+  };
+
+  systemd.user.services.xremap-bridge = {
+    description = "xremap bridge (active window → system xremap)";
+    documentation = [ "https://github.com/xremap/xremap/blob/master/doc/running_as_system_service.md" ];
     partOf = [ "graphical-session.target" ];
     after = [ "graphical-session.target" ];
     wantedBy = [ "graphical-session.target" ];
     serviceConfig = {
-      ExecStart = "${pkgs.xremap.passthru.kde}/bin/xremap ${pkgs.writeText "xremap-graphite.yml" configFile}";
-      Restart = "on-failure";
-      RestartSec = 2;
+      ExecStart = "${bridgeWrapper}/bin/xremap-bridge";
+      Restart = "always";
+      RestartSec = 1;
+      # the DBus/session may not be ready right at login — retry quietly
+      StartLimitBurst = 0;
     };
-    # restart the service whenever the layout file changes
-    restartTriggers = [ (builtins.hashString "sha256" configFile) ];
   };
 }
