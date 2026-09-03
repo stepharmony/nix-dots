@@ -9,12 +9,12 @@
 }:
 
 let
-  # Race-free wallpaper application: starts the swww daemon and waits for its
+  # Race-free wallpaper application: starts the awww daemon and waits for its
   # socket (no magic sleeps), then applies the default wallpaper.
   wallpaper = pkgs.writeShellScriptBin "wallpaper" ''
-    swww-daemon &
-    until swww query >/dev/null 2>&1; do sleep 0.25; done
-    swww img /home/rykard/my-nixos-config/dotfiles/niri/wallpaper.png
+    awww-daemon &
+    until awww query >/dev/null 2>&1; do sleep 0.25; done
+    awww img /home/rykard/my-nixos-config/dotfiles/niri/wallpaper.png
   '';
 
   # Wallpaper picker: rofi over ~/Pictures/Wallpapers with image previews.
@@ -31,7 +31,7 @@ let
         -p "Wallpaper" |
       sed 's/\x0icon.*$//' # rofi strips dmenu metadata; strip defensively
     )
-    [ -n "$picked" ] && swww img "$picked"
+    [ -n "$picked" ] && awww img "$picked"
   '';
 
   # XDG thumbnailer so rofi can generate image previews. NixOS ships none;
@@ -52,7 +52,7 @@ in
       brightnessctl
       cliphist
       wl-clipboard
-      swww
+      awww
       gdk-pixbuf # provides gdk-pixbuf-thumbnailer on PATH
       wallpaper
       wallpaperPicker
