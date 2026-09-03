@@ -11,5 +11,9 @@
 {
   config = lib.mkIf config.features.desktop.niri.enable {
     environment.systemPackages = [ pkgs.ironbar ];
+
+    # ironbar's text + icon font: JetBrains Mono with the full Nerd Font
+    # glyph set — one font covers bar text and module icons alike.
+    fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
   };
 }
