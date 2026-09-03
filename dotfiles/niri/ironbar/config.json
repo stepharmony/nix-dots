@@ -6,8 +6,9 @@
     {
       "type": "custom",
       "class": "power",
-      "label": "\uf011",
-      "bar": [],
+      "bar": [
+        { "type": "label", "label": "\uf011", "class": "power-icon" }
+      ],
       "popup": [
         {
           "type": "box",
