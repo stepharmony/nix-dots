@@ -46,6 +46,7 @@ in
     ./idle-lock.nix
     ./theming.nix
     ./utils.nix
+    ./sunsetr.nix
   ];
 
   options.features.desktop.niri.enable =

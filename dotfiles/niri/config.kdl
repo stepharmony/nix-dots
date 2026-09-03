@@ -13,10 +13,15 @@ spawn-at-startup "swaync" "-c" "/home/rykard/my-nixos-config/dotfiles/niri/swayn
 spawn-at-startup "swayidle" "-w" "-C" "/home/rykard/my-nixos-config/dotfiles/niri/swayidle/config"
 spawn-at-startup "polkit-agent"
 spawn-at-startup "wallpaper"
+spawn-at-startup "sunsetr" "--config" "/home/rykard/my-nixos-config/dotfiles/niri/sunsetr"
 
 // Input: flat mouse accel (1:1 pointer, G502 X), keyboard repeat,
 // Right Alt as the Compose key (Niri session only — Plasma has its own).
 input {
+    // Focus follows the pointer across windows, but won't scroll the view
+    // more than 25% of the screen to do so.
+    focus-follows-mouse max-scroll-amount="25%"
+
     mouse {
         accel-profile "flat"
     }
