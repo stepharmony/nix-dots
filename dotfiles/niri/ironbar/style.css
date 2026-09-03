@@ -1,0 +1,58 @@
+/* Gruvbox theme for ironbar. Classes are ironbar's defaults; tweak freely —
+   the bar reloads on `ironbar reload` or session restart. */
+
+* {
+  all: unset;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  border-radius: 0;
+}
+
+.background {
+  background-color: #1d2021;
+  color: #ebdbb2;
+}
+
+/* module pills */
+.module {
+  padding: 2px 12px;
+  margin: 5px 3px;
+  background-color: #282828;
+  border-radius: 8px;
+}
+
+.clock {
+  font-weight: bold;
+  color: #ebdbb2;
+}
+
+.focused .label {
+  color: #b8bb26;
+}
+
+/* workspaces: active gets the Gruvbox green */
+.workspaces .item {
+  color: #928374;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.workspaces .item.focused,
+.workspaces .item.visible {
+  background-color: #98971a;
+  color: #1d2021;
+}
+
+.tray, .volume, .notifications, .music {
+  color: #ebdbb2;
+}
+
+/* popup windows (volume/notification popups) */
+.popup {
+  background-color: #1d2021;
+  color: #ebdbb2;
+  border: 1px solid #98971a;
+  border-radius: 10px;
+}

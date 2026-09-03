@@ -1,0 +1,57 @@
+/* Gruvbox theme for swaync (control center + notification toasts). */
+
+.control-center {
+  background-color: #1d2021;
+  border: 2px solid #98971a;
+  border-radius: 12px;
+  color: #ebdbb2;
+}
+
+.control-center .title {
+  color: #b8bb26;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.notification {
+  background-color: #282828;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 6px;
+}
+
+.notification-content {
+  background-color: transparent;
+  color: #ebdbb2;
+}
+
+.summary {
+  color: #b8bb26;
+  font-weight: bold;
+}
+
+.body {
+  color: #ebdbb2;
+}
+
+.time {
+  color: #928374;
+}
+
+.notification-action {
+  background-color: #3c3836;
+  color: #ebdbb2;
+  border-radius: 6px;
+}
+
+.notification-action:hover {
+  background-color: #98971a;
+  color: #1d2021;
+}
+
+.close-button {
+  background-color: #cc241d;
+  color: #ebdbb2;
+  border-radius: 6px;
+}

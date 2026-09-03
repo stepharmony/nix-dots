@@ -29,13 +29,18 @@ modules/
   gaming.nix  music-prod.nix                 # behind features.{gaming,music}.enable
   hardware/nvidia.nix      # desktop GPU (features.hardware.nvidia.enable)
   hardware/intel.nix       # laptop iGPU (features.hardware.intel.enable)
-  desktop/                 # plasma (default session) + niri (both hosts, opt-in
-                           # via features.desktop.niri) + wayland; qtile/xorg dormant —
-                           # re-enable by importing ./desktop/qtile.nix in a host config
+  desktop/                 # plasma (default session) + niri/ (both hosts, opt-in
+                           # via features.desktop.niri: session, bar, launcher,
+                           # notifications, idle/lock, gruvbox theming); wayland;
+                           # qtile/xorg dormant — re-enable by importing
+                           # ./desktop/qtile.nix in a host config
 overlays/                  # packages pinned ahead of nixpkgs (protonplus); wired via core.nix
 pkgs/                      # custom package expressions used by overlays (see TIPS.md)
-dotfiles/                  # xremap system service + bridge config (see dotfiles/xremap),
-                           # niri starter config, keyd conf (dormant), kanata keymap (dormant)
+dotfiles/                  # niri: config.kdl + full rice (ironbar, rofi, swaync,
+                           # swayidle/swaylock, wallpaper — all spawned with repo
+                           # paths from config.kdl); xremap system service config
+                           # (see dotfiles/xremap); keyd conf (dormant),
+                           # kanata keymap (dormant)
 ```
 
 Disk layout (both hosts): GPT on `/dev/nvme0n1` — 1G ESP at `/boot`, then btrfs with subvolumes
@@ -184,7 +189,8 @@ reboot
       and `systemctl --user status xremap-bridge` (session bridge; TTYs and SDDM stay
       QWERTY by design)
 - [ ] Both SDDM sessions present: Plasma (default) and Niri — niri config lives at
-      `~/.config/niri/config.kdl` (starter: `dotfiles/niri/config.kdl`, live-reloads)
+      `~/.config/niri/config.kdl` (source: `dotfiles/niri/config.kdl`, live-reloads;
+      the Niri session spawns its bar/launcher/notifications straight from the repo)
 - [ ] `nix fmt` and `nix flake check` work from the repo
 
 **manus (desktop) only:**

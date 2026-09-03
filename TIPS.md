@@ -246,6 +246,22 @@ keymap:
 ```
 
 
+## Known upstream issues
+
+### Steam dropdown menus close instantly under Niri
+
+xwayland-satellite 0.8.2's popup handling regressed: Steam menus (Friends,
+right-click, top bar) close within ~0.3s under Niri. Worked around by a
+**confirmed pin to satellite 0.8.1** in `modules/desktop/niri/default.nix`
+(verified 2026-09-03). Games are unaffected; Steam client works fully on
+Plasma (kwin's embedded Xwayland has no such issue).
+
+Removal procedure: when nixpkgs ships a fixed satellite release, revert the
+pin to plain `pkgs.xwayland-satellite`, switch, and test Steam dropdowns in a
+Niri session before deleting the pin comment. Track:
+- https://github.com/Supreeeme/xwayland-satellite/issues/468
+- the satellite rewrite (issue #373) — the real fix
+
 ## Finding things in nixpkgs
 
 ```bash

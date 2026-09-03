@@ -1,0 +1,17 @@
+{
+  "anchor_to_edges": true,
+  "icon_theme": "oomox-gruvbox-dark",
+  "start": [
+    { "type": "workspaces" },
+    { "type": "focused", "show_icon": true, "show_label": true }
+  ],
+  "center": [
+    { "type": "clock", "format": "%a %d.%m %H:%M" }
+  ],
+  "end": [
+    { "type": "music", "player_type": "mpris" },
+    { "type": "volume" },
+    { "type": "notifications" },
+    { "type": "tray" }
+  ]
+}

@@ -11,7 +11,7 @@
   imports = [
     ./pipewire.nix
     ./desktop/plasma.nix
-    ./desktop/niri.nix
+    ./desktop/niri
     ./disko-btrfs.nix
     ./gaming.nix
     ./music-prod.nix

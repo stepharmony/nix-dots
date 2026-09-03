@@ -1,4 +1,7 @@
 # Niri — scrollable-tiling Wayland compositor, alongside Plasma.
+# This directory owns the whole Niri session stack. It is Wayland/session
+# specific — do not reuse these files from X11 or session-agnostic modules
+# (qtile, if it ever returns, gets its own directory).
 # Adds a SDDM session; plasma.nix pins the SDDM default to Plasma.
 # Note: xremap sits below the compositor, so Niri binds see Graphite letters.
 {
@@ -9,14 +12,14 @@
 }:
 
 let
-  # EXPERIMENT: satellite pinned to 0.8.1 — 0.8.2 ships popup regressions
-  # that close Steam dropdown menus instantly under Niri (upstream:
-  # satellite#468 and the 2026-09 Steam forum thread). If 0.8.1 doesn't
-  # help, revert systemPackages to plain pkgs.xwayland-satellite and delete
-  # this let block; upstream fix expected in the satellite rewrite.
+  # CONFIRMED PIN (2026-09-03): satellite 0.8.2's popup regression closes Steam
+  # dropdown menus instantly under Niri (satellite#468; 2026-09 Steam forum
+  # thread). 0.8.1 verified working. REMOVE this pin when nixpkgs ships a fixed
+  # satellite release — then revert to plain pkgs.xwayland-satellite and check
+  # Steam dropdowns in a Niri session before deleting this comment.
   #
   # cargoDeps is overridden (not cargoHash) because the vendor derivation is
-  # instantiated with the original hash before overrideAttrs can see it.
+  # instantiated with the original hash before overrideAttrs can reach it.
   satellite081Src = pkgs.fetchFromGitHub {
     owner = "Supreeeme";
     repo = "xwayland-satellite";
@@ -36,6 +39,15 @@ let
   });
 in
 {
+  imports = [
+    ./bar.nix
+    ./launcher.nix
+    ./notifications.nix
+    ./idle-lock.nix
+    ./theming.nix
+    ./utils.nix
+  ];
+
   options.features.desktop.niri.enable =
     lib.mkEnableOption "the Niri Wayland compositor as an additional SDDM session";
 

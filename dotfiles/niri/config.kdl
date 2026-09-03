@@ -1,25 +1,125 @@
-// Niri starter config — copy to ~/.config/niri/config.kdl (live-reloads, and
-// niri validates on save; errors surface as on-screen notifications).
-// Full reference: https://github.com/YaLTeR/niri/wiki/Configuration:-Overview
+// Niri config — full bind set + session daemons with repo config paths.
+// Live-reloads and validates on save; errors surface as on-screen notifications.
+// Reference: https://github.com/YaLTeR/niri/wiki/Configuration:-Overview
 //
-// Note: xremap remaps below the compositor, so binds here see *Graphite*
-// letters — the keys below are written accordingly.
+// IMPORTANT: xremap remaps below the compositor, so binds here see *Graphite*
+// letters. Each bind comments its QWERTY physical key. Identity keys in
+// Graphite (c, v, g, /) are used for the most muscle-memory-critical binds.
 
-// Spawn a terminal (Mod+Return)
+// Start the session stack. Every daemon reads its config straight from the
+// repo — the only Niri-related file in $HOME is this config itself.
+spawn-at-startup "ironbar" "-c" "/home/rykard/my-nixos-config/dotfiles/niri/ironbar/config.json" "-t" "/home/rykard/my-nixos-config/dotfiles/niri/ironbar/style.css"
+spawn-at-startup "swaync" "-c" "/home/rykard/my-nixos-config/dotfiles/niri/swaync/config.json" "-s" "/home/rykard/my-nixos-config/dotfiles/niri/swaync/style.css"
+spawn-at-startup "swayidle" "-w" "-C" "/home/rykard/my-nixos-config/dotfiles/niri/swayidle/config"
+spawn-at-startup "polkit-agent"
+spawn-at-startup "sh" "-c" "swww-daemon & sleep 0.5; swww img /home/rykard/my-nixos-config/dotfiles/niri/wallpaper.png"
+
+// Rice: gaps + Gruvbox focus ring.
+layout {
+    gaps 14
+    focus-ring {
+        active-color "#98971a"
+        inactive-color "#3c3836"
+    }
+}
+
+prefer-no-csd
+
+// Steam settings and similar utility windows behave better floating.
+window-rule {
+    match app-id="steam" title="^Steam Settings$"
+    open-floating true
+}
+
 binds {
+    // Terminal + launcher (Space is layout-stable)
     Mod+Return { spawn "konsole"; }
-    Mod+Shift+Slash { close-window; } // Graphite: / is on the same physical key as QWERTY /
+    Mod+Space { spawn "rofi" "-show" "drun" "-config" "/home/rykard/my-nixos-config/dotfiles/niri/rofi/config.rasi"; }
 
+    // Close / floating / quit — Graphite identity keys
+    Mod+C { close-window; } // phys C
+    Mod+V { toggle-window-floating; } // phys V
+    Mod+Shift+E { quit; } // phys E (Graphite e)
+
+    // Focus — arrows are primary; Graphite scrambles hjkl (h=phys J, j=phys P,
+    // k=phys M, l=phys W), so no vim-key alternates.
     Mod+Left { focus-column-left; }
     Mod+Down { focus-window-down; }
     Mod+Up { focus-window-up; }
     Mod+Right { focus-column-right; }
+    Mod+Home { focus-column-first; }
+    Mod+End { focus-column-last; }
 
-    Mod+Shift+E { quit; } // exit niri
-}
+    // Move windows/columns
+    Mod+Shift+Left { move-column-left; }
+    Mod+Shift+Down { move-window-down; }
+    Mod+Shift+Up { move-window-up; }
+    Mod+Shift+Right { move-column-right; }
 
-// Example window rule: keep Steam dialogs floating
-window-rule {
-    match app-id="steam" title="^Steam Settings$"
-    open-floating true
+    // Consume/expel — the scrollable-layout signature moves
+    // (Graphite: , is on phys ', . is on phys ,)
+    Mod+Comma { consume-window-into-column; } // phys '
+    Mod+Period { expel-window-from-column; } // phys ,
+
+    // Workspaces
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Shift+1 { move-column-to-workspace 1; }
+    Mod+Shift+2 { move-column-to-workspace 2; }
+    Mod+Shift+3 { move-column-to-workspace 3; }
+    Mod+Shift+4 { move-column-to-workspace 4; }
+    Mod+Shift+5 { move-column-to-workspace 5; }
+    Mod+Shift+6 { move-column-to-workspace 6; }
+    Mod+Shift+7 { move-column-to-workspace 7; }
+    Mod+Shift+8 { move-column-to-workspace 8; }
+    Mod+Shift+9 { move-column-to-workspace 9; }
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up { focus-workspace-up; }
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up { move-column-to-workspace-up; }
+
+    // Monitors
+    Mod+Ctrl+Left { move-column-to-monitor-left; }
+    Mod+Ctrl+Right { move-column-to-monitor-right; }
+    Mod+Ctrl+Up { move-window-to-monitor-up; }
+    Mod+Ctrl+Down { move-window-to-monitor-down; }
+
+    // Size / fullscreen — remember these fire on Graphite outputs
+    Mod+F { fullscreen-window; } // phys U
+    Mod+R { switch-preset-column-width; } // phys R
+    Mod+Shift+F { expand-column-to-available-width; } // phys U + shift
+    Mod+M { maximize-column; } // phys M
+    Mod+Minus { set-column-width "-10%"; } // phys .
+    Mod+Equal { set-column-width "+10%"; } // phys ]
+
+    // Screenshots — niri built-in UI, plus grim+slurp region to clipboard
+    Print { screenshot; }
+    Mod+Print { screenshot-screen; }
+    Mod+S { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy"; } // phys F
+
+    // Lock / exit session
+    Mod+L { spawn "swaylock" "-C" "/home/rykard/my-nixos-config/dotfiles/niri/swaylock.conf"; } // phys W
+    Mod+Shift+P { power-off-monitors; }
+
+    // Clipboard history picker
+    Mod+Ctrl+C {
+        spawn "sh" "-c" "cliphist list | rofi -dmenu -config /home/rykard/my-nixos-config/dotfiles/niri/rofi/config.rasi | cliphist decode | wl-copy";
+    }
+
+    // Hardware keys — layout-independent
+    XF86AudioRaiseVolume { spawn "sh" "-c" "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"; }
+    XF86AudioLowerVolume { spawn "sh" "-c" "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%-"; }
+    XF86AudioMute { spawn "sh" "-c" "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioPlay { spawn "playerctl" "play-pause"; }
+    XF86AudioNext { spawn "playerctl" "next"; }
+    XF86AudioPrev { spawn "playerctl" "previous"; }
+    XF86MonBrightnessUp { spawn "brightnessctl" "set" "5%+"; }
+    XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
 }
