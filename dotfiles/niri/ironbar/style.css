@@ -61,6 +61,18 @@
   color: #ebdbb2;
 }
 
+/* power glyph: button without the GTK button frame */
+.power button {
+  background-color: transparent;
+  border-width: 0;
+  padding: 0;
+  color: #ebdbb2;
+}
+
+.power button:hover {
+  color: #b8bb26;
+}
+
 /* power menu popup */
 .power-menu button {
   background-color: #282828;

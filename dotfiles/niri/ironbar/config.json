@@ -7,7 +7,7 @@
       "type": "custom",
       "class": "power",
       "bar": [
-        { "type": "label", "label": "\uf011", "class": "power-icon" }
+        { "type": "button", "label": "\uf011", "class": "power-icon", "on_click": "popup:toggle" }
       ],
       "popup": [
         {
