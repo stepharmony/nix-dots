@@ -29,11 +29,11 @@ let
 
   # Sleep with a deterministic lock: swayidle's before-sleep hook is flaky on
   # this stack, so lock first and give swaylock a second to present its frame
-  # before the compositor freezes.
+  # before the compositor freezes. Failures surface as a notification.
   suspend = pkgs.writeShellScriptBin "suspend" ''
     swaylock -C /home/rykard/my-nixos-config/dotfiles/niri/swaylock.conf &
     sleep 1
-    systemctl suspend
+    systemctl suspend || notify-send "Sleep" "Suspend failed"
   '';
 
   # Wallpaper picker: rofi over ~/Pictures/Wallpapers with image previews.
