@@ -71,6 +71,10 @@ element-text, element-icon {
     background-color: transparent;
 }
 
+element-icon {
+    size: 5ch;
+}
+
 element-text selected {
     text-color: @bg2;
 }

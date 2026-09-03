@@ -17,14 +17,30 @@ let
     swww img /home/rykard/my-nixos-config/dotfiles/niri/wallpaper.png
   '';
 
-  # Wallpaper picker: rofi over ~/Pictures/Wallpapers, applies via swww.
+  # Wallpaper picker: rofi over ~/Pictures/Wallpapers with image previews.
+  # Entries carry \0icon\x1fthumbnail:// icons (rofi dmenu protocol) which
+  # rofi renders via the XDG thumbnailer installed below (cached in
+  # ~/.cache/thumbnails, shared with Dolphin).
   wallpaperPicker = pkgs.writeShellScriptBin "wallpaper-picker" ''
-    wallpaper=$(
+    picked=$(
       find "$HOME/Pictures/Wallpapers" -type f \
         \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.webp' \) |
-      rofi -dmenu -config /home/rykard/my-nixos-config/dotfiles/niri/rofi/config.rasi -p "Wallpaper"
+      while read -r f; do printf '%s\0icon\x1fthumbnail://%s\n' "$f" "$f"; done |
+      rofi -dmenu -show-icons \
+        -config /home/rykard/my-nixos-config/dotfiles/niri/rofi/config.rasi \
+        -p "Wallpaper" |
+      sed 's/\x0icon.*$//' # rofi strips dmenu metadata; strip defensively
     )
-    [ -n "$wallpaper" ] && swww img "$wallpaper"
+    [ -n "$picked" ] && swww img "$picked"
+  '';
+
+  # XDG thumbnailer so rofi can generate image previews. NixOS ships none;
+  # the profile share dir is on $XDG_DATA_DIRS, which rofi scans.
+  thumbnailer = pkgs.writeTextDir "share/thumbnailers/gdk-pixbuf.thumbnailer" ''
+    [Thumbnailer Entry]
+    TryExec=gdk-pixbuf-thumbnailer
+    Exec=gdk-pixbuf-thumbnailer -s %s %u %o
+    MimeType=image/png;image/jpeg;image/webp;image/bmp;image/gif;
   '';
 in
 {
@@ -37,8 +53,10 @@ in
       cliphist
       wl-clipboard
       swww
+      gdk-pixbuf # provides gdk-pixbuf-thumbnailer on PATH
       wallpaper
       wallpaperPicker
+      thumbnailer
     ];
   };
 }
