@@ -37,6 +37,7 @@
   features.gaming.enable = true;
   features.music.enable = true;
   features.hardware.intel.enable = true;
+  features.desktop.niri.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {

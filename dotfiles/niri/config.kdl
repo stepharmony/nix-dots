@@ -1,0 +1,25 @@
+// Niri starter config — copy to ~/.config/niri/config.kdl (live-reloads, and
+// niri validates on save; errors surface as on-screen notifications).
+// Full reference: https://github.com/YaLTeR/niri/wiki/Configuration:-Overview
+//
+// Note: xremap remaps below the compositor, so binds here see *Graphite*
+// letters — the keys below are written accordingly.
+
+// Spawn a terminal (Mod+Return)
+binds {
+    Mod+Return { spawn "konsole"; }
+    Mod+Shift+Slash { close-window; } // Graphite: / is on the same physical key as QWERTY /
+
+    Mod+Left { focus-column-left; }
+    Mod+Down { focus-window-down; }
+    Mod+Up { focus-window-up; }
+    Mod+Right { focus-column-right; }
+
+    Mod+Shift+E { quit; } // exit niri
+}
+
+// Example window rule: keep Steam dialogs floating
+window-rule {
+    match app-id="steam" title="^Steam Settings$"
+    open-floating true
+}

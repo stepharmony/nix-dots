@@ -25,7 +25,8 @@ modules/
   gaming.nix  music-prod.nix                 # behind features.{gaming,music}.enable
   hardware/nvidia.nix      # desktop GPU (features.hardware.nvidia.enable)
   hardware/intel.nix       # laptop iGPU (features.hardware.intel.enable)
-  desktop/                 # plasma + wayland (active); qtile/xorg dormant —
+  desktop/                 # plasma (default session) + niri (both hosts, opt-in
+                           # via features.desktop.niri) + wayland; qtile/xorg dormant —
                            # re-enable by importing ./desktop/qtile.nix in a host config
 overlays/                  # packages pinned ahead of nixpkgs (protonplus); wired via core.nix
 pkgs/                      # custom package expressions used by overlays (see TIPS.md)
@@ -178,6 +179,8 @@ reboot
 - [ ] xremap active with the Graphite layout: `systemctl status xremap` (system daemon)
       and `systemctl --user status xremap-bridge` (session bridge; TTYs and SDDM stay
       QWERTY by design)
+- [ ] Both SDDM sessions present: Plasma (default) and Niri — niri config lives at
+      `~/.config/niri/config.kdl` (starter: `dotfiles/niri/config.kdl`, live-reloads)
 - [ ] `nix fmt` and `nix flake check` work from the repo
 
 **manus (desktop) only:**
