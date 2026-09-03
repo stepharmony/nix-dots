@@ -15,7 +15,7 @@
     { "type": "clock", "format": "%a %d.%m %H:%M" }
   ],
   "end": [
-    { "type": "music", "player_type": "mpris" },
+    { "type": "music", "player_type": "mpris", "format": "{title} / {artist}", "truncate": { "mode": "end", "max_length": 40 } },
     { "type": "volume" },
     { "type": "notifications" },
     { "type": "tray" }
