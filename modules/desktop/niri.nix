@@ -4,6 +4,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 
@@ -16,5 +17,10 @@
     # and niri's integrated xwayland for X11 apps. The nixpkgs module
     # mkDefaults the SDDM default session to niri — plasma.nix overrides.
     programs.niri.enable = true;
+
+    # niri spawns xwayland-satellite on demand for X11 apps (Steam, Proton
+    # games); the nixpkgs niri package does not depend on it — must be on
+    # PATH ourselves. The satellite wrapper brings the real Xwayland along.
+    environment.systemPackages = [ pkgs.xwayland-satellite ];
   };
 }
