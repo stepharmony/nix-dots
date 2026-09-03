@@ -1,26 +1,35 @@
-/* Gruvbox theme for ironbar. Classes are ironbar's defaults; tweak freely —
-   the bar reloads on `ironbar reload` or session restart. */
+/* Gruvbox theme for ironbar.
+ *
+ * GTK4 CSS — shorthands (margin/padding/border/all) are NOT supported;
+ * use per-side properties. Modules are tagged "widget" + <module-name>
+ * (source: src/modules/mod.rs), popups get popup-start/center/end.
+ */
 
 * {
-  all: unset;
   font-family: "JetBrainsMono Nerd Font", sans-serif;
   font-size: 13px;
   font-weight: 500;
-  border: none;
-  border-radius: 0;
 }
 
+/* the bar window */
 .background {
   background-color: #1d2021;
   color: #ebdbb2;
 }
 
-/* module pills */
-.module {
-  padding: 2px 12px;
-  margin: 5px 3px;
+/* every module: gruvbox pill with spacing on both axes */
+.widget {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-left: 3px;
+  margin-right: 3px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 12px;
+  padding-right: 12px;
   background-color: #282828;
   border-radius: 8px;
+  color: #ebdbb2;
 }
 
 .clock {
@@ -35,7 +44,10 @@
 /* workspaces: active gets the Gruvbox green */
 .workspaces .item {
   color: #928374;
-  padding: 2px 8px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 8px;
+  padding-right: 8px;
   border-radius: 6px;
 }
 
@@ -49,10 +61,45 @@
   color: #ebdbb2;
 }
 
-/* popup windows (volume/notification popups) */
-.popup {
+/* popup windows (module popups), gruvbox panel */
+.popup-start, .popup-center, .popup-end {
   background-color: #1d2021;
   color: #ebdbb2;
   border: 1px solid #98971a;
   border-radius: 10px;
+}
+
+/* Gtk.Scale — volume sliders etc. (both orientations via Gtk.Orientable) */
+scale {
+  min-height: 24px;
+}
+
+scale.horizontal {
+  min-width: 160px;
+}
+
+scale.vertical {
+  min-width: 24px;
+  min-height: 160px;
+}
+
+scale trough {
+  background-color: #3c3836;
+  border-radius: 4px;
+  min-height: 6px;
+  min-width: 6px;
+}
+
+scale highlight {
+  background-color: #98971a;
+  border-radius: 4px;
+}
+
+scale slider {
+  background-color: #ebdbb2;
+  border-radius: 50%;
+  min-width: 14px;
+  min-height: 14px;
+  margin-top: -4px;
+  margin-bottom: -4px;
 }
