@@ -1,6 +1,7 @@
 {
   "anchor_to_edges": true,
   "icon_theme": "oomox-gruvbox-dark",
+  "popup_gap": 12,
   "start": [
     { "type": "workspaces" },
     {

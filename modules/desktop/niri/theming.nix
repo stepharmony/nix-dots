@@ -17,6 +17,14 @@
       bibata-cursors
     ];
 
+    # The compositor cursor comes from XCURSOR_THEME (xcursor lib) — the Niri
+    # session has no KDE to set it, so pin it here. Reaches niri.service and
+    # everything it spawns via environment.d.
+    environment.sessionVariables = {
+      XCURSOR_THEME = "Bibata-Modern-Amber";
+      XCURSOR_SIZE = "24";
+    };
+
     programs.dconf.enable = true;
     programs.dconf.profiles.user.databases = [
       {

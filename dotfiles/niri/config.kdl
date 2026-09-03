@@ -12,7 +12,7 @@ spawn-at-startup "ironbar" "-c" "/home/rykard/my-nixos-config/dotfiles/niri/iron
 spawn-at-startup "swaync" "-c" "/home/rykard/my-nixos-config/dotfiles/niri/swaync/config.json" "-s" "/home/rykard/my-nixos-config/dotfiles/niri/swaync/style.css"
 spawn-at-startup "swayidle" "-w" "-C" "/home/rykard/my-nixos-config/dotfiles/niri/swayidle/config"
 spawn-at-startup "polkit-agent"
-spawn-at-startup "sh" "-c" "swww-daemon & sleep 0.5; swww img /home/rykard/my-nixos-config/dotfiles/niri/wallpaper.png"
+spawn-at-startup "wallpaper"
 
 // Input: flat mouse accel (1:1 pointer, G502 X), keyboard repeat,
 // Right Alt as the Compose key (Niri session only — Plasma has its own).
@@ -128,6 +128,9 @@ binds {
     // Lock / exit session
     Mod+L { spawn "swaylock" "-C" "/home/rykard/my-nixos-config/dotfiles/niri/swaylock.conf"; } // phys W
     Mod+Shift+P { power-off-monitors; }
+
+    // Wallpaper picker (fires from phys Q — Shift avoids accidental launch)
+    Mod+Shift+W { spawn "wallpaper-picker"; }
 
     // Clipboard history picker
     Mod+Ctrl+C {
