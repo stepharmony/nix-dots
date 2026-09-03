@@ -8,55 +8,14 @@
       url = "github:nix-community/disko";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # dendritic skeleton: flake-parts + auto-imported module tree (modules/flake).
+    # When the NixOS modules graduate to flake.modules.nixos aspects, the tree
+    # grows to cover all of ./modules.
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    import-tree.url = "github:vic/import-tree";
   };
 
   outputs =
-    {
-      self,
-      nixpkgs,
-      chaotic,
-      disko,
-      ...
-    }:
-    let
-      mkHost =
-        {
-          host,
-          username,
-          extraModules ? [ ],
-        }:
-        nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit username; };
-          modules = [
-            disko.nixosModules.default
-            ./hosts/${host}/configuration.nix
-          ]
-          ++ extraModules;
-        };
-    in
-    {
-      nixosConfigurations.manus = mkHost {
-        host = "manus";
-        username = "rykard";
-        extraModules = [ chaotic.nixosModules.default ];
-      };
-
-      nixosConfigurations.spectre = mkHost {
-        host = "spectre";
-        username = "rykard";
-      };
-
-      # plain nixfmt over every .nix file in the repo — the treewide
-      # nixfmt-tree wrapper wandered far outside the repo, so wrap manually
-      formatter.x86_64-linux =
-        let
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        in
-        pkgs.writeShellScriptBin "formatter" ''
-          exec ${pkgs.nixfmt}/bin/nixfmt $(
-            git ls-files '*.nix' 2>/dev/null ||
-              find . -name '*.nix' -not -path './.git/*'
-          )
-        '';
-    };
+    inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules/flake);
 }

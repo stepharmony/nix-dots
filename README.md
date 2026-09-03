@@ -12,12 +12,16 @@ Both disks are `/dev/nvme0n1` (confirmed).
 ## Repository layout
 
 ```
-flake.nix                  # inputs (nixpkgs, chaotic, disko) + mkHost helper
+flake.nix                  # inputs (nixpkgs, chaotic, disko, flake-parts, import-tree)
+                           # → mkFlake over import-tree ./modules/flake
 TIPS.md                    # tips & tricks (store forensics, overlays workflow, maintenance)
 hosts/
   manus/                   # desktop: configuration.nix, hardware-configuration.nix
   spectre/                 # laptop: same pair
 modules/
+  flake/                   # dendritic skeleton: flake-parts modules (auto-imported)
+    nixos-configurations.nix # mkHost + both hosts (manus gets chaotic)
+    formatter.nix            # nix fmt wrapper
   core.nix                 # shared base: imports all modules (features off by default),
                            # bootloader, zswap, chrony, nh, locales, fstrim, user apps
   disko-btrfs.nix          # shared disko layout (ESP + btrfs subvolumes), hostDisk option
@@ -30,8 +34,8 @@ modules/
                            # re-enable by importing ./desktop/qtile.nix in a host config
 overlays/                  # packages pinned ahead of nixpkgs (protonplus); wired via core.nix
 pkgs/                      # custom package expressions used by overlays (see TIPS.md)
-dotfiles/                  # xremap Graphite layout (user service via core.nix),
-                           # keyd conf (dormant reference), kanata keymap (dormant)
+dotfiles/                  # xremap system service + bridge config (see dotfiles/xremap),
+                           # niri starter config, keyd conf (dormant), kanata keymap (dormant)
 ```
 
 Disk layout (both hosts): GPT on `/dev/nvme0n1` — 1G ESP at `/boot`, then btrfs with subvolumes
