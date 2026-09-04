@@ -1,0 +1,10 @@
+# matugen — Material You palette from the current wallpaper.
+# Runs via the wallpaper/wallpaper-picker scripts (session/_utils.nix):
+#   matugen image <wallpaper> --mode dark
+# Output feeds the island's Theme.qml (live recolor via FileView watch).
+[config]
+reload_apps = false
+
+[templates.island]
+input_path = "~/.config/matugen/templates/island-colors.json"
+output_path = "~/.local/state/island/colors.json"

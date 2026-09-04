@@ -35,6 +35,29 @@
           "sunsetr/sunsetr.toml".source = ../dotfiles/niri/sunsetr/sunsetr.toml;
           # Hyprland session (Lua config — hyprlang is deprecated since 0.55)
           "hypr/hyprland.lua".source = ../dotfiles/hyprland/hyprland.lua;
+
+          # The custom quickshell island — spawned as `qs -c island` by both
+          # session configs. Palette comes from matugen (below); gruvbox
+          # fallbacks are baked into Theme.qml.
+          "quickshell/island/shell.qml".source = ../dotfiles/quickshell/island/shell.qml;
+          "quickshell/island/qmldir".source = ../dotfiles/quickshell/island/qmldir;
+          "quickshell/island/Theme.qml".source = ../dotfiles/quickshell/island/Theme.qml;
+          "quickshell/island/Env.qml".source = ../dotfiles/quickshell/island/Env.qml;
+          "quickshell/island/Wm.qml".source = ../dotfiles/quickshell/island/Wm.qml;
+          "quickshell/island/Notifs.qml".source = ../dotfiles/quickshell/island/Notifs.qml;
+          "quickshell/island/Bar.qml".source = ../dotfiles/quickshell/island/Bar.qml;
+          "quickshell/island/WorkspacesRow.qml".source = ../dotfiles/quickshell/island/WorkspacesRow.qml;
+          "quickshell/island/MediaPill.qml".source = ../dotfiles/quickshell/island/MediaPill.qml;
+          "quickshell/island/PillButton.qml".source = ../dotfiles/quickshell/island/PillButton.qml;
+          "quickshell/island/SlidersPill.qml".source = ../dotfiles/quickshell/island/SlidersPill.qml;
+          "quickshell/island/TrayRow.qml".source = ../dotfiles/quickshell/island/TrayRow.qml;
+          "quickshell/island/PowerRow.qml".source = ../dotfiles/quickshell/island/PowerRow.qml;
+          "quickshell/island/NotifCenter.qml".source = ../dotfiles/quickshell/island/NotifCenter.qml;
+          "quickshell/island/Toasts.qml".source = ../dotfiles/quickshell/island/Toasts.qml;
+
+          # matugen: wallpaper -> Material You palette -> island colors
+          "matugen/config.toml".source = ../dotfiles/matugen/config.toml;
+          "matugen/templates/island-colors.json".source = ../dotfiles/matugen/templates/island-colors.json;
         };
       };
     };

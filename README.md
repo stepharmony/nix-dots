@@ -52,7 +52,10 @@ pkgs/                      # custom package expressions used by overlays (see TI
 dotfiles/                  # sources deployed into $HOME by hjem: niri config.kdl +
                            # full rice (ironbar, rofi, swaync, swayidle/swaylock,
                            # sunsetr — each lands in its default ~/.config location),
-                           # hyprland/hyprland.lua (Lua config, scrolling layout);
+                           # hyprland/hyprland.lua (Lua config, scrolling layout),
+                           # quickshell/island (custom gruvbox dynamic island —
+                           # spawned as `qs -c island`, Mod+N = notification center),
+                           # matugen (wallpaper -> Material You palette -> island);
                            # xremap system service config (deployed to /etc by xremap.nix)
 ```
 

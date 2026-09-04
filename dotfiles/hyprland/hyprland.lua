@@ -55,8 +55,10 @@ hl.window_rule({
 
 -- Start the session stack — the same daemons as the Niri session, all
 -- reading their default $XDG_CONFIG_HOME locations (deployed by hjem).
+-- The island (quickshell bar + notification daemon) runs alongside ironbar
+-- and swaync until validated.
 hl.on("hyprland.start", function()
-  hl.exec_cmd("ironbar & swaync & swayidle -w & polkit-agent & wallpaper & sunsetr")
+  hl.exec_cmd("ironbar & swaync & swayidle -w & polkit-agent & wallpaper & sunsetr & qs -c island")
 end)
 
 -- Terminal + launcher (Space is layout-stable)
@@ -152,6 +154,9 @@ hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("wallpaper-picker"))
 
 -- Clipboard history picker
 hl.bind(mainMod .. " + CTRL + C", hl.dsp.exec_cmd("cliphist list | rofi -dmenu | cliphist decode | wl-copy"))
+
+-- Island notification center (phys B)
+hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("qs -c island ipc call island toggleNotifCenter"))
 
 -- Hardware keys — layout-independent
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"))

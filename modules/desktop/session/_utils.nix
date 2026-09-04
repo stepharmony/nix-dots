@@ -4,13 +4,24 @@
 { pkgs, ... }:
 
 let
+  # Matugen step shared by both wallpaper entry points: re-derives the island
+  # palette from the new wallpaper (gruvbox fallback until first run).
+  # Failures must never block wallpaper application.
+  matugenHook = ''
+    retheme() {
+      matugen image "$1" --mode dark >/dev/null 2>&1 || true
+    }
+  '';
+
   # Race-free wallpaper application: starts the awww daemon (unless one is
   # already running) and waits for its socket (no magic sleeps), then applies
   # the default wallpaper (baked-in store path of the repo file).
   wallpaper = pkgs.writeShellScriptBin "wallpaper" ''
+    ${matugenHook}
     pgrep -x awww-daemon >/dev/null 2>&1 || awww-daemon &
     until awww query >/dev/null 2>&1; do sleep 0.25; done
     awww img ${../../../dotfiles/niri/wallpaper.png}
+    retheme ${../../../dotfiles/niri/wallpaper.png}
   '';
 
   # Hibernate, guarded: manus has no hibernation support (no resumeDevice),
@@ -28,6 +39,7 @@ let
   # rofi renders via the XDG thumbnailer installed below (cached in
   # ~/.cache/thumbnails, shared with Dolphin).
   wallpaperPicker = pkgs.writeShellScriptBin "wallpaper-picker" ''
+    ${matugenHook}
     picked=$(
       find "$HOME/Pictures/Wallpapers" -type f \
         \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.webp' \) |
@@ -36,7 +48,7 @@ let
         -p "Wallpaper" |
       sed 's/\x0icon.*$//' # rofi strips dmenu metadata; strip defensively
     )
-    [ -n "$picked" ] && awww img "$picked"
+    [ -n "$picked" ] && awww img "$picked" && retheme "$picked"
   '';
 
   # Session exit for the shared power menu: niri and Hyprland quit
