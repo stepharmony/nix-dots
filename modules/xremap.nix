@@ -9,7 +9,8 @@
 #     binary variant must match the running DE — picked at start.
 #
 # Replaces the old user-service setup; TTYs and the SDDM greeter stay QWERTY.
-# Config: dotfiles/xremap/graphite.yml; keyd conf kept as reference.
+# Config: dotfiles/xremap/graphite.yml (the old keyd/kanata experiments live
+# in git history).
 {
   username,
   config,

@@ -31,16 +31,14 @@ modules/
   hardware/intel.nix       # laptop iGPU (features.hardware.intel.enable)
   desktop/                 # plasma (default session) + niri/ (both hosts, opt-in
                            # via features.desktop.niri: session, bar, launcher,
-                           # notifications, idle/lock, gruvbox theming); wayland;
-                           # qtile/xorg dormant — re-enable by importing
-                           # ./desktop/qtile.nix in a host config
+                           # notifications, idle/lock, gruvbox theming); wayland
+  hardware/                # nvidia (desktop GPU), intel (laptop iGPU)
 overlays/                  # packages pinned ahead of nixpkgs (protonplus); wired via core.nix
 pkgs/                      # custom package expressions used by overlays (see TIPS.md)
 dotfiles/                  # niri: config.kdl + full rice (ironbar, rofi, swaync,
                            # swayidle/swaylock, wallpaper — all spawned with repo
                            # paths from config.kdl); xremap system service config
-                           # (see dotfiles/xremap); keyd conf (dormant),
-                           # kanata keymap (dormant)
+                           # (see dotfiles/xremap)
 ```
 
 Disk layout (both hosts): GPT on `/dev/nvme0n1` — 1G ESP at `/boot`, then btrfs with subvolumes
@@ -197,7 +195,6 @@ reboot
 
 - NVIDIA driver (open kernel module, latest) should be loaded: `lsmod | grep nvidia`
 - Plasma (Wayland) session is available from SDDM
-  (Qtile/X11 is dormant: re-enable by importing `../../modules/desktop/qtile.nix` in the host config)
 
 **spectre (laptop) only:**
 
