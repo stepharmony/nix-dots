@@ -1,6 +1,6 @@
-# Niri/Wayland session only — screen lock, idle management, polkit agent.
-# swayidle is spawned with a repo config file (-C) from config.kdl; swaylock
-# reads its gruvbox conf via -C on the lock bind.
+# Wayland session stack (Niri + Hyprland) — screen lock, idle management,
+# polkit agent. swayidle reads the default ~/.config/swayidle/config
+# (deployed by hjem); swaylock likewise via the lock binds.
 { pkgs, ... }:
 
 {

@@ -1,8 +1,0 @@
-# Niri/Wayland session only — rofi launcher (Wayland-native since 2.0).
-# Config lives in dotfiles/niri/rofi/config.rasi, passed via -config on the
-# bind in config.kdl.
-{ pkgs, ... }:
-
-{
-  environment.systemPackages = [ pkgs.rofi ];
-}

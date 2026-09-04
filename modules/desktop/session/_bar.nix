@@ -1,6 +1,6 @@
-# Niri/Wayland session only — ironbar status bar.
-# Config and CSS live in dotfiles/niri/ironbar/, spawned by config.kdl with
-# explicit repo paths (-c/-t), so nothing is deployed into $HOME.
+# Wayland session stack (Niri + Hyprland) — ironbar status bar.
+# Config and CSS are deployed by hjem to the default ~/.config/ironbar/
+# location, so config.kdl / hyprland.lua spawn it with no arguments.
 { pkgs, ... }:
 
 {

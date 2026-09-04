@@ -17,6 +17,7 @@
         flake.modules.nixos.disk
         flake.modules.nixos.pipewire
         flake.modules.nixos.desktop
+        flake.modules.nixos.session
         flake.modules.nixos.niri
         flake.modules.nixos.xremap
         flake.modules.nixos.intel

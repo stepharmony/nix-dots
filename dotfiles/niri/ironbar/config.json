@@ -19,7 +19,7 @@
             { "type": "button", "label": "Hibernate", "on_click": "!hibernate" },
             { "type": "button", "label": "Shutdown", "on_click": "!systemctl poweroff" },
             { "type": "button", "label": "Restart", "on_click": "!systemctl reboot" },
-            { "type": "button", "label": "Log out", "on_click": "!niri msg action quit" }
+            { "type": "button", "label": "Log out", "on_click": "!wm-exit" }
           ]
         }
       ]
