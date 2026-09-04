@@ -146,7 +146,7 @@ let
     cp -r "$APP_DIR"/libexec/resources/VampTransforms "$TMPDIR"
     chmod -R u+w "$TMPDIR/VampTransforms"
 
-    bwrap \
+    "$BWRAP" \
       --bind / / \
       --bind "$TMPDIR"/VampTransforms "$APP_DIR"/libexec/resources/VampTransforms \
       --dev-bind /dev /dev \
