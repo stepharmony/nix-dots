@@ -73,6 +73,26 @@
         "url": "https://flakehub.com/f/DeterminateSystems/flake-schemas/%3D0.5.0.tar.gz"
       }
     },
+    "hjem": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787500880,
+        "narHash": "sha256-UrAlku7KST0DT+j1bdVGYI8tCz23PWL88uGMer3IZ2U=",
+        "owner": "feel-co",
+        "repo": "hjem",
+        "rev": "d248f0e4f7abd6e1f0eb9ace778dd7928481943e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "feel-co",
+        "repo": "hjem",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -161,6 +181,7 @@
         "chaotic": "chaotic",
         "disko": "disko",
         "flake-parts": "flake-parts",
+        "hjem": "hjem",
         "import-tree": "import-tree",
         "nixpkgs": "nixpkgs_2"
       }

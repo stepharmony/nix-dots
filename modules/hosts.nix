@@ -18,6 +18,7 @@ let
       };
       modules = [
         inputs.disko.nixosModules.default
+        inputs.hjem.nixosModules.default
         (../. + "/hosts/${host}/hardware-configuration.nix")
       ]
       ++ modules;
