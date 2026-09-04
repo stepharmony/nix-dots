@@ -6,14 +6,15 @@
 // letters. Each bind comments its QWERTY physical key. Identity keys in
 // Graphite (c, v, g, /) are used for the most muscle-memory-critical binds.
 
-// Start the session stack. Every daemon reads its config straight from the
-// repo — the only Niri-related file in $HOME is this config itself.
-spawn-at-startup "ironbar" "-c" "/home/rykard/my-nixos-config/dotfiles/niri/ironbar/config.json" "-t" "/home/rykard/my-nixos-config/dotfiles/niri/ironbar/style.css"
-spawn-at-startup "swaync" "-c" "/home/rykard/my-nixos-config/dotfiles/niri/swaync/config.json" "-s" "/home/rykard/my-nixos-config/dotfiles/niri/swaync/style.css"
-spawn-at-startup "swayidle" "-w" "-C" "/home/rykard/my-nixos-config/dotfiles/niri/swayidle/config"
+// Start the session stack. Every daemon reads its config from its default
+// $XDG_CONFIG_HOME location (deployed there by hjem from dotfiles/niri/) —
+// no explicit config paths needed here.
+spawn-at-startup "ironbar"
+spawn-at-startup "swaync"
+spawn-at-startup "swayidle" "-w"
 spawn-at-startup "polkit-agent"
 spawn-at-startup "wallpaper"
-spawn-at-startup "sunsetr" "--config" "/home/rykard/my-nixos-config/dotfiles/niri/sunsetr"
+spawn-at-startup "sunsetr"
 
 // Input: flat mouse accel (1:1 pointer, G502 X), keyboard repeat,
 // Right Alt as the Compose key (Niri session only — Plasma has its own).
@@ -60,7 +61,7 @@ window-rule {
 binds {
     // Terminal + launcher (Space is layout-stable)
     Mod+Return { spawn "konsole"; }
-    Mod+Space { spawn "rofi" "-show" "drun" "-config" "/home/rykard/my-nixos-config/dotfiles/niri/rofi/config.rasi"; }
+    Mod+Space { spawn "rofi" "-show" "drun"; }
 
     // Close / floating / quit — Graphite identity keys
     Mod+C { close-window; } // phys C
@@ -131,7 +132,7 @@ binds {
     Mod+S { spawn "sh" "-c" "grim -g \"$(slurp)\" - | wl-copy"; } // phys F
 
     // Lock / exit session
-    Mod+L { spawn "swaylock" "-C" "/home/rykard/my-nixos-config/dotfiles/niri/swaylock.conf"; } // phys W
+    Mod+L { spawn "swaylock"; } // phys W
     Mod+Shift+P { power-off-monitors; }
 
     // Wallpaper picker (fires from phys Q — Shift avoids accidental launch)
@@ -139,7 +140,7 @@ binds {
 
     // Clipboard history picker
     Mod+Ctrl+C {
-        spawn "sh" "-c" "cliphist list | rofi -dmenu -config /home/rykard/my-nixos-config/dotfiles/niri/rofi/config.rasi | cliphist decode | wl-copy";
+        spawn "sh" "-c" "cliphist list | rofi -dmenu | cliphist decode | wl-copy";
     }
 
     // Hardware keys — layout-independent

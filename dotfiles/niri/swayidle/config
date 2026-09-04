@@ -1,5 +1,6 @@
 // Niri session idle management. Conservative v1: lock only — no monitor
 // power-off until the power-on action is verified on this setup.
-// Times in seconds.
-timeout 600 'swaylock -C /home/rykard/my-nixos-config/dotfiles/niri/swaylock.conf'
-before-sleep 'swaylock -C /home/rykard/my-nixos-config/dotfiles/niri/swaylock.conf'
+// Times in seconds. swaylock reads its default config
+// (~/.config/swaylock/config, deployed by hjem).
+timeout 600 'swaylock'
+before-sleep 'swaylock'

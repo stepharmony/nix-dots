@@ -4,12 +4,13 @@
 { pkgs, ... }:
 
 let
-  # Race-free wallpaper application: starts the awww daemon and waits for its
-  # socket (no magic sleeps), then applies the default wallpaper.
+  # Race-free wallpaper application: starts the awww daemon (unless one is
+  # already running) and waits for its socket (no magic sleeps), then applies
+  # the default wallpaper (baked-in store path of the repo file).
   wallpaper = pkgs.writeShellScriptBin "wallpaper" ''
-    awww-daemon &
+    pgrep -x awww-daemon >/dev/null 2>&1 || awww-daemon &
     until awww query >/dev/null 2>&1; do sleep 0.25; done
-    awww img /home/rykard/my-nixos-config/dotfiles/niri/wallpaper.png
+    awww img ${../../../dotfiles/niri/wallpaper.png}
   '';
 
   # Hibernate, guarded: manus has no hibernation support (no resumeDevice),
@@ -32,7 +33,6 @@ let
         \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.webp' \) |
       while read -r f; do printf '%s\0icon\x1fthumbnail://%s\n' "$f" "$f"; done |
       rofi -dmenu -show-icons \
-        -config /home/rykard/my-nixos-config/dotfiles/niri/rofi/config.rasi \
         -p "Wallpaper" |
       sed 's/\x0icon.*$//' # rofi strips dmenu metadata; strip defensively
     )
