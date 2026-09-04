@@ -1,23 +1,19 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+# Gaming tools (both hosts).
+{ flake, ... }:
 
 {
-  options.features.gaming.enable = lib.mkEnableOption "gaming tools";
+  flake.modules.nixos.gaming =
+    { pkgs, ... }:
+    {
+      programs.steam.enable = true;
 
-  config = lib.mkIf config.features.gaming.enable {
-    programs.steam.enable = true;
-
-    environment.systemPackages = with pkgs; [
-      prismlauncher
-      protonplus
-      faugus-launcher
-      gpu-screen-recorder
-      gpu-screen-recorder-ui
-      gpu-screen-recorder-notification
-    ];
-  };
+      environment.systemPackages = with pkgs; [
+        prismlauncher
+        protonplus
+        faugus-launcher
+        gpu-screen-recorder
+        gpu-screen-recorder-ui
+        gpu-screen-recorder-notification
+      ];
+    };
 }

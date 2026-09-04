@@ -1,12 +1,7 @@
 # Niri/Wayland session only — session utility binaries used by binds in
 # config.kdl: screenshots, media/brightness keys, clipboard management,
 # wallpaper application and picker.
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
 let
   # Race-free wallpaper application: starts the awww daemon and waits for its
@@ -54,20 +49,18 @@ let
   '';
 in
 {
-  config = lib.mkIf config.features.desktop.niri.enable {
-    environment.systemPackages = with pkgs; [
-      grim
-      slurp
-      playerctl
-      brightnessctl
-      cliphist
-      wl-clipboard
-      awww
-      gdk-pixbuf # provides gdk-pixbuf-thumbnailer on PATH
-      wallpaper
-      wallpaperPicker
-      hibernate
-      thumbnailer
-    ];
-  };
+  environment.systemPackages = with pkgs; [
+    grim
+    slurp
+    playerctl
+    brightnessctl
+    cliphist
+    wl-clipboard
+    awww
+    gdk-pixbuf # provides gdk-pixbuf-thumbnailer on PATH
+    wallpaper
+    wallpaperPicker
+    hibernate
+    thumbnailer
+  ];
 }

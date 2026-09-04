@@ -9,13 +9,14 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # dendritic skeleton: flake-parts + auto-imported module tree (modules/flake).
-    # When the NixOS modules graduate to flake.modules.nixos aspects, the tree
-    # grows to cover all of ./modules.
+    # dendritic: flake-parts + auto-imported module tree. Every file under
+    # ./modules is a flake-parts module; NixOS config lives in aspects under
+    # flake.modules.nixos.*, composed per host in modules/hosts/. Files whose
+    # path contains `/_` are plain NixOS modules excluded from the tree
+    # (used by aspects, e.g. modules/desktop/niri/_*.nix).
     flake-parts.url = "github:hercules-ci/flake-parts";
     import-tree.url = "github:vic/import-tree";
   };
 
-  outputs =
-    inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules/flake);
+  outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; } (inputs.import-tree ./modules);
 }

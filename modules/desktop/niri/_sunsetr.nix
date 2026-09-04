@@ -2,15 +2,8 @@
 # Niri gets this daemon; Plasma keeps its built-in Night Color.
 # Config lives in dotfiles/niri/sunsetr/, passed via --config on the
 # spawn-at-startup line in config.kdl.
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
 {
-  config = lib.mkIf config.features.desktop.niri.enable {
-    environment.systemPackages = [ pkgs.sunsetr ];
-  };
+  environment.systemPackages = [ pkgs.sunsetr ];
 }

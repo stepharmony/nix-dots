@@ -1,25 +1,20 @@
-# Intel iGPU module.
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+# Intel iGPU support (spectre laptop).
+{ flake, ... }:
 
 {
-  options.features.hardware.intel.enable = lib.mkEnableOption "Intel iGPU support";
+  flake.modules.nixos.intel =
+    { pkgs, ... }:
+    {
+      hardware.graphics = {
+        enable = true;
+        enable32Bit = true;
+      };
 
-  config = lib.mkIf config.features.hardware.intel.enable {
-    hardware.graphics = {
-      enable = true;
-      enable32Bit = true;
+      hardware.enableRedistributableFirmware = true;
+
+      # VA-API hardware video acceleration for Intel
+      environment.systemPackages = with pkgs; [
+        intel-media-driver
+      ];
     };
-
-    hardware.enableRedistributableFirmware = true;
-
-    # VA-API hardware video acceleration for Intel
-    environment.systemPackages = with pkgs; [
-      intel-media-driver
-    ];
-  };
 }
