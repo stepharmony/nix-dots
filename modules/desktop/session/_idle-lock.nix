@@ -1,4 +1,4 @@
-# Wayland session stack (Niri + Hyprland) — screen lock, idle management,
+# Wayland session stack (Niri) — screen lock, idle management,
 # polkit agent. swayidle reads the default ~/.config/swayidle/config
 # (deployed by hjem); swaylock likewise via the lock binds.
 { pkgs, ... }:

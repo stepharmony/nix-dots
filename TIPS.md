@@ -182,15 +182,10 @@ Two units, official multi-DE architecture:
 
 ```bash
 systemctl status xremap               # system daemon (dedicated `xremap` user)
-systemctl --user status xremap-bridge # per-session bridge (kde/niri/hyprland variant, auto-picked)
+systemctl --user status xremap-bridge # per-session bridge (kde/niri variant, auto-picked)
 journalctl -u xremap -f               # daemon log
 journalctl --user -u xremap-bridge -f # bridge log; "active window: class:" lines
 ```
-
-Under Hyprland, log in via the **Hyprland (UWSM)** SDDM entry: only UWSM
-imports the session env into the systemd user manager and starts
-`graphical-session.target`, which the bridge needs (a bare Hyprland session
-never starts the bridge — exactly the "does not work with Hyprland" failure).
 
 If either fails, keys pass through unremapped (QWERTY) — nothing breaks.
 Heads-up from the first activation: adding groups to an already-running

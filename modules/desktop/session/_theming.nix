@@ -1,4 +1,4 @@
-# Wayland session stack (Niri + Hyprland) — Gruvbox theming.
+# Wayland session stack (Niri) — Gruvbox theming.
 # GTK theme/icons via a NixOS dconf profile (NixOS-native GTK theming — no
 # home-manager involved). KDE-side theming stays in Plasma's own settings;
 # under Niri the GTK apps follow this profile. The cursor theme is left at

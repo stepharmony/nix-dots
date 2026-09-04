@@ -60,11 +60,8 @@ qs -p ~/my-nixos-config/scratch/quickshell
 
 ### Compositor adapters
 - The built-in `WindowManager` module is too young to trust across niri and
-  Hyprland — poll instead, one second is fine:
   - niri: `niri msg -j workspaces`, `niri msg -j focused-window`,
     focus via `niri msg action focus-workspace <idx>`
-  - Hyprland: `hyprctl -j workspaces`, `hyprctl -j activeworkspace`,
-    `hyprctl -j activewindow`, focus via `hyprctl dispatch workspace <id>`
   - Both behind one interface (see `Wm.qml` in the island).
 
 ### Static checking (catches most breakage before the first run)

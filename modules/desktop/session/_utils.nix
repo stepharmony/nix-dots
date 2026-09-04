@@ -1,5 +1,5 @@
-# Wayland session stack (Niri + Hyprland) — session utility binaries used by
-# binds in config.kdl / hyprland.lua: screenshots, media/brightness keys,
+# Wayland session stack (Niri) — session utility binaries used by
+# binds in config.kdl: screenshots, media/brightness keys,
 # clipboard management, wallpaper application and picker, session exit.
 { pkgs, ... }:
 
@@ -54,15 +54,6 @@ let
     [ -n "$picked" ] && awww img "$picked" && retheme "$picked"
   '';
 
-  # Session exit for the shared power menu: niri and Hyprland quit
-  # differently — pick from the session environment.
-  wmExit = pkgs.writeShellScriptBin "wm-exit" ''
-    if [ -n "$NIRI_SOCKET" ]; then
-      exec niri msg action quit
-    fi
-    exec hyprctl dispatch exit
-  '';
-
   # XDG thumbnailer so rofi can generate image previews. NixOS ships none;
   # the profile share dir is on $XDG_DATA_DIRS, which rofi scans.
   thumbnailer = pkgs.writeTextDir "share/thumbnailers/gdk-pixbuf.thumbnailer" ''
@@ -85,7 +76,6 @@ in
     wallpaper
     wallpaperPicker
     hibernate
-    wmExit
     thumbnailer
   ];
 }

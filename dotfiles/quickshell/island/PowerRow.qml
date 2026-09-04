@@ -1,5 +1,5 @@
-// Power row — reuses the session wrappers: lock (swaylock), hibernate
-// (host-aware wrapper), exit (wm-exit), reboot, poweroff.
+// Power row — reuses the session wrappers where they exist: lock (swaylock),
+// hibernate (host-aware wrapper); Niri quits directly.
 import Quickshell.Io;
 import QtQuick;
 
@@ -31,7 +31,7 @@ Row {
     PillButton {
         label: "\uf906"; // log out
 
-        onClicked: powerRow.run("wm-exit");
+        onClicked: powerRow.run("niri msg action quit");
     }
 
     PillButton {

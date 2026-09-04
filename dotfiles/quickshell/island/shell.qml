@@ -1,6 +1,6 @@
-// Island — a minimalist gruvbox dynamic island for niri and Hyprland,
-// built on quickshell's compositor-agnostic APIs only (no hyprctl/niri
-// internals except the small polling adapters in Wm.qml).
+// Island — a minimalist gruvbox dynamic island for Niri, built on
+// quickshell's compositor-agnostic APIs (the only niri-specific piece is
+// the polling adapter in Wm.qml).
 import Quickshell;
 import Quickshell.Io;
 import QtQuick;

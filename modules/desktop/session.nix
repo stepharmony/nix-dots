@@ -1,4 +1,4 @@
-# Compositor-agnostic Wayland session stack shared by Niri and Hyprland:
+# Compositor-agnostic Wayland session stack (Niri):
 # bar, launcher, notifications, idle/lock, theming, utils, blue-light filter.
 # The `_`-prefixed modules are plain NixOS modules — import-tree skips them
 # at the flake level (paths containing `/_`) and only this aspect pulls them in.

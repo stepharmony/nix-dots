@@ -1,6 +1,6 @@
-# Wayland session stack (Niri + Hyprland) — status layer. ironbar is still
+# Wayland session stack (Niri) — status layer. ironbar is still
 # present until the custom quickshell island is validated; the island is
-# spawned by config.kdl / hyprland.lua as `qs -c island` (QML deployed by
+# spawned by config.kdl as `qs -c island` (QML deployed by
 # hjem to ~/.config/quickshell/island).
 #
 # matugen derives the island's palette from the current wallpaper.

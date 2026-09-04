@@ -33,16 +33,13 @@
           # swaylock reads $XDG_CONFIG_HOME/swaylock/config by default
           "swaylock/config".source = ../dotfiles/niri/swaylock.conf;
           "sunsetr/sunsetr.toml".source = ../dotfiles/niri/sunsetr/sunsetr.toml;
-          # Hyprland session (Lua config — hyprlang is deprecated since 0.55)
-          "hypr/hyprland.lua".source = ../dotfiles/hyprland/hyprland.lua;
 
-          # The custom quickshell island — spawned as `qs -c island` by both
-          # session configs. Palette comes from matugen (below); gruvbox
+          # The custom quickshell island — spawned as `qs -c island` by the
+          # Niri session. Palette comes from matugen (below); gruvbox
           # fallbacks are baked into Theme.qml.
           "quickshell/island/shell.qml".source = ../dotfiles/quickshell/island/shell.qml;
           "quickshell/island/qmldir".source = ../dotfiles/quickshell/island/qmldir;
           "quickshell/island/Theme.qml".source = ../dotfiles/quickshell/island/Theme.qml;
-          "quickshell/island/Env.qml".source = ../dotfiles/quickshell/island/Env.qml;
           "quickshell/island/Wm.qml".source = ../dotfiles/quickshell/island/Wm.qml;
           "quickshell/island/Notifs.qml".source = ../dotfiles/quickshell/island/Notifs.qml;
           "quickshell/island/Bar.qml".source = ../dotfiles/quickshell/island/Bar.qml;

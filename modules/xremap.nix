@@ -25,17 +25,13 @@
     let
       xremapKde = pkgs.xremap.passthru.kde;
       xremapNiri = pkgs.xremap.passthru.niri;
-      xremapHyprland = pkgs.xremap.passthru.hyprland;
       xremapSocket = pkgs.xremap.passthru.socket;
 
       # The bridge variant must match the running DE; detect from the session env
-      # (Plasma, Niri and Hyprland all import it into the systemd user manager).
+      # (Plasma and Niri both import it into the systemd user manager).
       bridgeWrapper = pkgs.writeShellScriptBin "xremap-bridge" ''
         if [ "$XDG_CURRENT_DESKTOP" = "niri" ] || [ -n "$NIRI_SOCKET" ]; then
           exec ${xremapNiri}/bin/xremap --bridge
-        fi
-        if [ "$XDG_CURRENT_DESKTOP" = "Hyprland" ] || [ -n "$HYPRLAND_INSTANCE_SIGNATURE" ]; then
-          exec ${xremapHyprland}/bin/xremap --bridge
         fi
         exec ${xremapKde}/bin/xremap --bridge
       '';
