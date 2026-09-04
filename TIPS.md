@@ -182,7 +182,7 @@ Two units, official multi-DE architecture:
 
 ```bash
 systemctl status xremap               # system daemon (dedicated `xremap` user)
-systemctl --user status xremap-bridge # per-session bridge (kde/niri variant, auto-picked)
+systemctl --user status xremap-bridge # per-session bridge (kde/niri/hyprland variant, auto-picked)
 journalctl -u xremap -f               # daemon log
 journalctl --user -u xremap-bridge -f # bridge log; "active window: class:" lines
 ```

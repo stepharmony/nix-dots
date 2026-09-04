@@ -4,8 +4,8 @@ NixOS flake for two machines, both installed with [disko](https://github.com/nix
 
 | Flake ref | Machine | User | Hardware / key bits |
 |---|---|---|---|
-| `.#manus` | desktop | `rykard` | AMD + NVIDIA (open kernel module, latest driver), latest kernel, Plasma 6 (Wayland), PipeWire, chrony, 8G swapfile + zswap, **no hibernation** |
-| `.#spectre` | laptop | `rykard` | Intel CPU + iGPU, Plasma 6 (Wayland), PipeWire, chrony, 32G swapfile + zswap, **hibernation enabled**, automatic timezone (geoclue2) |
+| `.#manus` | desktop | `rykard` | AMD + NVIDIA (open kernel module, latest driver), latest kernel, Plasma 6 (Wayland) + Niri + Hyprland sessions, PipeWire, chrony, 8G swapfile + zswap, **no hibernation** |
+| `.#spectre` | laptop | `rykard` | Intel CPU + iGPU, Plasma 6 (Wayland) + Niri + Hyprland sessions, PipeWire, chrony, 32G swapfile + zswap, **hibernation enabled**, automatic timezone (geoclue2) |
 
 Both disks are `/dev/nvme0n1` (confirmed).
 
@@ -39,16 +39,20 @@ modules/
   hardware/intel.nix       # laptop iGPU aspect
   xremap.nix               # Graphite remapping (system daemon + per-session bridge)
   desktop.nix              # Plasma 6 — the default SDDM session on both hosts
-  desktop/niri/            # niri aspect: default.nix + _*.nix plain NixOS modules
-                           # (_-prefixed files are skipped by import-tree at the
-                           # flake level; only the aspect pulls them in)
+  desktop/session.nix      # compositor-agnostic Wayland stack shared by Niri and
+                           # Hyprland (bar, launcher, notifications, idle/lock,
+                           # theming, utils, sunsetr) + the wm-exit wrapper
+  desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
+  desktop/hyprland/        # hyprland aspect: default.nix + _core.nix — native
+                           # scrolling layout (in core since 0.55, no plugin)
   formatter.nix            # nix fmt wrapper (perSystem)
   systems.nix              # systems = [ x86_64-linux ]
 overlays/                  # packages pinned ahead of nixpkgs; wired via common.nix
 pkgs/                      # custom package expressions used by overlays (see TIPS.md)
 dotfiles/                  # sources deployed into $HOME by hjem: niri config.kdl +
                            # full rice (ironbar, rofi, swaync, swayidle/swaylock,
-                           # sunsetr — each lands in its default ~/.config location);
+                           # sunsetr — each lands in its default ~/.config location),
+                           # hyprland/hyprland.lua (Lua config, scrolling layout);
                            # xremap system service config (deployed to /etc by xremap.nix)
 ```
 
@@ -197,11 +201,11 @@ reboot
 - [ ] xremap active with the Graphite layout: `systemctl status xremap` (system daemon)
       and `systemctl --user status xremap-bridge` (session bridge; TTYs and SDDM stay
       QWERTY by design)
-- [ ] Both SDDM sessions present: Plasma (default) and Niri — niri config lives at
-      `~/.config/niri/config.kdl` (hjem-managed symlink into the store; source:
-      `dotfiles/niri/config.kdl`, live-reloads). The Niri session spawns its
-      bar/launcher/notifications/idle/lock stack, all reading their default
-      `~/.config` locations deployed by hjem — nothing depends on the repo path.
+- [ ] All three SDDM sessions present: Plasma (default), Niri and Hyprland —
+      niri config lives at `~/.config/niri/config.kdl`, Hyprland's at
+      `~/.config/hypr/hyprland.lua` (hjem-managed store symlinks; sources in
+      `dotfiles/`). Both tiling sessions spawn the same rice stack, all reading
+      their default `~/.config` locations — nothing depends on the repo path.
 - [ ] hjem deployed the rice: `ls -l ~/.config/niri/config.kdl ~/.config/ironbar ~/.config/rofi`
       should show store symlinks
 - [ ] `nix fmt` and `nix flake check` work from the repo
