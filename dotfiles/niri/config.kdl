@@ -7,10 +7,8 @@
 // Graphite (c, v, g, /) are used for the most muscle-memory-critical binds.
 
 // Start the session stack. Every daemon reads its config from its default
-// $XDG_CONFIG_HOME location (deployed by hjem from dotfiles/niri/) —
-// no explicit config paths needed here.
-// The island owns the top edge and the notification daemon; ironbar and
-// swaync no longer spawn (packages + deployed configs kept for rollback).
+// $XDG_CONFIG_HOME location (deployed by hjem) — no explicit config paths
+// needed here. The island owns the top edge and the notification daemon.
 spawn-at-startup "swayidle" "-w"
 spawn-at-startup "polkit-agent"
 spawn-at-startup "wallpaper"

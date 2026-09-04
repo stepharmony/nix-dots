@@ -1,8 +1,0 @@
-{
-  "notifications": {
-    "timeout": 10
-  },
-  "control-center": {
-    "width": 500
-  }
-}

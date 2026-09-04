@@ -47,7 +47,8 @@ qs -p ~/my-nixos-config/scratch/quickshell
 - Notifications: `NotificationServer` with `bodySupported` etc.; the engine
   auto-acknowledges after `expireTimeout` — snapshot in `onNotification` for
   your own toasts/history. Only one daemon can own
-  `org.freedesktop.Notifications` (kill swaync or you just get a WARN).
+  `org.freedesktop.Notifications` — a second registration attempt just
+  gets you a WARN.
 - PipeWire: `Pipewire.defaultAudioSink` returns an **unbound** node unless
   tracked: `PwObjectTracker { objects: sink ? [sink] : []; }` — without it
   every volume/mute write errors with `PwNode ... not bound`.

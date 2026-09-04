@@ -24,10 +24,6 @@
         # flags and no absolute repo paths. Sources live in dotfiles/niri/.
         xdg.config.files = {
           "niri/config.kdl".source = ../dotfiles/niri/config.kdl;
-          "ironbar/config.json".source = ../dotfiles/niri/ironbar/config.json;
-          "ironbar/style.css".source = ../dotfiles/niri/ironbar/style.css;
-          "swaync/config.json".source = ../dotfiles/niri/swaync/config.json;
-          "swaync/style.css".source = ../dotfiles/niri/swaync/style.css;
           "swayidle/config".source = ../dotfiles/niri/swayidle/config;
           "rofi/config.rasi".source = ../dotfiles/niri/rofi/config.rasi;
           # swaylock reads $XDG_CONFIG_HOME/swaylock/config by default

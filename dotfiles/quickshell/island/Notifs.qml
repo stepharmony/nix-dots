@@ -1,7 +1,6 @@
-// Notification daemon + shared notif state. The island IS the notification
-// daemon: swaync is retired once this is validated. quickshell auto-acknowledges
-// received notifications after their expire timeout — we only snapshot them for
-// the toast and the history list.
+// Notification daemon + shared notif state — the island IS the daemon.
+// quickshell auto-acknowledges received notifications after their expire
+// timeout — we only snapshot them for the toast and the history list.
 pragma Singleton
 import Quickshell;
 import Quickshell.Services.Notifications;
