@@ -19,6 +19,7 @@
         flake.modules.nixos.desktop
         flake.modules.nixos.session
         flake.modules.nixos.niri
+        flake.modules.nixos.hyprland
         flake.modules.nixos.xremap
         flake.modules.nixos.intel
         flake.modules.nixos.gaming

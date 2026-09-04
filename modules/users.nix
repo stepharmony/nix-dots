@@ -33,6 +33,8 @@
           # swaylock reads $XDG_CONFIG_HOME/swaylock/config by default
           "swaylock/config".source = ../dotfiles/niri/swaylock.conf;
           "sunsetr/sunsetr.toml".source = ../dotfiles/niri/sunsetr/sunsetr.toml;
+          # Hyprland session (Lua config — hyprlang is deprecated since 0.55)
+          "hypr/hyprland.lua".source = ../dotfiles/hyprland/hyprland.lua;
         };
       };
     };
