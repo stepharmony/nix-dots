@@ -2,7 +2,7 @@
 // via Mod+N (notification center). The window is a fixed transparent layer
 // surface centered by the compositor (top-anchored only); only the pill box
 // itself grabs input via the mask, so animated size never touches layer-shell
-// resizing.
+// resizing. pillBox is the single animation source.
 import Quickshell;
 import QtQuick;
 
@@ -19,10 +19,10 @@ PanelWindow {
         top: 6;
     }
     exclusionMode: ExclusionMode.Normal;
-    exclusiveZone: 40;
+    exclusiveZone: 44;
     color: "transparent";
-    implicitWidth: Theme.panelWidth + 40;
-    implicitHeight: 420;
+    implicitWidth: Theme.expandedWidth + 40;
+    implicitHeight: 480;
 
     mask: Region {
         item: pillBox;
@@ -33,12 +33,16 @@ PanelWindow {
     Rectangle {
         id: pillBox;
 
+        // Content-derived collapsed width — can never exceed the expanded
+        // width, so hover can't oscillate between the two states.
+        readonly property real collapsedWidth: Math.max(Theme.collapsedWidth, wsRow.width + clockText.implicitWidth + 40);
+
         anchors {
             horizontalCenter: parent.horizontalCenter;
             top: parent.top;
         }
-        width: root.expanded ? Theme.panelWidth : Theme.barWidth;
-        height: topRow.height + (root.expanded ? panelColumn.height + 12 : 0);
+        width: root.expanded ? Math.max(Theme.expandedWidth, collapsedWidth) : collapsedWidth;
+        height: root.expanded ? 8 + topRow.height + 12 + panelColumn.implicitHeight : Theme.barHeight;
         radius: Theme.pillRadius;
         color: Theme.bg;
         border {
@@ -77,11 +81,13 @@ PanelWindow {
                 top: parent.top;
                 left: parent.left;
                 right: parent.right;
-                margins: 10;
+                margins: 8;
             }
-            height: Theme.barHeight - 14;
+            height: 28;
 
             WorkspacesRow {
+                id: wsRow;
+
                 anchors {
                     left: parent.left;
                     verticalCenter: parent.verticalCenter;
@@ -95,6 +101,8 @@ PanelWindow {
             }
 
             Text {
+                id: clockText;
+
                 anchors {
                     right: parent.right;
                     verticalCenter: parent.verticalCenter;
@@ -106,7 +114,7 @@ PanelWindow {
             }
         }
 
-        // Expanded panel.
+        // Expanded panel — the pill box animates; this column snaps.
         Column {
             id: panelColumn;
 
@@ -117,15 +125,8 @@ PanelWindow {
                 margins: 12;
             }
             spacing: 12;
-            visible: height > 0;
-            height: root.expanded ? implicitHeight : 0;
-
-            Behavior on height {
-                NumberAnimation {
-                    duration: 220;
-                    easing.type: Easing.OutCubic;
-                }
-            }
+            visible: root.expanded;
+            height: implicitHeight;
 
             Text {
                 width: parent.width;
@@ -150,13 +151,6 @@ PanelWindow {
                 visible: Notifs.centerOpen;
                 height: visible ? 180 : 0;
                 clip: true;
-
-                Behavior on height {
-                    NumberAnimation {
-                        duration: 180;
-                        easing.type: Easing.OutCubic;
-                    }
-                }
             }
 
             TrayRow {

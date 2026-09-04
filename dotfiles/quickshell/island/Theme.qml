@@ -25,11 +25,12 @@ Singleton {
     readonly property string hover: pal.mHover || "#3c3836";
     readonly property string error: pal.mError || "#cc241d";
 
-    // Metrics.
-    readonly property int pillRadius: 19;
-    readonly property int barHeight: 38;
-    readonly property int barWidth: 560;
-    readonly property int panelWidth: 460;
+    // Metrics. collapsedWidth must never exceed expandedWidth — the Bar
+    // derives them so hover can't oscillate.
+    readonly property int pillRadius: 22;
+    readonly property int barHeight: 44;
+    readonly property int collapsedWidth: 340;
+    readonly property int expandedWidth: 460;
     readonly property string fontName: "JetBrainsMono Nerd Font";
 
     FileView {

@@ -17,6 +17,7 @@ Row {
             width: active ? 18 : 11;
             height: 11;
             radius: 5;
+            anchors.verticalCenter: parent.verticalCenter;
             color: active ? Theme.accent : Theme.bgAlt;
             border {
                 color: active ? Theme.accent : Theme.outline;

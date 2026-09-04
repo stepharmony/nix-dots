@@ -9,14 +9,12 @@
 // Start the session stack. Every daemon reads its config from its default
 // $XDG_CONFIG_HOME location (deployed by hjem from dotfiles/niri/) —
 // no explicit config paths needed here.
-spawn-at-startup "ironbar"
-spawn-at-startup "swaync"
+// The island owns the top edge and the notification daemon; ironbar and
+// swaync no longer spawn (packages + deployed configs kept for rollback).
 spawn-at-startup "swayidle" "-w"
 spawn-at-startup "polkit-agent"
 spawn-at-startup "wallpaper"
 spawn-at-startup "sunsetr"
-// Custom quickshell island (bar + notifications) — the notification daemon
-// inside it competes with swaync; once validated, swaync retires.
 spawn-at-startup "qs" "-c" "island"
 
 // Input: flat mouse accel (1:1 pointer, G502 X), keyboard repeat,

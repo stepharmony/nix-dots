@@ -55,10 +55,10 @@ hl.window_rule({
 
 -- Start the session stack — the same daemons as the Niri session, all
 -- reading their default $XDG_CONFIG_HOME locations (deployed by hjem).
--- The island (quickshell bar + notification daemon) runs alongside ironbar
--- and swaync until validated.
+-- The island owns the top edge and the notification daemon; ironbar and
+-- swaync no longer spawn (packages + deployed configs kept for rollback).
 hl.on("hyprland.start", function()
-  hl.exec_cmd("ironbar & swaync & swayidle -w & polkit-agent & wallpaper & sunsetr & qs -c island")
+  hl.exec_cmd("swayidle -w & polkit-agent & wallpaper & sunsetr & qs -c island")
 end)
 
 -- Terminal + launcher (Space is layout-stable)
