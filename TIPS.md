@@ -51,7 +51,7 @@ nix-store --optimise
 sudo nix run nixpkgs#compsize -- /nix
 ```
 
-Auto-GC is configured via `min-free`/`max-free` in core.nix: the daemon starts
+Auto-GC is configured via `min-free`/`max-free` in common.nix: the daemon starts
 GC when free space on `/nix` drops below 10G and deletes until it exceeds 50G —
 a safety net between scheduled `nh clean` runs. `compress-force=zstd` on the
 `@nix` subvolume was considered and skipped: the heuristic already compresses
@@ -61,7 +61,7 @@ single-digit gains.
 ## Custom packages & overlays
 
 The `overlays/` and `pkgs/` directories exist for pinning a package ahead of
-nixpkgs. `modules/core.nix` applies them to every host:
+nixpkgs. `modules/common.nix` applies them to every host:
 
 ```nix
 nixpkgs.overlays = [ (import ../overlays) ];
@@ -120,7 +120,7 @@ nix flake check             # evaluate everything, catch errors early
 ## One-off tools without polluting the config
 
 ```bash
-nix shell nixpkgs#nixfmt -c nixfmt --check hosts/manus/configuration.nix
+nix shell nixpkgs#nixfmt -c nixfmt --check modules/common.nix
 nix run nixpkgs#hello
 ```
 

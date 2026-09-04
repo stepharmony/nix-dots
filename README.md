@@ -11,35 +11,45 @@ Both disks are `/dev/nvme0n1` (confirmed).
 
 ## Repository layout
 
+Dendritic setup: [flake-parts](https://flake.parts) + [import-tree](https://github.com/vic/import-tree)
+auto-import every file under `modules/`. Each file is a flake-parts module that
+declares a NixOS **aspect** under `flake.modules.nixos.<name>`; each host
+composes its aspects in `modules/hosts/`. [hjem](https://hjem.feel-co.org/)
+manages `rykard`'s `$HOME`.
+
 ```
-flake.nix                  # inputs (nixpkgs, chaotic, disko, flake-parts, import-tree)
-                           # → mkFlake over import-tree ./modules/flake
+flake.nix                  # inputs (nixpkgs, chaotic, disko, hjem, flake-parts, import-tree)
+                           # → mkFlake over import-tree ./modules
 TIPS.md                    # tips & tricks (store forensics, overlays workflow, maintenance)
 hosts/
-  manus/                   # desktop: configuration.nix, hardware-configuration.nix
-  spectre/                 # laptop: same pair
+  manus/                   # desktop: hardware-configuration.nix (disko owns fileSystems)
+  spectre/                 # laptop: same
 modules/
-  flake/                   # dendritic skeleton: flake-parts modules (auto-imported)
-    nixos-configurations.nix # mkHost + both hosts (manus gets chaotic)
-    formatter.nix            # nix fmt wrapper
-  core.nix                 # shared base: imports all modules (features off by default),
-                           # bootloader, zswap, chrony, nh, locales, fstrim, user apps
-  disko-btrfs.nix          # shared disko layout (ESP + btrfs subvolumes), hostDisk option
+  aspects.nix              # declares the flake.modules.nixos namespace + `flake` module arg
+  hosts.nix                # flake.nixosConfigurations — mkHost + both hosts
+  hosts/manus.nix          # host aspect: composes aspects + host deltas (chaotic here)
+  hosts/spectre.nix        # host aspect: hibernation, automatic-timezoned
+  common.nix               # shared base: bootloader, zswap, Wayland env, chrony, nh,
+                           # locales, fstrim, nix settings, user apps
+  users.nix                # the rykard user + hjem $HOME management (dotfile deployment)
+  disk.nix                 # shared disko layout (ESP + btrfs subvolumes), hostDisk option
   pipewire.nix             # audio, always on
-  gaming.nix               # behind features.gaming.enable
-  music-prod.nix           # behind features.music.enable
-  hardware/nvidia.nix      # desktop GPU (features.hardware.nvidia.enable)
-  hardware/intel.nix       # laptop iGPU (features.hardware.intel.enable)
-  desktop/                 # plasma (default session) + niri/ (both hosts, opt-in
-                           # via features.desktop.niri: session, bar, launcher,
-                           # notifications, idle/lock, gruvbox theming); wayland
-  hardware/                # nvidia (desktop GPU), intel (laptop iGPU)
-overlays/                  # packages pinned ahead of nixpkgs (protonplus); wired via core.nix
+  gaming.nix  music.nix    # imported by both host aspects
+  hardware/nvidia.nix      # desktop GPU aspect
+  hardware/intel.nix       # laptop iGPU aspect
+  xremap.nix               # Graphite remapping (system daemon + per-session bridge)
+  desktop.nix              # Plasma 6 — the default SDDM session on both hosts
+  desktop/niri/            # niri aspect: default.nix + _*.nix plain NixOS modules
+                           # (_-prefixed files are skipped by import-tree at the
+                           # flake level; only the aspect pulls them in)
+  formatter.nix            # nix fmt wrapper (perSystem)
+  systems.nix              # systems = [ x86_64-linux ]
+overlays/                  # packages pinned ahead of nixpkgs; wired via common.nix
 pkgs/                      # custom package expressions used by overlays (see TIPS.md)
-dotfiles/                  # niri: config.kdl + full rice (ironbar, rofi, swaync,
-                           # swayidle/swaylock, wallpaper — all spawned with repo
-                           # paths from config.kdl); xremap system service config
-                           # (see dotfiles/xremap)
+dotfiles/                  # sources deployed into $HOME by hjem: niri config.kdl +
+                           # full rice (ironbar, rofi, swaync, swayidle/swaylock,
+                           # sunsetr — each lands in its default ~/.config location);
+                           # xremap system service config (deployed to /etc by xremap.nix)
 ```
 
 Disk layout (both hosts): GPT on `/dev/nvme0n1` — 1G ESP at `/boot`, then btrfs with subvolumes
@@ -65,7 +75,7 @@ nix flake update      # bump nixpkgs + chaotic + disko
 
 ### Pre-flight checklist
 
-- [ ] `modules/disko-btrfs.nix` points at the right disk — currently `/dev/nvme0n1` for **both** hosts (confirmed). Change it if a machine's drive differs.
+- [ ] `modules/disk.nix` points at the right disk — currently `/dev/nvme0n1` for **both** hosts (confirmed). Change it if a machine's drive differs.
 - [ ] Swap sizes: manus has 8G (fine for 16G RAM, no hibernation), spectre has 32G (required for full hibernation with 32G RAM).
 - [ ] **The repo is a git repository.** Push it to a private remote so the installer can clone it:
   ```bash
@@ -110,7 +120,7 @@ sudo nix --extra-experimental-features 'nix-command flakes' run github:nix-commu
 sudo nix --extra-experimental-features 'nix-command flakes' run github:nix-community/disko -- --mode destroy,format,mount --flake .#spectre
 ```
 
-What this does: reads the host's `disko.nix` from the flake, wipes `/dev/nvme0n1`, creates the GPT
+What this does: reads the host's disko layout from the flake, wipes `/dev/nvme0n1`, creates the GPT
 layout (ESP + btrfs subvolumes), formats it, and mounts everything under `/mnt`.
 
 Verify afterwards:
@@ -188,8 +198,12 @@ reboot
       and `systemctl --user status xremap-bridge` (session bridge; TTYs and SDDM stay
       QWERTY by design)
 - [ ] Both SDDM sessions present: Plasma (default) and Niri — niri config lives at
-      `~/.config/niri/config.kdl` (source: `dotfiles/niri/config.kdl`, live-reloads;
-      the Niri session spawns its bar/launcher/notifications straight from the repo)
+      `~/.config/niri/config.kdl` (hjem-managed symlink into the store; source:
+      `dotfiles/niri/config.kdl`, live-reloads). The Niri session spawns its
+      bar/launcher/notifications/idle/lock stack, all reading their default
+      `~/.config` locations deployed by hjem — nothing depends on the repo path.
+- [ ] hjem deployed the rice: `ls -l ~/.config/niri/config.kdl ~/.config/ironbar ~/.config/rofi`
+      should show store symlinks
 - [ ] `nix fmt` and `nix flake check` work from the repo
 
 **manus (desktop) only:**
@@ -214,7 +228,7 @@ reboot
 - **disko errors about an existing filesystem** — that is expected on a disk that has data on it;
   the `destroy,format,mount` mode is the one that wipes it. Make sure you really want that.
 - **Wrong disk name** (`nvme1n1` etc.) — check with `lsblk`, then set `hostDisk` in the host
-  configuration (default is `/dev/nvme0n1` in `modules/disko-btrfs.nix`) **before** running disko.
+  configuration (default is `/dev/nvme0n1` in `modules/disk.nix`) **before** running disko.
 - **Chaotic Nyx download issues during install** — chaotic substituters are enabled by its module
   (imported only on manus); a flaky network during `nixos-install` is the usual culprit — just rerun.
 - **`nh os switch` says the flake path is wrong** — the repo must be at `/home/rykard/my-nixos-config`.
