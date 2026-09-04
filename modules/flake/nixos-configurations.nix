@@ -24,6 +24,10 @@ in
     manus = mkHost {
       host = "manus";
       username = "rykard";
+      # Chaotic Nyx: module wires the cachyos overlay + cache. Nothing consumes
+      # it yet — it is kept for the planned endgame of switching both hosts to
+      # the cachyos kernel and manus to nvidia_cachyos (see TIPS.md "What will
+      # download vs. what will compile" for the cache-pairing gotcha).
       extraModules = [ inputs.chaotic.nixosModules.default ];
     };
 

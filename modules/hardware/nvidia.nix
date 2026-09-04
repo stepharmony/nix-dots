@@ -18,6 +18,9 @@
         open = true;
         modesetting.enable = true;
         powerManagement.enable = true;
+        # Endgame (not yet activated): pair this driver with the cachyos kernel
+        # on both hosts so everything comes from Chaotic's cache instead of
+        # compiling — see TIPS.md "What will download vs. what will compile".
         # package = pkgs.nvidia_cachyos;
         package = config.boot.kernelPackages.nvidiaPackages.latest;
       };
