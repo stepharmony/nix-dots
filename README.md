@@ -26,7 +26,8 @@ modules/
                            # bootloader, zswap, chrony, nh, locales, fstrim, user apps
   disko-btrfs.nix          # shared disko layout (ESP + btrfs subvolumes), hostDisk option
   pipewire.nix             # audio, always on
-  gaming.nix  music-prod.nix                 # behind features.{gaming,music}.enable
+  gaming.nix               # behind features.gaming.enable
+  music-prod.nix           # behind features.music.enable
   hardware/nvidia.nix      # desktop GPU (features.hardware.nvidia.enable)
   hardware/intel.nix       # laptop iGPU (features.hardware.intel.enable)
   desktop/                 # plasma (default session) + niri/ (both hosts, opt-in
@@ -64,7 +65,7 @@ nix flake update      # bump nixpkgs + chaotic + disko
 
 ### Pre-flight checklist
 
-- [ ] `hosts/<host>/disko.nix` points at the right disk — currently `/dev/nvme0n1` for **both** hosts (confirmed). Change it if a machine's drive differs.
+- [ ] `modules/disko-btrfs.nix` points at the right disk — currently `/dev/nvme0n1` for **both** hosts (confirmed). Change it if a machine's drive differs.
 - [ ] Swap sizes: manus has 8G (fine for 16G RAM, no hibernation), spectre has 32G (required for full hibernation with 32G RAM).
 - [ ] **The repo is a git repository.** Push it to a private remote so the installer can clone it:
   ```bash

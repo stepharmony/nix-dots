@@ -1,5 +1,4 @@
 {
-  config,
   username,
   pkgs,
   ...
@@ -40,6 +39,10 @@
 
   # Enable networking
   networking.networkmanager.enable = true;
+
+  # Electron/ozone apps run Wayland-native in every graphical session
+  # (Plasma and Niri alike).
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   # chrony replaces systemd-timesyncd (module forces timesyncd off itself).
   # Defaults: NixOS pool servers, makestep, RTC drift tracking, NM online/offline dispatch.
