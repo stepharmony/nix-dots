@@ -12,6 +12,12 @@ Row {
 
     readonly property var sink: Pipewire.defaultAudioSink;
 
+    // Nodes must be tracked to be bound — without this, volume/mute writes
+    // fail with "PwNode ... which is not bound".
+    PwObjectTracker {
+        objects: root.sink ? [root.sink] : [];
+    }
+
     Text {
         anchors.verticalCenter: parent.verticalCenter;
         text: "vol";

@@ -6,10 +6,13 @@
 let
   # Matugen step shared by both wallpaper entry points: re-derives the island
   # palette from the new wallpaper (gruvbox fallback until first run).
+  # --source-color-index 0 (most dominant) suppresses matugen 4.x's
+  # interactive source-color prompt, which would abort when run from a script.
   # Failures must never block wallpaper application.
   matugenHook = ''
     retheme() {
-      matugen image "$1" --mode dark >/dev/null 2>&1 || true
+      mkdir -p "$HOME/.local/state/island"
+      matugen image "$1" --mode dark --source-color-index 0 >/dev/null 2>&1 || true
     }
   '';
 
