@@ -187,6 +187,11 @@ journalctl -u xremap -f               # daemon log
 journalctl --user -u xremap-bridge -f # bridge log; "active window: class:" lines
 ```
 
+Under Hyprland, log in via the **Hyprland (UWSM)** SDDM entry: only UWSM
+imports the session env into the systemd user manager and starts
+`graphical-session.target`, which the bridge needs (a bare Hyprland session
+never starts the bridge — exactly the "does not work with Hyprland" failure).
+
 If either fails, keys pass through unremapped (QWERTY) — nothing breaks.
 Heads-up from the first activation: adding groups to an already-running
 session requires a **full reboot**, not just re-login.

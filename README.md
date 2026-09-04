@@ -201,7 +201,9 @@ reboot
 - [ ] xremap active with the Graphite layout: `systemctl status xremap` (system daemon)
       and `systemctl --user status xremap-bridge` (session bridge; TTYs and SDDM stay
       QWERTY by design)
-- [ ] All three SDDM sessions present: Plasma (default), Niri and Hyprland —
+- [ ] All three SDDM sessions present: Plasma (default), Niri and Hyprland
+      (use the **Hyprland (UWSM)** entry — the bare Hyprland one doesn't start
+      user systemd units like xremap-bridge) —
       niri config lives at `~/.config/niri/config.kdl`, Hyprland's at
       `~/.config/hypr/hyprland.lua` (hjem-managed store symlinks; sources in
       `dotfiles/`). Both tiling sessions spawn the same rice stack, all reading
