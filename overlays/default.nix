@@ -1,6 +1,7 @@
 final: prev: {
-  # No longer needed: nixos-unstable caught up to protonplus 0.6.5 (2026-09).
-  # Reference for re-enabling a pinned package — the expression lives in
-  # pkgs/dormant/protonplus/package.nix (see TIPS.md "Custom packages & overlays"):
-  # protonplus = final.callPackage ../pkgs/dormant/protonplus/package.nix { };
+  # Bitwig Studio, hard-pinned to 6.1 (nixpkgs already renames their attrs
+  # per major version — this reconstruction is immune), with a theming jar
+  # slot: drop a modified bitwig.jar at ~/.config/bitwig/bitwig.jar and the
+  # launcher bind-mounts it over the stock jar. See pkgs/bitwig/ and TIPS.md.
+  bitwig-studio = final.callPackage ../pkgs/bitwig/package.nix { };
 }
