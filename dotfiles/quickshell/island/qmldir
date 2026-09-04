@@ -2,3 +2,15 @@ singleton Theme 1.0 Theme.qml
 singleton Env 1.0 Env.qml
 singleton Wm 1.0 Wm.qml
 singleton Notifs 1.0 Notifs.qml
+
+# NOTE: with a qmldir present, the engine stops auto-registering sibling
+# .qml files as types — every type in this directory must be listed here.
+Bar 1.0 Bar.qml
+Toasts 1.0 Toasts.qml
+WorkspacesRow 1.0 WorkspacesRow.qml
+MediaPill 1.0 MediaPill.qml
+PillButton 1.0 PillButton.qml
+SlidersPill 1.0 SlidersPill.qml
+TrayRow 1.0 TrayRow.qml
+PowerRow 1.0 PowerRow.qml
+NotifCenter 1.0 NotifCenter.qml
