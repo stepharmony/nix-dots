@@ -14,10 +14,16 @@
           flake.modules.nixos.desktop
           flake.modules.nixos.niri
         ];
+
+        # nh (>=4.4) reads this marker to activate the right specialization
+        # from inside it — without it, nh os switch bounces to the base.
+        environment.etc."specialisation".text = "wayland";
       };
 
       specialisation.x11.configuration = {
         imports = [ flake.modules.nixos.x11 ];
+
+        environment.etc."specialisation".text = "x11";
 
         # Strip the Wayland side; the packages stay but no sessions or
         # services come up, and lightdm only lists X11 sessions anyway.

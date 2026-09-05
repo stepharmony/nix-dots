@@ -124,6 +124,26 @@ nix shell nixpkgs#nixfmt -c nixfmt --check modules/common.nix
 nix run nixpkgs#hello
 ```
 
+## Specialisations (Wayland / X11 boot entries)
+
+The default boot is the Wayland system; `wayland` and `x11` appear as
+systemd-boot sub-entries after a switch. Each specialization writes its name
+to `/etc/specialisation`, which **nh ≥ 4.4 reads**: from inside a
+specialization, `nh os switch` activates *that* specialization (and diffs it
+against itself) instead of bouncing you to the base system. Without the
+marker file, nh does the base — the gotcha this prevents:
+
+```bash
+# inside the x11 boot: rebuild + activate the x11 specialization in place
+nh os switch
+
+# manual equivalent (if the marker is ever missing):
+sudo /nix/var/nix/profiles/system/specialisation/x11/bin/switch-to-configuration switch
+```
+
+To make x11 the *persistent* default instead of a boot entry, flip the host
+aspect (import `x11` instead of `desktop` + `niri` in `modules/hosts/*.nix`).
+
 ## Generations and rollback
 
 ```bash
