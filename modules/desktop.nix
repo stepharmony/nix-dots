@@ -18,6 +18,7 @@
         kdePackages.oxygen
         kdePackages.oxygen-sounds
         kdePackages.oxygen-icons
+        kdePackages.filelight
       ];
     };
 }
