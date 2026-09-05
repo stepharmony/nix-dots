@@ -22,30 +22,43 @@
       ...
     }:
 
-let
-  xremapKde = pkgs.xremap.passthru.kde;
-  xremapNiri = pkgs.xremap.passthru.niri;
-  xremapX11 = pkgs.xremap.passthru.x11;
-  xremapSocket = pkgs.xremap.passthru.socket;
+    let
+      xremapKde = pkgs.xremap.passthru.kde;
+      xremapNiri = pkgs.xremap.passthru.niri;
+      xremapX11 = pkgs.xremap.passthru.x11;
+      xremapSocket = pkgs.xremap.passthru.socket;
 
-  # The bridge variant must match the running DE; detect from the session env.
-  # niri first, KDE for Plasma, the generic X11 (wmctrl) bridge for xfce/
-  # cinnamon/anything with a display — and a graceful idle when nothing is
-  # supported, instead of crash-looping (Restart = always, no start limit).
-  bridgeWrapper = pkgs.writeShellScriptBin "xremap-bridge" ''
-    if [ "$XDG_CURRENT_DESKTOP" = "niri" ] || [ -n "$NIRI_SOCKET" ]; then
-      exec ${xremapNiri}/bin/xremap --bridge
-    fi
-    if [ "$XDG_CURRENT_DESKTOP" = "KDE" ]; then
-      exec ${xremapKde}/bin/xremap --bridge
-    fi
-    if [ -n "$DISPLAY" ]; then
-      exec ${xremapX11}/bin/xremap --bridge
-    fi
-    exec sleep infinity
-  '';
+      # The bridge variant must match the running DE; detect from the session env.
+      # niri first, KDE for Plasma, the generic X11 (wmctrl) bridge for xfce/
+      # cinnamon/anything with a display — and a graceful idle when nothing is
+      # supported, instead of crash-looping (Restart = always, no start limit).
+      bridgeWrapper = pkgs.writeShellScriptBin "xremap-bridge" ''
+        if [ "$XDG_CURRENT_DESKTOP" = "niri" ] || [ -n "$NIRI_SOCKET" ]; then
+          exec ${xremapNiri}/bin/xremap --bridge
+        fi
+        if [ "$XDG_CURRENT_DESKTOP" = "KDE" ]; then
+          exec ${xremapKde}/bin/xremap --bridge
+        fi
+        if [ -n "$DISPLAY" ]; then
+          exec ${xremapX11}/bin/xremap --bridge
+        fi
+        exec sleep infinity
+      '';
 
       configFile = builtins.readFile ../dotfiles/xremap/graphite.yml;
+
+      # Alt+Esc layout toggle: overwrites the daemon's active config (same
+      # inode — --watch=config picks it up instantly). Runs as the daemon's
+      # user, hence the seeded active.yml and absolute binary paths.
+      toggleLayout = pkgs.writeShellScriptBin "toggle-graphite" ''
+        PATH=/run/current-system/sw/bin:$PATH
+        ACTIVE=/run/xremap/active.yml
+        if cmp -s "$ACTIVE" /etc/xremap/graphite.yml || [ ! -s "$ACTIVE" ]; then
+          cat /etc/xremap/qwerty.yml > "$ACTIVE"
+        else
+          cat /etc/xremap/graphite.yml > "$ACTIVE"
+        fi
+      '';
     in
     {
       hardware.uinput.enable = true;
@@ -71,7 +84,12 @@ let
       # The desktop user only needs socket access — no device access.
       users.users.${username}.extraGroups = [ "xremap-${username}" ];
 
-      environment.etc."xremap/config.yml".source = ../dotfiles/xremap/graphite.yml;
+      environment.etc."xremap/graphite.yml".source = ../dotfiles/xremap/graphite.yml;
+      environment.etc."xremap/qwerty.yml".source = ../dotfiles/xremap/qwerty.yml;
+
+      # Alt+Esc toggles the whole machine between Graphite and QWERTY (friend
+      # mode) by rewriting the daemon's active config — see toggle-graphite.
+      environment.systemPackages = [ toggleLayout ];
 
       systemd.services.xremap = {
         description = "xremap key remapper (Graphite layout)";
@@ -86,7 +104,7 @@ let
             "uinput"
             "xremap-${username}"
           ];
-          ExecStart = "${xremapSocket}/bin/xremap --watch=device /etc/xremap/config.yml";
+          ExecStart = "${xremapSocket}/bin/xremap --watch=config,device /run/xremap/active.yml";
           # per-user socket dir, writable by the bridge (xremap-rykard group)
           RuntimeDirectory = "xremap";
           RuntimeDirectoryMode = "0755";
@@ -96,6 +114,10 @@ let
             + (pkgs.writeShellScript "xremap-socket-dir" ''
               install --directory --mode 2770 --owner xremap --group xremap-${username} \
                 "/run/xremap/$(id -u ${username})"
+              # Seed the watched active config (Graphite on every boot); owned by
+              # the daemon user so toggle-graphite can rewrite it in place.
+              install --mode 644 --owner xremap --group xremap \
+                /etc/xremap/graphite.yml /run/xremap/active.yml
             '').outPath;
           Restart = "always";
           RestartSec = 2;

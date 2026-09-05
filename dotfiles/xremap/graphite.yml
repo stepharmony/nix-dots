@@ -110,6 +110,14 @@ modmap:
 # Excluded from QWERTY apps: there the identity restore above feeds these
 # combos natural QWERTY shifted output, which the entries would clobber.
 keymap:
+  # Global layout toggle (Alt+Esc) — swaps the daemon's active config
+  # between this file and qwerty.yml. Swallowed at evdev level, so no DE
+  # window-cycle binding can collide. Kept in BOTH configs so the toggle
+  # stays reachable after switching to QWERTY.
+  - name: layout-toggle
+    remap:
+      Alt-KEY_ESC: { launch: ["/run/current-system/sw/bin/toggle-graphite"] }
+
   - name: graphite-shifted-punctuation
     exact_match: true
     application:

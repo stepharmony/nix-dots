@@ -1,0 +1,9 @@
+# QWERTY passthrough — the "friend mode". Deployed to /etc/xremap/qwerty.yml;
+# toggle-graphite swaps this in as the daemon's active config
+# (/run/xremap/active.yml, watched via --watch=config). Keeps only the layout
+# toggle bind so the switch back is always reachable. Boot always resets to
+# Graphite (ExecStartPre re-seeds the active config).
+keymap:
+  - name: layout-toggle
+    remap:
+      Alt-KEY_ESC: { launch: ["/run/current-system/sw/bin/toggle-graphite"] }
