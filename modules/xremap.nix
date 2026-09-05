@@ -22,19 +22,28 @@
       ...
     }:
 
-    let
-      xremapKde = pkgs.xremap.passthru.kde;
-      xremapNiri = pkgs.xremap.passthru.niri;
-      xremapSocket = pkgs.xremap.passthru.socket;
+let
+  xremapKde = pkgs.xremap.passthru.kde;
+  xremapNiri = pkgs.xremap.passthru.niri;
+  xremapX11 = pkgs.xremap.passthru.x11;
+  xremapSocket = pkgs.xremap.passthru.socket;
 
-      # The bridge variant must match the running DE; detect from the session env
-      # (Plasma and Niri both import it into the systemd user manager).
-      bridgeWrapper = pkgs.writeShellScriptBin "xremap-bridge" ''
-        if [ "$XDG_CURRENT_DESKTOP" = "niri" ] || [ -n "$NIRI_SOCKET" ]; then
-          exec ${xremapNiri}/bin/xremap --bridge
-        fi
-        exec ${xremapKde}/bin/xremap --bridge
-      '';
+  # The bridge variant must match the running DE; detect from the session env.
+  # niri first, KDE for Plasma, the generic X11 (wmctrl) bridge for xfce/
+  # cinnamon/anything with a display — and a graceful idle when nothing is
+  # supported, instead of crash-looping (Restart = always, no start limit).
+  bridgeWrapper = pkgs.writeShellScriptBin "xremap-bridge" ''
+    if [ "$XDG_CURRENT_DESKTOP" = "niri" ] || [ -n "$NIRI_SOCKET" ]; then
+      exec ${xremapNiri}/bin/xremap --bridge
+    fi
+    if [ "$XDG_CURRENT_DESKTOP" = "KDE" ]; then
+      exec ${xremapKde}/bin/xremap --bridge
+    fi
+    if [ -n "$DISPLAY" ]; then
+      exec ${xremapX11}/bin/xremap --bridge
+    fi
+    exec sleep infinity
+  '';
 
       configFile = builtins.readFile ../dotfiles/xremap/graphite.yml;
     in
