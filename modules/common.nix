@@ -95,6 +95,7 @@
         google-chrome
         git
         btop
+        rustdesk
       ];
 
       # Allow unfree packages
