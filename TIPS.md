@@ -211,6 +211,26 @@ If either fails, keys pass through unremapped (QWERTY) — nothing breaks.
 Heads-up from the first activation: adding groups to an already-running
 session requires a **full reboot**, not just re-login.
 
+### Graphite ⇄ QWERTY toggle (Alt+Esc)
+
+`Alt+Esc` flips the whole machine between Graphite and QWERTY via xremap's
+native `set_mode` (two mode-scoped keymap blocks in
+`dotfiles/xremap/graphite.yml`). It executes in-process — instant, no
+daemon restart — and because the daemon is system-wide it works in every
+graphical session **and on TTYs**. Games-to-QWERTY stays app-gated
+independently: in QWERTY mode everything is QWERTY anyway, and the graphite
+punctuation remaps sleep with the rest.
+
+- Reset: every boot / daemon restart re-seeds Graphite (mode state lives
+  only in the daemon) — a friend's session can't outlive a reboot.
+- Chord customization: change `Alt-KEY_ESC` in **both** `to-qwerty` and
+  `to-graphite` blocks. The chord is swallowed at evdev level, so no DE
+  window-cycle binding can collide with it.
+- Upstream quirk (why the toggle is `set_mode`, not a script): in the
+  socket-variant daemon, the `launch` action matches but the queued command
+  is never executed. Traced with `RUST_LOG=debug` (2026-09-05) — worth
+  filing against https://github.com/xremap/xremap/issues.
+
 ### Remap specific apps (games) to QWERTY
 
 Already wired in `dotfiles/xremap/graphite.yml`: a `shared: games: &games`

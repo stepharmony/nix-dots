@@ -88,3 +88,19 @@ needs a rebuild.
 ## Reference
 - Working example: `dotfiles/quickshell/island/`
 - Docs: <https://quickshell.org> (outfoxxed)
+
+## Ideas (promotion candidates)
+
+- **xremap mode pill** — an island widget showing (and optionally toggling)
+  the current Graphite/QWERTY mode. Blocked detail: xremap exposes no mode
+  state over IPC, and the daemon's `launch` action is broken in the socket
+  variant, so the keyboard chord (`set_mode`, see
+  `dotfiles/xremap/graphite.yml`) can't emit state. The **proven-working
+  programmatic path** is the file-swap + `--watch=config` reload — validated
+  end-to-end 2026-09-05 (manual script run → instant live flip). The full
+  machinery (script, qwerty.yml, watch flags, active.yml seeding) is
+  recoverable from `git show 15577c2^`; re-adding it needs one declarative
+  tweak — an ownership group so `rykard` can write the daemon's active
+  config. Keyboard chord stays the DE-agnostic primary; the pill is
+  indicator/second-button once the state story is solved.
+  See also TIPS.md "Graphite ⇄ QWERTY toggle".
