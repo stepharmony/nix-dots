@@ -230,6 +230,9 @@ punctuation remaps sleep with the rest.
   socket-variant daemon, the `launch` action matches but the queued command
   is never executed. Traced with `RUST_LOG=debug` (2026-09-05) — worth
   filing against https://github.com/xremap/xremap/issues.
+- Future layout work (adaptive swaps, SFB fixes) is sketched in
+  `dotfiles/xremap/IDEAS.md` — feasible with xremap's nested remaps whenever
+  Graphite's actual weaknesses are known.
 
 ### Remap specific apps (games) to QWERTY
 
