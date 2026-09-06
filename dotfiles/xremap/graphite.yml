@@ -61,6 +61,10 @@ modmap:
       KEY_DOT: KEY_DOT
 
   - name: graphite
+    # Mode-gated: active only in the default (Graphite) mode. Alt+Esc flips
+    # the daemon to the `qwerty` mode, where this block is skipped and keys
+    # pass through — no identity restore needed. Resets on reboot/restart.
+    mode: ["default"]
     remap:
       # Number row: - → [ , = → ]
       KEY_MINUS: KEY_LEFTBRACE
@@ -110,15 +114,24 @@ modmap:
 # Excluded from QWERTY apps: there the identity restore above feeds these
 # combos natural QWERTY shifted output, which the entries would clobber.
 keymap:
-  # Global layout toggle (Alt+Esc) — swaps the daemon's active config
-  # between this file and qwerty.yml. Swallowed at evdev level, so no DE
-  # window-cycle binding can collide. Kept in BOTH configs so the toggle
-  # stays reachable after switching to QWERTY.
-  - name: layout-toggle
+  # Global layout toggle (Alt+Esc) — xremap's native set_mode, in-process,
+  # no external commands. Two mode-scoped entries: only the one matching the
+  # current mode is active, so the chord can never get stuck. Swallowed at
+  # evdev level, so no DE window-cycle binding can collide. Works in every
+  # session and on TTYs (the daemon is system-wide).
+  - name: to-qwerty
+    mode: ["default"]
     remap:
-      Alt-KEY_ESC: { launch: ["/run/current-system/sw/bin/toggle-graphite"] }
+      Alt-KEY_ESC: { set_mode: qwerty }
+
+  - name: to-graphite
+    mode: ["qwerty"]
+    remap:
+      Alt-KEY_ESC: { set_mode: default }
 
   - name: graphite-shifted-punctuation
+    # Graphite punctuation sleeps in friend (qwerty) mode too.
+    mode: ["default"]
     exact_match: true
     application:
       not: *games
