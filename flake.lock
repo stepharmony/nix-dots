@@ -183,7 +183,28 @@
         "flake-parts": "flake-parts",
         "hjem": "hjem",
         "import-tree": "import-tree",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "winpodx": "winpodx"
+      }
+    },
+    "winpodx": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788416175,
+        "narHash": "sha256-a0PkLn/t0SX/fLpDhnBYE9X1KQDaGId/hvGZEaIflsE=",
+        "owner": "kernalix7",
+        "repo": "winpodx",
+        "rev": "3557b0fb62caabe1b818de8d388899c8bc0e0f47",
+        "type": "github"
+      },
+      "original": {
+        "owner": "kernalix7",
+        "repo": "winpodx",
+        "type": "github"
       }
     }
   },

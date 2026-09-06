@@ -12,6 +12,10 @@
       url = "github:feel-co/hjem";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    winpodx = {
+      url = "github:kernalix7/winpodx";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # dendritic: flake-parts + auto-imported module tree. Every file under
     # ./modules is a flake-parts module; NixOS config lives in aspects under
