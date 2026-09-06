@@ -24,6 +24,8 @@
         flake.modules.nixos.intel
         flake.modules.nixos.gaming
         flake.modules.nixos.music
+        flake.modules.nixos.study
+        flake.modules.nixos.dev
       ];
 
       networking.hostName = "spectre";

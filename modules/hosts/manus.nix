@@ -29,6 +29,8 @@
         flake.modules.nixos.nvidia
         flake.modules.nixos.gaming
         flake.modules.nixos.music
+        flake.modules.nixos.study
+        flake.modules.nixos.dev
       ];
 
       networking.hostName = "manus"; # Define your hostname.
