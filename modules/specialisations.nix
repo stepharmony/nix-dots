@@ -1,25 +1,14 @@
-# Boot-time Wayland/X11 split. The default boot is the unchanged Wayland
-# system (Plasma + Niri via SDDM); these specializations add explicit
-# systemd-boot entries. The X11 entry strips the Wayland stack and hands
-# the greeter seat to lightdm (the two display managers cannot share it).
+# Boot-time Wayland/X11 split. The default (base) boot IS the unchanged
+# Wayland system (Plasma + Niri via SDDM); the x11 specialisation adds a
+# separate menu entry that strips the Wayland stack and hands the greeter
+# seat to lightdm (the two display managers cannot share it). Limine groups
+# each generation + its specialisation in a boot-menu submenu.
 { flake, ... }:
 
 {
   flake.modules.nixos.specialisations =
     { flake, lib, ... }:
     {
-      # Same as the default boot, but as a self-documenting menu entry.
-      specialisation.wayland.configuration = {
-        imports = [
-          flake.modules.nixos.desktop
-          flake.modules.nixos.niri
-        ];
-
-        # nh (>=4.4) reads this marker to activate the right specialization
-        # from inside it — without it, nh os switch bounces to the base.
-        environment.etc."specialisation".text = "wayland";
-      };
-
       specialisation.x11.configuration = {
         imports = [ flake.modules.nixos.x11 ];
 

@@ -170,7 +170,9 @@ Then:
 reboot
 ```
 
-1. Remove the USB stick. Boot into NixOS (systemd-boot menu).
+1. Remove the USB stick. Boot into NixOS (Limine boot menu — first boot
+   shows the current generation; pick it and the firmware falls through to
+   the Limine entry).
 2. Log in directly as **rykard** with the password just set — no root login needed.
 3. Forgot to set it? Boot, log in as root with the step-4 password, run
    `passwd rykard` — the console TTY is plain QWERTY (xremap only remaps

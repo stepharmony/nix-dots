@@ -31,6 +31,14 @@
 
       networking.hostName = "spectre";
 
+      # Boot-menu / generation label (hostname-tagged; allowed chars
+      # are [a-zA-Z0-9:_\.-]).
+      system.nixos.label = "NixOS-spectre";
+
+      # HiDPI: 3K panel — scale the Limine boot-menu font so it is readable
+      # (Limine does not auto-detect DPI; ~"2x2" matches the CachyOS look).
+      boot.loader.limine.style.graphicalTerminal.font.scale = "2x2";
+
       # Match the desktop kernel.
       boot.kernelPackages = pkgs.linuxPackages_latest;
 

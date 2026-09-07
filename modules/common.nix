@@ -7,8 +7,15 @@
     { username, pkgs, ... }:
     {
       # Bootloader.
-      boot.loader.systemd-boot.enable = true;
-      boot.loader.efi.canTouchEfiVariables = true;
+      boot.loader = {
+        efi.canTouchEfiVariables = true;
+        limine = {
+          enable = true;
+          # Keep the boot menu tidy: cap listed generations (limine submenus
+          # group each generation + its specialisations).
+          maxGenerations = 20;
+        };
+      };
 
       # systemd initrd (lets the laptop auto-detect the hibernation swapfile offset)
       boot.initrd.systemd.enable = true;

@@ -13,15 +13,15 @@
   ];
 
   programs.dconf.enable = true;
-  programs.dconf.profiles.user.databases = [
-    {
-      settings = {
-        "org/gnome/desktop/interface" = {
-          gtk-theme = "Gruvbox-Dark";
-          icon-theme = "oomox-gruvbox-dark";
-          color-scheme = "prefer-dark";
-        };
-      };
-    }
-  ];
+  #programs.dconf.profiles.user.databases = [
+  #  {
+  #    settings = {
+  #      "org/gnome/desktop/interface" = {
+  #        gtk-theme = "Gruvbox-Dark";
+  #        icon-theme = "oomox-gruvbox-dark";
+  #        color-scheme = "prefer-dark";
+  #      };
+  #    };
+  #  }
+  #];
 }

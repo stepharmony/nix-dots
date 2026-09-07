@@ -36,6 +36,10 @@
 
       networking.hostName = "manus"; # Define your hostname.
 
+      # Boot-menu / generation label (hostname-tagged; allowed chars
+      # are [a-zA-Z0-9:_\.-]).
+      system.nixos.label = "NixOS-manus";
+
       # Set your time zone.
       time.timeZone = "Europe/Bucharest";
 

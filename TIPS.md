@@ -126,8 +126,9 @@ nix run nixpkgs#hello
 
 ## Specialisations (Wayland / X11 boot entries)
 
-The default boot is the Wayland system; `wayland` and `x11` appear as
-systemd-boot sub-entries after a switch. Each specialization writes its name
+The default (base) boot *is* the Wayland system; the `x11` specialization
+appears as a Limine sub-\[entry] — a `Generation N` submenu holds the
+`Default` (Wayland) + `X11` entries. Each specialization writes its name
 to `/etc/specialisation`, which **nh ≥ 4.4 reads**: from inside a
 specialization, `nh os switch` activates *that* specialization (and diffs it
 against itself) instead of bouncing you to the base system. Without the
@@ -150,7 +151,7 @@ aspect (import `x11` instead of `desktop` + `niri` in `modules/hosts/*.nix`).
 # list system generations
 nix-env --list-generations --profile /nix/var/nix/profiles/system
 
-# roll back (old generations are also selectable from the systemd-boot menu)
+# roll back (old generations are also selectable from the Limine menu)
 sudo nixos-rebuild test --rollback    # switch back now, new gen stays default
 sudo nixos-rebuild switch --rollback  # switch back AND make it the default
 
