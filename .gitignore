@@ -1,2 +1,5 @@
 # nix build outputs
 result*
+
+# dev scratch — untracked, files stay on disk
+scratch/
