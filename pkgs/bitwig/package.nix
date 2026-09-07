@@ -107,7 +107,6 @@ let
       autoPatchelfHook
       wrapGAppsHook3
       makeWrapper
-      patchelf
     ];
     # we only want $gappsWrapperArgs here
     dontWrapGApps = true;
