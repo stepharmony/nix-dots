@@ -14,15 +14,40 @@
         cabextract
       ];
 
-      # commented till i figure out wtf to do with this
-      # in the meantime:
-      # nix-shell -p steam-run --run "steam-run sh ableton-wine-setup-2026.07.29.1.run"
-      #   programs.nix-ld.enable = true;
-      #
-      #   programs.nix-ld.libraries = with pkgs; [
-      #     pipewire
-      #     libjack2
-      #     alsa-lib
-      #   ];
+      # nix-ld lets prebuilt dynamically-linked binaries run directly: the
+      # u-he install.sh license dialogs are plain gtk3/glib ELFs (the VST
+      # .so payloads themselves need nothing here — they load inside
+      # Bitwig's FHS env at runtime). If a dialog still complains, its
+      # printed `ldd` output names the missing package — add it below.
+      # Fallback for anything nix-ld chokes on:
+      #   nix-shell -p steam-run --run "steam-run sh <installer>"
+      #   e.g. the parked ableton-wine-setup idea
+      programs.nix-ld.enable = true;
+      programs.nix-ld.libraries = with pkgs; [
+        stdenv.cc.cc
+        gtk3
+        glib
+        pango
+        cairo
+        gdk-pixbuf
+        atk
+        harfbuzz
+        fribidi
+        libepoxy
+        libxkbcommon
+        wayland
+        xorg.libX11
+        xorg.libXext
+        xorg.libXrandr
+        xorg.libXi
+        xorg.libXcursor
+        xorg.libXcomposite
+        xorg.libXdamage
+        xorg.libXfixes
+        xorg.libXinerama
+        dbus
+        fontconfig
+        freetype
+      ];
     };
 }
