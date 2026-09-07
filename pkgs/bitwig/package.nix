@@ -138,7 +138,10 @@ let
       # inheritance — VST2/VST3 scans DO inherit it), so dlopened plugins must
       # resolve via RUNPATH. Bake the full plugin lib path into every binary
       # that can trigger a scan (--add-rpath appends, existing paths survive).
-      for b in "$out"/libexec/bitwig-studio "$out"/libexec/bin/BitwigPluginHost-*; do
+      # The JVM path matters most: System.load dlopens from libjvm.so, whose
+      # own RUNPATH is consulted before anything the launcher passes on.
+      for b in "$out"/libexec/bitwig-studio "$out"/libexec/bin/BitwigPluginHost-* \
+               "$out"/libexec/lib/jre/lib/server/libjvm.so; do
         patchelf --add-rpath "${pluginLibPath}" "$b"
       done
     '';
