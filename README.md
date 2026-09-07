@@ -134,6 +134,24 @@ findmnt -t btrfs   # should show @root on /mnt plus @home, @nix, @log, @swap
 findmnt /boot      # should show the vfat ESP
 ```
 
+**Create the swapfile now (fast path).** The first boot would otherwise run
+the swapfile-creation job inline — a one-time, *slow* affair (allocation +
+`mkswap`; on spectre's DRAM-less SK hynix it crawled at ~70MB/s, 7m46s for
+32G, and the job sits in `swap.target`, blocking the display manager).
+`fallocate` allocates real extents (no holes → `swapon`-legal) in seconds:
+
+```bash
+# manus (8G):
+sudo fallocate -l 8G /mnt/swap/swapfile
+# spectre (32G):
+sudo fallocate -l 32G /mnt/swap/swapfile
+sudo chmod 600 /mnt/swap/swapfile
+sudo mkswap /mnt/swap/swapfile
+```
+
+At boot, the `mkswap-*` unit checks the file size against `swapDevices.size`,
+sees a match, and skips — swap comes up instantly.
+
 ### 4. Install the system
 
 ```bash
@@ -143,10 +161,11 @@ sudo nixos-install --flake .#manus    # or .#spectre
 This evaluates the full configuration, downloads/builds the closure onto `/mnt`, installs the
 bootloader, and finally prompts for a **root password**.
 
-> Alternative one-liner (disko + install in one command):
-> ```bash
-> sudo nix --extra-experimental-features 'nix-command flakes' run github:nix-community/disko#disko-install -- --flake .#manus
-> ```
+> The `disko-install` one-liner (`run github:nix-community/disko#disko-install -- --flake .#<host>`)
+> combines both steps but evaluates the disk device through disko *master*, not the flake's
+> pinned input — on spectre it failed with `No device passed for disk 'main'`. If you use it
+> anyway, pass the device explicitly: `--disk main <hostDisk value>`. The two-step above is the
+> supported path.
 
 ### 5. Set the user password (before rebooting!)
 
@@ -223,7 +242,13 @@ reboot
 **spectre (laptop) only:**
 
 - Test hibernation: `systemctl hibernate` → power off → press power button → session should resume.
-  The resume offset comes from `boot.resumeDevice = "/swap/swapfile"` and systemd initrd.
+  **Do not pin `boot.resumeDevice` at the swapfile path**: `resume=/swap/swapfile` makes the initrd
+  resolve a btrfs swapfile path it cannot see yet, which stalls every boot at the display manager
+  (spectre, 2026-09-07 — three hung boots; bisected with `noresume` + `systemd.mask=` unit masks).
+  With `boot.initrd.systemd` (common.nix) the initrd **auto-detects** the hibernation image — the
+  old-config, proven-working mode. If auto-detection ever fails, the fallback is explicit physical
+  params: `btrfs inspect-internal map-swapfile -r /swap/swapfile` → `resume=<by-id-part2>
+  resume_offset=<N>` (offset shifts if the swapfile is ever recreated — re-run the command).
 - `hosts/spectre/hardware-configuration.nix` is a **generic placeholder**. If any hardware misbehaves
   (Wi-Fi, touchpad, sensors), run `sudo nixos-generate-config` on the laptop and merge the
   `boot.initrd.*` / `hardware.*` bits from the generated file into the placeholder — **do not** let it

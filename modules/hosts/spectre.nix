@@ -52,17 +52,20 @@
       services.automatic-timezoned.enable = true;
 
       # Swapfile on the @swap subvolume (nodatacow); zswap is configured in
-      # common.nix. Hibernation: boot.initrd.systemd (from common.nix) +
-      # resumeDevice let the initrd auto-detect the swapfile offset. 32G
-      # swap >= 32G RAM, so a full hibernation fits.
+      # common.nix. 32G swap >= 32G RAM, so a full hibernation fits.
+      #
+      # Hibernation: boot.initrd.systemd (from common.nix) AUTO-detects the
+      # hibernation image — the old-config, proven-working mode. Do NOT pin
+      # boot.resumeDevice at the swapfile path: `resume=/swap/swapfile` makes
+      # the initrd resolve a btrfs swapfile path it cannot see yet, which
+      # stalls every boot at the display manager (spectre, 2026-09-07 — three
+      # hung boots; bisection with noresume + unit masks proved it).
       swapDevices = [
         {
           device = "/swap/swapfile";
           size = 32 * 1024; # MiB -> 32G
         }
       ];
-
-      boot.resumeDevice = "/swap/swapfile";
 
       users.users.${username}.extraGroups = [
         "networkmanager"
