@@ -106,8 +106,9 @@
         unrar
         google-chrome
         git
+        gh
         btop
-        rustdesk
+        rustdesk-flutter
       ];
 
       # Allow unfree packages
