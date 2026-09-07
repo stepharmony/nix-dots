@@ -17,7 +17,12 @@
     }:
     {
       environment.systemPackages = [
-        inputs.winpodx.packages.${pkgs.system}.default
+        # doCheck=false: upstream's pytest suite (GUI tests, headless sandbox)
+        # takes ~1h per rev — their CI concern, not our build's.
+        inputs.winpodx.packages.${pkgs.system}.default.overrideAttrs
+        (_: {
+          doCheck = false;
+        })
       ];
 
       # Rootless Podman hosts the Windows pod (dockur backend); dns_enabled
