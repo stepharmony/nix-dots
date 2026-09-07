@@ -58,6 +58,33 @@ a safety net between scheduled `nh clean` runs. `compress-force=zstd` on the
 the compressible majority, forcing it costs CPU on every rebuild for
 single-digit gains.
 
+### GC gotchas (learned 2026-09-07)
+
+**Symlinks in `/tmp` are indirect GC roots.** Every symlink under `/tmp` that
+resolves into the store (session scratch files, eval-gate snapshots, `nh`'s
+`result` links in `/tmp/nh-os*/`) pins its target closure — `nix-collect-garbage
+-d` then frees *nothing* even with all generations deleted, and the freed bytes
+only appear once the symlinks are gone. Diagnose before blaming the GC:
+
+```bash
+# who keeps this path alive? (dangling ones are auto-cleaned on query)
+nix-store --query --roots /nix/store/<path>
+
+# all indirect roots, and what still blocks deletion
+ls /nix/var/nix/gcroots/auto/
+nix-store --gc --print-roots | grep -v profiles
+```
+
+Then delete the stale `/tmp` symlinks and re-run `nix-collect-garbage`.
+
+**GC never touches boot entries.** Old Limine entries + their kernel dirs are
+pruned by the bootloader installer, which runs on any `switch` — or without a
+rebuild via:
+
+```bash
+sudo /nix/var/nix/profiles/system/bin/switch-to-configuration boot
+```
+
 ## Custom packages & overlays
 
 The `overlays/` and `pkgs/` directories exist for pinning a package ahead of
