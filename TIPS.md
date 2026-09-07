@@ -289,6 +289,34 @@ keymap:
       F9: { action: reload }
 ```
 
+## Icon theming landmines (hicolor index / GTK settings.ini)
+
+Two user-home files silently override what NixOS/dconf sets — both caused the
+2026-09-07 "every app icon is a placeholder" incident:
+
+**`~/.local/share/icons/hicolor/index.theme`** — third-party installers
+(WinPodX did this) rewrite the user hicolor theme index. KDE resolves the
+hicolor theme from the *first* data dir providing it (XDG_DATA_HOME wins) and
+honors that index's `Directories=` list — a rewrite listing only
+`scalable/apps` makes every hicolor-served app icon a placeholder in the
+taskbar/start menu, while desktop icons (`breeze`, `Mint-*`) keep working.
+Restore the canonical index and re-login (plasmashell caches it per process):
+
+```bash
+cp "$(nix eval --raw nixpkgs#hicolor-icon-theme)/share/icons/hicolor/index.theme" \
+  ~/.local/share/icons/hicolor/index.theme
+```
+
+**`~/.config/gtk-{3.0,4.0}/settings.ini` + `~/.gtkrc-2.0`** — written by KDE
+System Settings (GNOME/GTK Appearance) and Cinnamon's theme tool; these
+*outrank dconf* for GTK apps (`gtk-icon-theme-name`, cursor, font). A stale
+pin (`oxygen`, `breeze`, …) beats whatever the Appearance dialog shows — fix
+the ini, not dconf.
+
+Store-side caches are fine: the system-path build runs `gtk-update-icon-cache`
+over merged theme dirs (watch the switch log). Stale-cache risks live in the
+user dir: `~/.local/share/icons/hicolor/icon-theme.cache` and
+`~/.cache/ksycoca6_*` — both safe to delete, both auto-regenerate.
 
 ## Known upstream issues
 

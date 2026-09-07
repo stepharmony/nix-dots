@@ -36,6 +36,11 @@
       # (Plasma and Niri alike).
       environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
+      # GSettings/dconf daemon — GTK apps persist settings through it in every
+      # session. (Session-specific dconf defaults live in their aspects, e.g.
+      # session/_theming.nix; keeping the daemon here is infrastructure only.)
+      programs.dconf.enable = true;
+
       # chrony replaces systemd-timesyncd (module forces timesyncd off itself).
       # Defaults: NixOS pool servers, makestep, RTC drift tracking, NM online/offline dispatch.
       services.chrony.enable = true;
