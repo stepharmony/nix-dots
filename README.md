@@ -1,4 +1,4 @@
-# my-nixos-config
+# nix-dots
 
 NixOS flake for two machines, both installed with [disko](https://github.com/nix-community/disko) onto btrfs:
 
@@ -62,7 +62,7 @@ All btrfs mounts use `noatime,compress=zstd`; TRIM runs weekly via `fstrim` (no 
 
 ## Daily usage
 
-The config expects the repo to live at `/home/rykard/my-nixos-config` (that is what `nh` is pointed at).
+The config expects the repo to live at `/home/rykard/nix-dots` (that is what `nh` is pointed at).
 
 ```bash
 nh os switch          # rebuild + switch; host is auto-detected from the hostname
@@ -101,18 +101,18 @@ nix flake update      # bump nixpkgs + chaotic + disko
 
 ```bash
 # preferred (after git init + push, see pre-flight):
-git clone <your-remote-url> /root/my-nixos-config
-cd /root/my-nixos-config
+git clone <your-remote-url> /root/nix-dots
+cd /root/nix-dots
 
 # or from another machine on the LAN:
-#   scp -r /home/manus/my-nixos-config root@<installer-ip>:/root/my-nixos-config
+#   scp -r /home/manus/nix-dots root@<installer-ip>:/root/nix-dots
 
 # or from a USB stick:
-#   mount /dev/sdX1 /mnt && cp -r /mnt/my-nixos-config /root/ && umount /mnt
+#   mount /dev/sdX1 /mnt && cp -r /mnt/nix-dots /root/ && umount /mnt
 ```
 
 The location during install does not matter; after first boot the repo must end up at
-`/home/rykard/my-nixos-config` (see post-install).
+`/home/rykard/nix-dots` (see post-install).
 
 ### 3. Partition, format and mount with disko
 
@@ -186,13 +186,13 @@ reboot
 
 - [ ] Put the repo where `nh` expects it:
   ```bash
-  # git clone <your-remote-url> /home/rykard/my-nixos-config
+  # git clone <your-remote-url> /home/rykard/nix-dots
   # then fix ownership:
-  chown -R rykard:users /home/rykard/my-nixos-config
+  chown -R rykard:users /home/rykard/nix-dots
   ```
 - [ ] Log in as `rykard` and verify daily usage works:
   ```bash
-  cd /home/rykard/my-nixos-config && nh os switch
+  cd /home/rykard/nix-dots && nh os switch
   ```
 - [ ] btrfs subvolumes mounted: `findmnt -t btrfs`
 - [ ] zswap active: `cat /sys/module/zswap/parameters/{enabled,compressor,zpool}` → expect `Y`, `zstd`, `zsmalloc`
@@ -237,4 +237,4 @@ reboot
   configuration (default is `/dev/nvme0n1` in `modules/disk.nix`) **before** running disko.
 - **Chaotic Nyx download issues during install** — chaotic substituters are enabled by its module
   (imported only on manus); a flaky network during `nixos-install` is the usual culprit — just rerun.
-- **`nh os switch` says the flake path is wrong** — the repo must be at `/home/rykard/my-nixos-config`.
+- **`nh os switch` says the flake path is wrong** — the repo must be at `/home/rykard/nix-dots`.

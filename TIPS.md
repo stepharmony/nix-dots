@@ -1,7 +1,7 @@
 # Tips & Tricks
 
 A grab-bag of Nix/NixOS commands that come in handy day to day with this
-config. Most examples assume you are in `/home/rykard/my-nixos-config`.
+config. Most examples assume you are in `/home/rykard/nix-dots`.
 
 ## What will download vs. what will compile
 
