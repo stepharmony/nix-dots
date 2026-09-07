@@ -41,6 +41,7 @@
   pipewire,
   vulkan-loader,
   xcb-imdkit,
+  xcbutilkeysyms,
   zlib,
 }:
 let
