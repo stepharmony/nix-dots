@@ -107,6 +107,7 @@ let
       autoPatchelfHook
       wrapGAppsHook3
       makeWrapper
+      patchelf
     ];
     # we only want $gappsWrapperArgs here
     dontWrapGApps = true;
@@ -132,6 +133,14 @@ let
         if [ -f "$e" ] && [ -x "$e" ]; then
           wrapProgram "$e" "''${gappsWrapperArgs[@]}"
         fi
+      done
+
+      # The CLAP metadata reader's environment is sanitized (no LD_LIBRARY_PATH
+      # inheritance — VST2/VST3 scans DO inherit it), so dlopened plugins must
+      # resolve via RUNPATH. Bake the full plugin lib path into every binary
+      # that can trigger a scan (--add-rpath appends, existing paths survive).
+      for b in "$out"/libexec/bitwig-studio "$out"/libexec/bin/BitwigPluginHost-*; do
+        patchelf --add-rpath "${pluginLibPath}" "$b"
       done
     '';
 
