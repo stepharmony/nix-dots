@@ -38,10 +38,10 @@ modules/
   hardware/nvidia.nix      # desktop GPU aspect
   hardware/intel.nix       # laptop iGPU aspect
   xremap.nix               # Graphite remapping (system daemon + per-session bridge)
-  desktop.nix              # Plasma 6 — the default SDDM session on both hosts
-   desktop/session.nix      # compositor-agnostic Wayland stack (bar packages,
-                           # launcher, notifications, idle/lock, theming, utils,
-                           # sunsetr)
+   desktop.nix              # Plasma 6 — the default SDDM session on both hosts
+    desktop/session.nix      # compositor-agnostic Wayland stack (bar packages,
+                            # launcher, notifications, idle/lock, utils,
+                            # sunsetr; gruvbox theming parked — see session.nix)
    desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
    formatter.nix            # nix fmt wrapper (perSystem)
    systems.nix              # systems = [ x86_64-linux ]

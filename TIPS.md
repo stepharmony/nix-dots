@@ -69,7 +69,7 @@ nixpkgs.overlays = [ (import ../overlays) ];
 
 `overlays/default.nix` composes all overlays; each overlay pulls a custom
 expression from `pkgs/<name>/package.nix` via `final.callPackage`. Any
-reference to that package (e.g. `protonplus` in gaming.nix) then resolves to
+reference to that package (e.g. `bitwig-studio` in music.nix) then resolves to
 the pinned version, on both hosts.
 
 **Recipe — bump a package ahead of nixpkgs:**
@@ -91,8 +91,8 @@ the pinned version, on both hosts.
 **Is the overlay still needed?** Compare the channel against your pin:
 
 ```bash
-nix eval nixpkgs#protonplus.version        # what nixos-unstable ships
-nix eval .#nixosConfigurations.manus.pkgs.protonplus.version  # what you pin
+nix eval nixpkgs#bitwig-studio.version        # what nixos-unstable ships
+nix eval .#nixosConfigurations.manus.pkgs.bitwig-studio.version  # what you pin
 ```
 
 Once the channel reports a version >= your pin, the overlay is redundant.

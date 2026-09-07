@@ -1,6 +1,6 @@
 # PLACEHOLDER — generic Intel laptop hardware config.
 # Regenerate on the real machine with nixos-generate-config and merge the
-# hardware bits here (filesystems stay owned by modules/disko-btrfs.nix).
+# hardware bits here (filesystems stay owned by modules/disk.nix).
 {
   config,
   lib,

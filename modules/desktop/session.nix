@@ -13,6 +13,10 @@
     # Gruvbox/Niri GTK theming — disabled for now (the dconf file-db leaks
     # org/gnome keys into every session and the oomox icons are unused on
     # x11). Re-import this line to restore it for Niri testing.
+    # FIX BEFORE RE-IMPORT: dotfiles/niri/rofi/config.rasi still pins
+    # icon-theme "oomox-gruvbox-dark" — with this module parked that theme is
+    # in no closure, so rofi would ship missing icons again (swap it to an
+    # installed theme, e.g. "Mint-Y-Teal").
     # ./session/_theming.nix
     ./session/_utils.nix
     ./session/_sunsetr.nix
