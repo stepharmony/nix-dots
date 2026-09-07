@@ -15,6 +15,7 @@
   mktemp,
   bubblewrap,
   writeShellScript,
+  runCommand,
   alsa-lib,
   atk,
   cairo,
@@ -45,6 +46,51 @@
 let
   version = "6.1";
 
+  # Shared UI/audio stack. Bitwig's own binaries get autoPatchelf RPATHs for
+  # these, but VST/CLAP plugins dlopened from $HOME do not inherit them —
+  # the launcher exposes the whole set as LD_LIBRARY_PATH inside the sandbox.
+  # (u-he plugins need gio/glib, cairo, freetype and xcb-{keysyms,shm,util}
+  # at Bitwig's plugin-scan time.)
+  fhsLibs = [
+    alsa-lib
+    atk
+    cairo
+    freetype
+    gdk-pixbuf
+    glib
+    gtk3
+    harfbuzz
+    lcms2
+    libglvnd
+    libjack2
+    libjpeg_turbo
+    nghttp2
+    libudev-zero
+    libx11
+    libxcb
+    libxcb-util
+    libxcb-wm
+    libxcursor
+    libxkbcommon
+    libxtst
+    pango
+    pipewire
+    (lib.getLib stdenv.cc.cc)
+    vulkan-loader
+    xcb-imdkit
+    xcbutilkeysyms
+    zlib
+  ];
+
+  # u-he plugins dlopen libxcb-shm.so.1; libxcb only ships .so.0 (the API is
+  # unchanged since forever, so a symlink shim satisfies the loader).
+  xcbShmShim = runCommand "libxcb-shm-soname-shim" { } ''
+    mkdir -p $out/lib
+    ln -s ${libxcb}/lib/libxcb-shm.so.0 $out/lib/libxcb-shm.so.1
+  '';
+
+  pluginLibPath = lib.makeLibraryPath (fhsLibs ++ [ xcbShmShim ]);
+
   unwrapped = stdenv.mkDerivation {
     pname = "bitwig-studio-unwrapped";
     inherit version;
@@ -64,35 +110,7 @@ let
     # we only want $gappsWrapperArgs here
     dontWrapGApps = true;
 
-    buildInputs = [
-      alsa-lib
-      atk
-      cairo
-      freetype
-      gdk-pixbuf
-      glib
-      gtk3
-      harfbuzz
-      lcms2
-      libglvnd
-      libjack2
-      libjpeg_turbo
-      nghttp2
-      libudev-zero
-      libx11
-      libxcb
-      libxcb-util
-      libxcb-wm
-      libxcursor
-      libxkbcommon
-      libxtst
-      pango
-      pipewire
-      (lib.getLib stdenv.cc.cc)
-      vulkan-loader
-      xcb-imdkit
-      zlib
-    ];
+    buildInputs = fhsLibs;
 
     installPhase = ''
       runHook preInstall
@@ -150,6 +168,7 @@ let
       --bind / / \
       --bind "$TMPDIR"/VampTransforms "$APP_DIR"/libexec/resources/VampTransforms \
       --dev-bind /dev /dev \
+      --setenv LD_LIBRARY_PATH ${pluginLibPath} \
       "''${BINDS[@]}" \
       "$APP_DIR"/libexec/bitwig-studio \
       || true
