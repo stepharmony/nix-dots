@@ -17,12 +17,12 @@
     }:
     {
       environment.systemPackages = [
-        # doCheck=false: upstream's pytest suite (GUI tests, headless sandbox)
-        # takes ~1h per rev — their CI concern, not our build's.
-        inputs.winpodx.packages.${pkgs.system}.default.overrideAttrs
-        (_: {
-          doCheck = false;
-        })
+        # 0.11.0 (flake update, Sep 7) made builds hostile: upstream added its
+        # pytest suite (GUI tests, ~1h headless in the sandbox) AND its python
+        # packaging shadows overrideAttrs/overridePythonAttrs into shapes the
+        # NixOS option type check rejects. Pinned back via flake.lock
+        # (--override-input) until upstream cleans up; try the bump again later.
+        inputs.winpodx.packages.${pkgs.system}.default
       ];
 
       # Rootless Podman hosts the Windows pod (dockur backend); dns_enabled
