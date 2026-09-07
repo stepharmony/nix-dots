@@ -31,6 +31,11 @@
 
       networking.hostName = "spectre";
 
+      # Disk for disko (wipe/format target at install; the installed fstab
+      # references partitions by-partuuid, so this never changes after).
+      # Sanity-check on the machine before wiping: ls /dev/disk/by-id | grep SKHynix
+      hostDisk = "/dev/disk/by-id/nvme-SKHynix_HFS001TEJ9X115N_AYCBN03291020BS3U";
+
       # Boot-menu / generation label (hostname-tagged; allowed chars
       # are [a-zA-Z0-9:_\.-]).
       system.nixos.label = "NixOS-spectre";

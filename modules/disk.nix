@@ -1,6 +1,7 @@
 # Shared disko layout — GPT with ESP + btrfs subvolumes, imported via the
-# `disk` aspect. Override the target disk per host by setting `hostDisk` if a
-# machine's drive differs from the default.
+# `disk` aspect. Each host pins `hostDisk` (a /dev/disk/by-id path) in
+# modules/hosts/*.nix — by-id survives enumeration changes, and a wrong value
+# fails loudly at disko time instead of wiping the wrong disk.
 #
 # This aspect owns every fileSystem of every host that imports it
 # (hardware-configuration.nix defines none). Deploy a fresh install with, e.g.:
@@ -19,8 +20,13 @@
     {
       options.hostDisk = lib.mkOption {
         type = lib.types.str;
-        default = "/dev/nvme0n1";
-        description = "Disk that holds the NixOS install (ESP + btrfs via disko).";
+        description = ''
+          Disk that holds the NixOS install (ESP + btrfs via disko), pinned per
+          host as a /dev/disk/by-id path. Only the wipe/format step uses it —
+          disko generates the installed fstab with by-partuuid references, so
+          the value never changes after install. No default: the wipe target
+          must be explicit.
+        '';
       };
 
       config.disko.devices = {

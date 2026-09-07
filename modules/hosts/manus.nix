@@ -36,6 +36,10 @@
 
       networking.hostName = "manus"; # Define your hostname.
 
+      # Disk for disko (wipe/format target at install; the installed fstab
+      # references partitions by-partuuid, so this never changes after).
+      hostDisk = "/dev/disk/by-id/nvme-KINGSTON_SNVS500G_50026B72828C5281";
+
       # Boot-menu / generation label (hostname-tagged; allowed chars
       # are [a-zA-Z0-9:_\.-]).
       system.nixos.label = "NixOS-manus";

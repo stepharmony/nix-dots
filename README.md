@@ -7,7 +7,8 @@ NixOS flake for two machines, both installed with [disko](https://github.com/nix
 | `.#manus` | desktop | `rykard` | AMD + NVIDIA (open kernel module, latest driver), latest kernel, Plasma 6 (Wayland) + Niri sessions, PipeWire, chrony, 8G swapfile + zswap, **no hibernation** |
 | `.#spectre` | laptop | `rykard` | Intel CPU + iGPU, Plasma 6 (Wayland) + Niri sessions, PipeWire, chrony, 32G swapfile + zswap, **hibernation enabled**, automatic timezone (geoclue2) |
 
-Both disks are `/dev/nvme0n1` (confirmed).
+Both disks are pinned by-id via `hostDisk` in `modules/hosts/*.nix` — manus:
+`nvme-KINGSTON_SNVS500G_50026B72828C5281`, spectre: `nvme-SKHynix_HFS001TEJ9X115N_AYCBN03291020BS3U`.
 
 ## Repository layout
 
@@ -56,7 +57,7 @@ dotfiles/                  # sources deployed into $HOME by hjem: niri config.kd
                            # xremap system service config (deployed to /etc by xremap.nix)
 ```
 
-Disk layout (both hosts): GPT on `/dev/nvme0n1` — 1G ESP at `/boot`, then btrfs with subvolumes
+Disk layout (both hosts): GPT on each host's `hostDisk` (by-id) — 1G ESP at `/boot`, then btrfs with subvolumes
 `@root` → `/`, `@home` → `/home`, `@nix` → `/nix`, `@log` → `/var/log`, `@swap` → `/swap` (nodatacow, holds the swapfile).
 All btrfs mounts use `noatime,compress=zstd`; TRIM runs weekly via `fstrim` (no `discard` mount option).
 
@@ -79,13 +80,12 @@ nix flake update      # bump nixpkgs + chaotic + disko
 
 ### Pre-flight checklist
 
-- [ ] `modules/disk.nix` points at the right disk — currently `/dev/nvme0n1` for **both** hosts (confirmed). Change it if a machine's drive differs.
+- [ ] `hostDisk` is pinned by-id per host in `modules/hosts/*.nix`. Sanity-check it exists on the
+      target before disko: `ls /dev/disk/by-id | grep -E 'KINGSTON|SKHynix'`.
 - [ ] Swap sizes: manus has 8G (fine for 16G RAM, no hibernation), spectre has 32G (required for full hibernation with 32G RAM).
-- [ ] **The repo is a git repository.** Push it to a private remote so the installer can clone it:
-  ```bash
-  git remote add origin <your-remote-url> && git push -u origin main
-  ```
-  No remote? Copy it with `scp -r` or a USB stick instead.
+- [ ] **The repo is public on GitHub** — <https://github.com/stepharmony/nix-dots> — so the installer
+  clones it directly, no auth needed. If it ever goes private, set up a deploy key or token for the
+  installer first.
 - [ ] Working internet on the target machine (nixpkgs, chaotic and the system closure are downloaded during install).
 
 ### 1. Boot the installer
@@ -100,12 +100,12 @@ nix flake update      # bump nixpkgs + chaotic + disko
 ### 2. Get this repo onto the installer
 
 ```bash
-# preferred (after git init + push, see pre-flight):
-git clone <your-remote-url> /root/nix-dots
+# clone the public repo:
+git clone https://github.com/stepharmony/nix-dots /root/nix-dots
 cd /root/nix-dots
 
 # or from another machine on the LAN:
-#   scp -r /home/manus/nix-dots root@<installer-ip>:/root/nix-dots
+#   scp -r /home/rykard/nix-dots root@<installer-ip>:/root/nix-dots
 
 # or from a USB stick:
 #   mount /dev/sdX1 /mnt && cp -r /mnt/nix-dots /root/ && umount /mnt
@@ -124,7 +124,7 @@ sudo nix --extra-experimental-features 'nix-command flakes' run github:nix-commu
 sudo nix --extra-experimental-features 'nix-command flakes' run github:nix-community/disko -- --mode destroy,format,mount --flake .#spectre
 ```
 
-What this does: reads the host's disko layout from the flake, wipes `/dev/nvme0n1`, creates the GPT
+What this does: reads the host's disko layout from the flake, wipes the host's `hostDisk` (by-id), creates the GPT
 layout (ESP + btrfs subvolumes), formats it, and mounts everything under `/mnt`.
 
 Verify afterwards:
@@ -186,9 +186,12 @@ reboot
 
 - [ ] Put the repo where `nh` expects it:
   ```bash
-  # git clone <your-remote-url> /home/rykard/nix-dots
+  # either clone fresh from GitHub:
+  #   git clone https://github.com/stepharmony/nix-dots /home/rykard/nix-dots
+  # or copy the installer's clone out of /root (no second download):
+  #   sudo cp -r /root/nix-dots /home/rykard/nix-dots
   # then fix ownership:
-  chown -R rykard:users /home/rykard/nix-dots
+  #   sudo chown -R rykard:users /home/rykard/nix-dots
   ```
 - [ ] Log in as `rykard` and verify daily usage works:
   ```bash
@@ -233,8 +236,8 @@ reboot
   the same flag or `export NIX_CONFIG="experimental-features = nix-command flakes"` first.
 - **disko errors about an existing filesystem** — that is expected on a disk that has data on it;
   the `destroy,format,mount` mode is the one that wipes it. Make sure you really want that.
-- **Wrong disk name** (`nvme1n1` etc.) — check with `lsblk`, then set `hostDisk` in the host
-  configuration (default is `/dev/nvme0n1` in `modules/disk.nix`) **before** running disko.
+- **Wrong/mismatched disk by-id** — check `ls /dev/disk/by-id` on the target, then set `hostDisk` in
+  `modules/hosts/<host>.nix` (both hosts pin theirs explicitly) **before** running disko.
 - **Chaotic Nyx download issues during install** — chaotic substituters are enabled by its module
   (imported only on manus); a flaky network during `nixos-install` is the usual culprit — just rerun.
 - **`nh os switch` says the flake path is wrong** — the repo must be at `/home/rykard/nix-dots`.
