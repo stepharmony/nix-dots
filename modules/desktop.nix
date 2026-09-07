@@ -3,7 +3,12 @@
 
 {
   flake.modules.nixos.desktop =
-    { config, lib, pkgs, ... }:
+    {
+      config,
+      lib,
+      pkgs,
+      ...
+    }:
     {
       # Enable the KDE Plasma Desktop Environment.
       services.displayManager.sddm.enable = true;
