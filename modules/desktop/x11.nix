@@ -6,7 +6,7 @@
 
 {
   flake.modules.nixos.x11 =
-    { ... }:
+    { pkgs, ... }:
     {
       services.xserver.enable = true;
 
@@ -15,5 +15,12 @@
 
       services.xserver.desktopManager.xfce.enable = true;
       services.xserver.desktopManager.cinnamon.enable = true;
+
+      # GTK desktops' utilities: disk usage analyzer + X11 clipboard CLI.
+      # (The Wayland side has its own in session/_utils.nix: wl-clipboard.)
+      environment.systemPackages = with pkgs; [
+        baobab
+        xclip
+      ];
     };
 }

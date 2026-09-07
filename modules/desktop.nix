@@ -3,7 +3,7 @@
 
 {
   flake.modules.nixos.desktop =
-    { lib, pkgs, ... }:
+    { config, lib, pkgs, ... }:
     {
       # Enable the KDE Plasma Desktop Environment.
       services.displayManager.sddm.enable = true;
@@ -14,11 +14,17 @@
       services.displayManager.defaultSession = lib.mkOverride 900 "plasma";
 
       # Oxygen theme family (selectable in System Settings → Colors & Themes).
-      environment.systemPackages = with pkgs; [
-        kdePackages.oxygen
-        kdePackages.oxygen-sounds
-        kdePackages.oxygen-icons
-        kdePackages.filelight
-      ];
+      # filelight is Plasma's analyzer — base boot only; the x11
+      # specialisation (force-disabled plasma6) gets baobab instead (x11.nix).
+      environment.systemPackages =
+        with pkgs;
+        [
+          kdePackages.oxygen
+          kdePackages.oxygen-sounds
+          kdePackages.oxygen-icons
+        ]
+        ++ lib.optionals config.services.desktopManager.plasma6.enable [
+          kdePackages.filelight
+        ];
     };
 }
