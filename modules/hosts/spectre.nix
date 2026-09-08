@@ -27,6 +27,7 @@
         flake.modules.nixos.study
         flake.modules.nixos.dev
         flake.modules.nixos.winpodx
+        flake.modules.nixos.bluetooth
       ];
 
       networking.hostName = "spectre";

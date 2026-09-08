@@ -36,15 +36,15 @@
         libepoxy
         libxkbcommon
         wayland
-        xorg.libX11
-        xorg.libXext
-        xorg.libXrandr
-        xorg.libXi
-        xorg.libXcursor
-        xorg.libXcomposite
-        xorg.libXdamage
-        xorg.libXfixes
-        xorg.libXinerama
+        libX11
+        libXext
+        libXrandr
+        libXi
+        libXcursor
+        libXcomposite
+        libXdamage
+        libXfixes
+        libXinerama
         dbus
         fontconfig
         freetype
