@@ -10,10 +10,15 @@
       # for more parameters/customizability
       hardware.bluetooth = {
         enable = true;
-        powerOnBoot = false;
+        powerOnBoot = true;
+        settings = {
+          General = {
+            Experimental = true; # Shows battery charge for supported devices
+          };
+          Policy = {
+            AutoEnable = true;   # Automatically turns on controllers when found
+          };
+        };
       };
-
-      # Control media player using Bluetooth headset
-      services.mpris-proxy.enable = true;
     };
 }
