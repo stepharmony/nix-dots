@@ -107,6 +107,8 @@
         google-chrome
         git
         gh
+        ripgrep
+        libqalculate
         btop
         rustdesk-flutter
       ];

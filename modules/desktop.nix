@@ -30,6 +30,8 @@
         ]
         ++ lib.optionals config.services.desktopManager.plasma6.enable [
           kdePackages.filelight
+          haruna
+          qalculate-qt
         ];
     };
 }
