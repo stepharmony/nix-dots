@@ -26,12 +26,34 @@
         flake.modules.nixos.music
         flake.modules.nixos.study
         flake.modules.nixos.dev
-        flake.modules.nixos.winpodx
+        # Disabled because it hangs nh os switch
+        # flake.modules.nixos.winpodx
         flake.modules.nixos.bluetooth
       ];
 
       networking.hostName = "spectre";
 
+      # auto-cpufreq attempts
+      # (hopefully provides slightly better battery life than current)
+      # But first, we need to disable power-profiles-daemon:
+      services.power-profiles-daemon.enable = false;
+      
+      services.auto-cpufreq = {
+        enable = true;
+        settings = {
+          battery = {
+            governor = "powersave";
+            energy_performance_preference = "power";
+            turbo = "auto";
+          };
+          charger = {
+            governor = "performance";
+            energy_performance_preference = "performance";
+            turbo = "auto";
+          };
+        };
+      };
+      
       # Disk for disko (wipe/format target at install; the installed fstab
       # references partitions by-partuuid, so this never changes after).
       # Sanity-check on the machine before wiping: ls /dev/disk/by-id | grep SKHynix

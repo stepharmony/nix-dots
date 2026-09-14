@@ -8,13 +8,17 @@
       hardware.graphics = {
         enable = true;
         enable32Bit = true;
+        extraPackages = with pkgs; [
+          intel-compute-runtime
+          intel-media-driver
+        ];
       };
 
       hardware.enableRedistributableFirmware = true;
 
       # VA-API hardware video acceleration for Intel
-      environment.systemPackages = with pkgs; [
-        intel-media-driver
-      ];
+      # environment.systemPackages = with pkgs; [
+      #   intel-media-driver
+      # ];
     };
 }
