@@ -102,6 +102,7 @@
           withVencord = true;
         })
         floorp-bin
+        firefox
         brave-origin
         unrar
         google-chrome
@@ -111,6 +112,9 @@
         libqalculate
         btop
         rustdesk-flutter
+        libreoffice-stable
+        anydesk
+        yt-dlp
       ];
 
       # Allow unfree packages
