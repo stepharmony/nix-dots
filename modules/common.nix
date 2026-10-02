@@ -115,6 +115,7 @@
         libreoffice-stable
         anydesk
         yt-dlp
+        easyeffects
       ];
 
       # Allow unfree packages
