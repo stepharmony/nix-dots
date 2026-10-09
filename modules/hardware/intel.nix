@@ -11,6 +11,10 @@
         extraPackages = with pkgs; [
           intel-compute-runtime
           intel-media-driver
+          vpl-gpu-rt
+        ];
+        extraPackages32 = with pkgs.pkgsi686Linux; [
+          intel-media-driver
         ];
       };
 
@@ -20,5 +24,23 @@
       # environment.systemPackages = with pkgs; [
       #   intel-media-driver
       # ];
+
+      # Switch from older i915 drivers to xe
+      boot.kernelParams = [
+        "i915.force_probe=!7d55"
+        "xe.force_probe=7d55"
+      ];
+
+      # Set the VA-API driver explicitly to
+      # the modern Intel Media Driver
+      environment.sessionVariables = {
+        LIBVA_DRIVER_NAME = "iHD";
+      };
+
+      # Useful tools to check GPU status
+      environment.systemPackages = with pkgs; [
+        libva-utils      # run `vainfo` to check VA-API
+        intel-gpu-tools  # run `sudo intel_gpu_top`
+      ];
     };
 }
