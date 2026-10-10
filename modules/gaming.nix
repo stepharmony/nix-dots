@@ -5,7 +5,10 @@
   flake.modules.nixos.gaming =
     { pkgs, ... }:
     {
-      programs.steam.enable = true;
+      programs.steam = {
+        enable = true;
+        package = pkgs.millennium-steam;
+      };
 
       environment.systemPackages = with pkgs; [
         prismlauncher

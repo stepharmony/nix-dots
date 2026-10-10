@@ -1,6 +1,6 @@
 # Shared base for every host. Hosts opt into further aspects (pipewire,
 # desktop, niri, gaming, ...) in modules/hosts/.
-{ flake, ... }:
+{ flake, inputs, ... }:
 
 {
   flake.modules.nixos.common =
@@ -46,7 +46,10 @@
       services.chrony.enable = true;
 
       # overlays/ pins packages ahead of nixpkgs (see overlays/README.md)
-      nixpkgs.overlays = [ (import ../overlays) ];
+      nixpkgs.overlays = [
+        (import ../overlays)
+        inputs.millennium.overlays.default
+      ];
 
       nix.settings = {
         experimental-features = [
