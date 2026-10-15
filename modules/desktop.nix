@@ -32,6 +32,13 @@
           kdePackages.filelight
           haruna
           qalculate-qt
+          kdePackages.kio-fuse
+          kdePackages.kio-extras
+          kdePackages.korganizer
+          kdePackages.kdepim-runtime
+          kdePackages.kdepim-addons
+          kdePackages.akonadi
+          kdePackages.akonadi-calendar
         ];
     };
 }

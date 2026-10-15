@@ -12,6 +12,7 @@
           intel-compute-runtime
           intel-media-driver
           vpl-gpu-rt
+          mesa-demos
         ];
         extraPackages32 = with pkgs.pkgsi686Linux; [
           intel-media-driver
