@@ -119,9 +119,13 @@
         anydesk
         yt-dlp
         easyeffects
+        qpdf
+        qbittorrent
       ];
 
       services.udisks2.enable = true;
+      services.mullvad-vpn.enable = true;
+      services.mullvad-vpn.gui.enable = true;
 
       # Allow unfree packages
       nixpkgs.config.allowUnfree = true;
