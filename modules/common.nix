@@ -31,6 +31,9 @@
 
       # Enable networking
       networking.networkmanager.enable = true;
+      networking.networkmanager.plugins = with pkgs; [
+        networkmanager-openconnect
+      ];
 
       # Electron/ozone apps run Wayland-native in every graphical session
       # (Plasma and Niri alike).
@@ -120,6 +123,7 @@
         easyeffects
         qpdf
         qbittorrent
+        openconnect
       ];
 
       services.udisks2.enable = true;

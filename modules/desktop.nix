@@ -39,6 +39,7 @@
           kdePackages.kdepim-addons
           kdePackages.akonadi
           kdePackages.akonadi-calendar
+          kdePackages.plasma-nm
         ];
     };
 }
