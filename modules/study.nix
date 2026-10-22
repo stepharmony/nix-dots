@@ -13,6 +13,7 @@
         typstyle # 0.15.1 — typst formatter, for :format once wired in helix
         tectonic # 0.17.0 — full TeX engine, no texlive; fetches support
         # files from the network on first compile
+        zoom-us
       ];
     };
 }
