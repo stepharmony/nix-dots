@@ -96,7 +96,6 @@
         tree
         micro
         steam-run
-        opencode
         kdePackages.kate
         (discord.override {
           # OpenASAR is behaving strangely, removed
