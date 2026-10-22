@@ -43,6 +43,8 @@
   xcb-imdkit,
   xcbutilkeysyms,
   zlib,
+  wayland,
+  fontconfig
 }:
 let
   version = "6.1";
@@ -56,6 +58,7 @@ let
     alsa-lib
     atk
     cairo
+    fontconfig
     freetype
     gdk-pixbuf
     glib
@@ -78,6 +81,7 @@ let
     pipewire
     (lib.getLib stdenv.cc.cc)
     vulkan-loader
+    wayland
     xcb-imdkit
     xcbutilkeysyms
     zlib
@@ -134,15 +138,29 @@ let
         fi
       done
 
-      # The CLAP metadata reader's environment is sanitized (no LD_LIBRARY_PATH
-      # inheritance — VST2/VST3 scans DO inherit it), so dlopened plugins must
-      # resolve via RUNPATH. Bake the full plugin lib path into every binary
-      # that can trigger a scan (--add-rpath appends, existing paths survive).
-      # The JVM path matters most: System.load dlopens from libjvm.so, whose
-      # own RUNPATH is consulted before anything the launcher passes on.
+      # Plugins dlopened from $HOME can't find libraries via Bitwig's RUNPATH:
+      # RUNPATH only applies to a binary's own direct dependencies, never to
+      # libraries it dlopens. The CLAP metadata reader also strips
+      # LD_LIBRARY_PATH (VST2/VST3 scans inherit it), so for CLAP a plugin
+      # dependency only resolves if that soname is already loaded in the process.
+      #
+      # Step 1: add the full plugin lib path to the RUNPATH of every binary that
+      # can trigger a scan (--add-rpath appends, existing paths survive). This
+      # doesn't help plugins directly; it makes the libraries in step 2 findable.
       for b in "$out"/libexec/bitwig-studio "$out"/libexec/bin/BitwigPluginHost-* \
                "$out"/libexec/lib/jre/lib/server/libjvm.so; do
         patchelf --add-rpath "${pluginLibPath}" "$b"
+      done
+
+      # Step 2: preload libraries that plugins need but Bitwig itself doesn't
+      # link, so they're already in the process when a plugin asks for them.
+      # Libraries Bitwig already links (cairo, glib, freetype, ...) are covered
+      # automatically. When a new plugin fails with "cannot open shared object
+      # file", add its package to fhsLibs and its soname here.
+      for b in "$out"/libexec/bitwig-studio "$out"/libexec/bin/BitwigPluginHost-* \
+               "$out"/libexec/lib/jre/lib/server/libjvm.so; do
+        patchelf --add-needed libfontconfig.so.1 \
+                 --add-needed libwayland-client.so.0 "$b"
       done
     '';
 
