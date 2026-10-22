@@ -13,7 +13,7 @@
     }:
     let
       # Disable upstream's headless GUI tests so it builds without segfaulting
-      winpodx = inputs.winpodx.packages.${pkgs.system}.default.overrideAttrs (old: {
+      winpodx = inputs.winpodx.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
         dontUsePytestCheck = true;
         doInstallCheck = true;
       });
