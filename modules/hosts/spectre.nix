@@ -26,8 +26,7 @@
         flake.modules.nixos.music
         flake.modules.nixos.study
         flake.modules.nixos.dev
-        # Disabled because it hangs nh os switch
-        # flake.modules.nixos.winpodx
+        flake.modules.nixos.winpodx
         flake.modules.nixos.bluetooth
       ];
 
