@@ -40,6 +40,7 @@
           kdePackages.akonadi
           kdePackages.akonadi-calendar
           kdePackages.plasma-nm
+          kdePackages.kalarm
         ];
     };
 }
