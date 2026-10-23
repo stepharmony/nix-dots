@@ -44,7 +44,7 @@
   xcbutilkeysyms,
   zlib,
   wayland,
-  fontconfig
+  fontconfig,
 }:
 let
   version = "6.1";

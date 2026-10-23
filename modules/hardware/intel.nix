@@ -40,8 +40,8 @@
 
       # Useful tools to check GPU status
       environment.systemPackages = with pkgs; [
-        libva-utils      # run `vainfo` to check VA-API
-        intel-gpu-tools  # run `sudo intel_gpu_top`
+        libva-utils # run `vainfo` to check VA-API
+        intel-gpu-tools # run `sudo intel_gpu_top`
       ];
     };
 }

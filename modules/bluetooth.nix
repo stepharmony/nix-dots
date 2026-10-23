@@ -16,7 +16,7 @@
             Experimental = true; # Shows battery charge for supported devices
           };
           Policy = {
-            AutoEnable = true;   # Automatically turns on controllers when found
+            AutoEnable = true; # Automatically turns on controllers when found
           };
         };
       };

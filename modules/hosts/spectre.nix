@@ -36,7 +36,7 @@
       # (hopefully provides slightly better battery life than current)
       # But first, we need to disable power-profiles-daemon:
       services.power-profiles-daemon.enable = false;
-      
+
       services.auto-cpufreq = {
         enable = true;
         settings = {
@@ -52,7 +52,7 @@
           };
         };
       };
-      
+
       # Disk for disko (wipe/format target at install; the installed fstab
       # references partitions by-partuuid, so this never changes after).
       # Sanity-check on the machine before wiping: ls /dev/disk/by-id | grep SKHynix
