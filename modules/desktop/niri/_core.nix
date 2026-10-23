@@ -23,7 +23,7 @@ let
     hash = "sha256-BUE41HjLIGPjq3U8VXPjf8asH8GaMI7FYdgrIHKFMXA=";
   };
 
-  satellite081 = pkgs.xwayland-satellite.overrideAttrs (old: {
+  satellite081 = pkgs.xwayland-satellite.overrideAttrs {
     version = "0.8.1";
     src = satellite081Src;
     cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
@@ -32,7 +32,7 @@ let
       src = satellite081Src;
       hash = "sha256-16L6gsvze+m7XCJlOA1lsPNELE3D364ef2FTdkh0rVY=";
     };
-  });
+  };
 in
 {
   # SDDM session, xdg portals (screencast via portal-gnome), gnome-keyring,
