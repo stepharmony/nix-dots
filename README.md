@@ -23,6 +23,7 @@ flake.nix                  # inputs (nixpkgs, chaotic, disko, hjem, millennium, 
                            # flake-parts, import-tree)
                            # → mkFlake over import-tree ./modules
 TIPS.md                    # tips & tricks (store forensics, overlays workflow, maintenance)
+STM32.md                   # preliminary STM32 toolchain notes + draft embedded aspect
 hosts/
   manus/                   # desktop: hardware-configuration.nix (disko owns fileSystems)
   spectre/                 # laptop: same
