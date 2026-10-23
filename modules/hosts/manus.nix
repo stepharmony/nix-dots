@@ -31,6 +31,7 @@
         flake.modules.nixos.music
         flake.modules.nixos.study
         flake.modules.nixos.dev
+        flake.modules.nixos.hdl
         flake.modules.nixos.winpodx
       ];
 

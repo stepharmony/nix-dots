@@ -1,4 +1,5 @@
-# Study tools (both hosts).
+# Study tools (both hosts): notes, typesetting, lectures. Programming
+# tools live in dev.nix, VHDL/waveform tools in hdl.nix.
 { flake, ... }:
 
 {

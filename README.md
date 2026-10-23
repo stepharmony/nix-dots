@@ -38,7 +38,8 @@ modules/
   pipewire.nix             # audio, always on
   bluetooth.nix            # bluetooth (spectre only)
   gaming.nix  music.nix    # steam (+ millennium), launchers; bitwig (pinned via overlays/)
-  study.nix  dev.nix       # typst/tectonic/zoom; C toolchain, opencode, claude-code
+  study.nix                # obsidian, typst/tectonic, zoom
+  dev.nix  hdl.nix         # helix + C toolchain, opencode, claude-code; ghdl, gtkwave, vhdl_ls
   winpodx.nix              # Windows apps as native windows (rootless Podman)
   hardware/nvidia.nix      # desktop GPU aspect
   hardware/intel.nix       # laptop iGPU aspect
