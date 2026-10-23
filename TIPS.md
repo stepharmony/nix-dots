@@ -345,6 +345,30 @@ over merged theme dirs (watch the switch log). Stale-cache risks live in the
 user dir: `~/.local/share/icons/hicolor/icon-theme.cache` and
 `~/.cache/ksycoca6_*` — both safe to delete, both auto-regenerate.
 
+## TUvpn (TU Wien VPN)
+
+`tuvpn` (defined in `modules/study.nix`) wraps openconnect with the flags from
+TU Wien's [OpenConnect KB page](https://colab.tuwien.ac.at/spaces/SVCSP/pages/141888142/OpenConnect).
+The KDE VPN menu can't do TUvpn: the 2FA flow needs `--no-external-auth`,
+which NetworkManager doesn't pass.
+
+```bash
+tuvpn          # sudo password → network password → 6-digit MFA code; Ctrl+C to disconnect
+tuvpn -b       # same, but runs in the background; stop it with: sudo pkill -SIGINT openconnect
+TUVPN_PROFILE=2_Alles_getunnelt tuvpn   # route all traffic through TU instead of just TU traffic
+```
+
+- **Username:** read from `~/.config/tuvpn/user` (one line,
+  `<UserID>@student.tuwien.ac.at`) if it exists, otherwise openconnect asks.
+  It lives outside the repo on purpose — this repo is public.
+- **Profiles:** `1_TU_getunnelt` (default, only TU traffic),
+  `2_Alles_getunnelt` (everything), `3_TU_ohne_fixe_Adresse` (pool IP instead
+  of the fixed one).
+- **Codes rejected?** TOTP needs a roughly correct clock on the phone and the
+  laptop — check `timedatectl`.
+- **Stopped working?** Compare the wrapper against the KB page first; Campus
+  IT documents OpenConnect but doesn't guarantee it long-term.
+
 ## Known upstream issues
 
 ### Steam dropdown menus close instantly under Niri
