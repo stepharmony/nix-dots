@@ -12,11 +12,11 @@
       ...
     }:
     let
-      # Disable upstream's headless GUI tests so it builds without segfaulting
-      winpodx = inputs.winpodx.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+      # Skip upstream's pytest suite: its headless GUI tests segfault in the
+      # build sandbox. The rest of installCheckPhase still runs.
+      winpodx = inputs.winpodx.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs {
         dontUsePytestCheck = true;
-        doInstallCheck = true;
-      });
+      };
     in
     {
       environment.systemPackages = [
