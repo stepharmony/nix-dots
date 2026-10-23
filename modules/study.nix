@@ -15,6 +15,7 @@
         tectonic # 0.17.0 — full TeX engine, no texlive; fetches support
         # files from the network on first compile
         zoom-us
+        anki-bin # 26.09.3 — official upstream build, ahead of the source-built `anki`
       ];
     };
 }
