@@ -1,4 +1,4 @@
-# Audio — always on, on both hosts.
+# Bluetooth — imported by spectre only.
 { flake, ... }:
 
 {

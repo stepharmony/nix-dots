@@ -19,7 +19,8 @@ composes its aspects in `modules/hosts/`. [hjem](https://hjem.feel-co.org/)
 manages `rykard`'s `$HOME`.
 
 ```
-flake.nix                  # inputs (nixpkgs, chaotic, disko, hjem, flake-parts, import-tree)
+flake.nix                  # inputs (nixpkgs, chaotic, disko, hjem, millennium, winpodx,
+                           # flake-parts, import-tree)
                            # → mkFlake over import-tree ./modules
 TIPS.md                    # tips & tricks (store forensics, overlays workflow, maintenance)
 hosts/
@@ -35,17 +36,22 @@ modules/
   users.nix                # the rykard user + hjem $HOME management (dotfile deployment)
   disk.nix                 # shared disko layout (ESP + btrfs subvolumes), hostDisk option
   pipewire.nix             # audio, always on
-  gaming.nix  music.nix    # imported by both host aspects
+  bluetooth.nix            # bluetooth (spectre only)
+  gaming.nix  music.nix    # steam (+ millennium), launchers; bitwig (pinned via overlays/)
+  study.nix  dev.nix       # typst/tectonic/zoom; C toolchain, opencode, claude-code
+  winpodx.nix              # Windows apps as native windows (rootless Podman)
   hardware/nvidia.nix      # desktop GPU aspect
   hardware/intel.nix       # laptop iGPU aspect
   xremap.nix               # Graphite remapping (system daemon + per-session bridge)
-   desktop.nix              # Plasma 6 — the default SDDM session on both hosts
-    desktop/session.nix      # compositor-agnostic Wayland stack (bar packages,
-                            # launcher, notifications, idle/lock, utils,
-                            # sunsetr; gruvbox theming parked — see session.nix)
-   desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
-   formatter.nix            # nix fmt wrapper (perSystem)
-   systems.nix              # systems = [ x86_64-linux ]
+  desktop.nix              # Plasma 6 — the default SDDM session on both hosts
+  desktop/session.nix      # compositor-agnostic Wayland stack (bar packages,
+                           # launcher, notifications, idle/lock, utils,
+                           # sunsetr; gruvbox theming parked — see session.nix)
+  desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
+  desktop/x11.nix          # xfce + cinnamon behind lightdm (x11 specialisation only)
+  specialisations.nix      # x11 boot entry next to the Wayland default
+  formatter.nix            # nix fmt wrapper (perSystem)
+  systems.nix              # systems = [ x86_64-linux ]
 overlays/                  # packages pinned ahead of nixpkgs; wired via common.nix
 pkgs/                      # custom package expressions used by overlays (see TIPS.md)
 dotfiles/                  # sources deployed into $HOME by hjem: niri config.kdl +
@@ -68,7 +74,7 @@ The config expects the repo to live at `/home/rykard/nix-dots` (that is what `nh
 ```bash
 nh os switch          # rebuild + switch; host is auto-detected from the hostname
 nix fmt               # format all nix files
-nix flake update      # bump nixpkgs + chaotic + disko
+nix flake update      # bump all inputs
 ```
 
 `nh` is optional; the equivalent is `sudo nixos-rebuild switch --flake .#manus` (or `.#spectre`).

@@ -139,7 +139,7 @@ Once the channel reports a version >= your pin, the overlay is redundant.
 ```bash
 nh os switch                # rebuild + switch, host auto-detected from hostname
 nix fmt                     # format all nix files
-nix flake update            # bump all inputs (nixpkgs, chaotic, disko)
+nix flake update            # bump all inputs
 nix flake update nixpkgs    # bump just one input
 nix flake check             # evaluate everything, catch errors early
 ```
@@ -351,7 +351,7 @@ user dir: `~/.local/share/icons/hicolor/icon-theme.cache` and
 
 xwayland-satellite 0.8.2's popup handling regressed: Steam menus (Friends,
 right-click, top bar) close within ~0.3s under Niri. Worked around by a
-**confirmed pin to satellite 0.8.1** in `modules/desktop/niri/default.nix`
+**confirmed pin to satellite 0.8.1** in `modules/desktop/niri/_core.nix`
 (verified 2026-09-03). Games are unaffected; Steam client works fully on
 Plasma (kwin's embedded Xwayland has no such issue).
 
