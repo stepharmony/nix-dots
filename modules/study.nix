@@ -4,7 +4,30 @@
 
 {
   flake.modules.nixos.study =
-    { pkgs, ... }:
+    { pkgs, lib, ... }:
+    let
+      # TUvpn needs --no-external-auth for its 2FA flow, which NetworkManager
+      # can't pass — hence a CLI wrapper (per TU Wien's OpenConnect KB page).
+      # Prompts for password, then the 6-digit MFA code. The username is read
+      # from ~/.config/tuvpn/user if present (kept out of this public repo),
+      # otherwise openconnect asks for it. Extra args pass through (e.g. -b).
+      # Profile: TUVPN_PROFILE=2_Alles_getunnelt tuvpn to tunnel everything.
+      tuvpn = pkgs.writeShellApplication {
+        name = "tuvpn";
+        text = ''
+          user_file="''${XDG_CONFIG_HOME:-$HOME/.config}/tuvpn/user"
+          args=(
+            --useragent="AnyConnect OpenConnect"
+            --no-external-auth
+            --authgroup="''${TUVPN_PROFILE:-1_TU_getunnelt}"
+          )
+          if [[ -r $user_file ]]; then
+            args+=(--user "$(<"$user_file")")
+          fi
+          exec sudo ${lib.getExe pkgs.openconnect} "''${args[@]}" "$@" vpn.tuwien.ac.at
+        '';
+      };
+    in
     {
       environment.systemPackages = with pkgs; [
         obsidian # 1.13.4 (unfree — covered by the global allowUnfree)
@@ -16,6 +39,7 @@
         # files from the network on first compile
         zoom-us
         anki-bin # 26.09.3 — official upstream build, ahead of the source-built `anki`
+        tuvpn # TUvpn via openconnect, see above
       ];
     };
 }
