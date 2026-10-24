@@ -385,6 +385,24 @@ Niri session before deleting the pin comment. Track:
 - https://github.com/Supreeeme/xwayland-satellite/issues/468
 - the satellite rewrite (issue #373) — the real fix
 
+### Obsidian: blank window on electron 43.8.3
+
+After the 2026-10-23 nixpkgs bump, Obsidian opened as an empty window:
+electron 43.8.3 throws in its own `renderer_init` (`web-frame.ts`,
+`Cannot read properties of undefined (reading 'defineProperty')`) before
+Obsidian's code runs. Same on Wayland and X11; electron 43.7.11 and 42.11.18
+run the same `app.asar` fine. Worked around by
+`obsidian.override { electron = electron_42; }` in `modules/study.nix`.
+
+Removal: after a nixpkgs bump, test the new electron without switching:
+
+```bash
+"$(nix build --no-link --print-out-paths .#nixosConfigurations.spectre.pkgs.electron)/bin/electron" \
+  "$(nix build --no-link --print-out-paths .#nixosConfigurations.spectre.pkgs.obsidian)/share/obsidian/app.asar"
+```
+
+If the vault renders, drop the override.
+
 ## Finding things in nixpkgs
 
 ```bash

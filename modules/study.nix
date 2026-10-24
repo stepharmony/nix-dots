@@ -30,7 +30,12 @@
     in
     {
       environment.systemPackages = with pkgs; [
-        obsidian # 1.13.4 (unfree — covered by the global allowUnfree)
+        # 1.14.5 (unfree — covered by the global allowUnfree). Pinned to
+        # electron_42: electron 43.8.3 (nixpkgs 2026-10-23) crashes in its own
+        # renderer_init (web-frame.ts, "reading 'defineProperty'") and leaves a
+        # blank window — Wayland and X11 alike; 43.7.11 and 42.11.18 both work.
+        # Drop the override once nixpkgs ships a fixed electron 43 (TIPS.md).
+        (obsidian.override { electron = electron_42; })
         typst # 0.15.1 — typesetting without texlive
         tinymist # 0.15.2 — typst LSP; helix ships built-in typst support
         # and auto-starts tinymist from PATH (hx --health typst)
