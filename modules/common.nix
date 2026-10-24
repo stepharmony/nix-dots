@@ -17,9 +17,6 @@
         };
       };
 
-      # systemd initrd (lets the laptop auto-detect the hibernation swapfile offset)
-      boot.initrd.systemd.enable = true;
-
       # zswap — shared by both hosts, both use a swapfile.
       # Verify after boot: cat /sys/module/zswap/parameters/{enabled,compressor,zpool}
       boot.kernelParams = [

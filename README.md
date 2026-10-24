@@ -253,7 +253,7 @@ reboot
   **Do not pin `boot.resumeDevice` at the swapfile path**: `resume=/swap/swapfile` makes the initrd
   resolve a btrfs swapfile path it cannot see yet, which stalls every boot at the display manager
   (spectre, 2026-09-07 — three hung boots; bisected with `noresume` + `systemd.mask=` unit masks).
-  With `boot.initrd.systemd` (common.nix) the initrd **auto-detects** the hibernation image — the
+  The systemd initrd (the only initrd in nixpkgs since 2026-10) **auto-detects** the hibernation image — the
   old-config, proven-working mode. If auto-detection ever fails, the fallback is explicit physical
   params: `btrfs inspect-internal map-swapfile -r /swap/swapfile` → `resume=<by-id-part2>
   resume_offset=<N>` (offset shifts if the swapfile is ever recreated — re-run the command).

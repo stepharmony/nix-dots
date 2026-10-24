@@ -77,8 +77,9 @@
       # Swapfile on the @swap subvolume (nodatacow); zswap is configured in
       # common.nix. 32G swap >= 32G RAM, so a full hibernation fits.
       #
-      # Hibernation: boot.initrd.systemd (from common.nix) AUTO-detects the
-      # hibernation image — the old-config, proven-working mode. Do NOT pin
+      # Hibernation: the systemd initrd (the only initrd since nixpkgs removed
+      # the scripted one, 2026-10) AUTO-detects the hibernation image — the
+      # old-config, proven-working mode. Do NOT pin
       # boot.resumeDevice at the swapfile path: `resume=/swap/swapfile` makes
       # the initrd resolve a btrfs swapfile path it cannot see yet, which
       # stalls every boot at the display manager (spectre, 2026-09-07 — three
