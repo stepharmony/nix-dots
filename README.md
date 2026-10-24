@@ -38,7 +38,7 @@ modules/
   disk.nix                 # shared disko layout (ESP + btrfs subvolumes), hostDisk option
   pipewire.nix             # audio, always on
   bluetooth.nix            # bluetooth (spectre only)
-  gaming.nix  music.nix    # steam (+ millennium), launchers; bitwig (pinned via overlays/)
+  gaming.nix  music.nix    # steam (+ millennium), launchers; bitwig (pinned via overlays/), reaper, musescore
   study.nix                # obsidian, typst/tectonic, zoom, anki; `tuvpn` (TUvpn CLI wrapper)
   dev.nix  hdl.nix         # helix + C toolchain, opencode, claude-code; ghdl, gtkwave, vhdl_ls
   winpodx.nix              # Windows apps as native windows (rootless Podman)

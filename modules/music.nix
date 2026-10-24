@@ -5,11 +5,14 @@
   flake.modules.nixos.music =
     { pkgs, ... }:
     {
-      # Bitwig Studio 6.1, hard-pinned (see overlays/default.nix + TIPS.md).
-      # Theming: drop a modified bitwig.jar at ~/.config/bitwig/bitwig.jar —
-      # the launcher bind-mounts it over the stock jar at launch.
       environment.systemPackages = with pkgs; [
+        # Bitwig Studio 6.1, hard-pinned (see overlays/default.nix + TIPS.md).
+        # Theming: drop a modified bitwig.jar at ~/.config/bitwig/bitwig.jar —
+        # the launcher bind-mounts it over the stock jar at launch.
         bitwig-studio
+        reaper # 7.82 — DAW (unfree, covered by the global allowUnfree;
+        # evaluation nag until licensed)
+        musescore # 4.7.5 — notation
         freetype
         cabextract
       ];
