@@ -4,4 +4,8 @@ final: prev: {
   # slot: drop a modified bitwig.jar at ~/.config/bitwig/bitwig.jar and the
   # launcher bind-mounts it over the stock jar. See pkgs/bitwig/ and TIPS.md.
   bitwig-studio = final.callPackage ../pkgs/bitwig/package.nix { };
+
+  # Skoll — video-to-picture sync CLAP + Bitwig extension, not in nixpkgs.
+  # Built from source; deployed into ~/.clap etc. by music.nix. See pkgs/skoll/.
+  skoll = final.callPackage ../pkgs/skoll/package.nix { };
 }
