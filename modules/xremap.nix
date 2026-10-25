@@ -32,7 +32,7 @@
 
       # The bridge variant must match the running DE; detect from the session env.
       # niri first, KDE for Plasma, the generic X11 (wmctrl) bridge for xfce/
-      # cinnamon/anything with a display — and a graceful idle when nothing is
+      # anything with a display — and a graceful idle when nothing is
       # supported, instead of crash-looping (Restart = always, no start limit).
       bridgeWrapper = pkgs.writeShellScriptBin "xremap-bridge" ''
         if [ "$XDG_CURRENT_DESKTOP" = "niri" ] || [ -n "$NIRI_SOCKET" ]; then
