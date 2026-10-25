@@ -38,6 +38,7 @@
         # evaluation nag until licensed)
         musescore # 4.7.5 — notation
         mpv # video player; Skoll draws through it (also handy on its own)
+        ffmpeg # Skoll proxies: intra-frame MJPEG/ProRes so scrubbing keeps up
         freetype
         cabextract
       ];
