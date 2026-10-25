@@ -1,0 +1,19 @@
+# mako — notification daemon for the Niri session (spawned by config.kdl;
+# Plasma keeps its own). Deployed by hjem to ~/.config/mako/config.
+# Reference: man 5 mako. Test with: notify-send "hello" "from mako"
+
+font=JetBrainsMono Nerd Font 11
+background-color=#18181bf0
+text-color=#e4e4e7
+border-color=#7fc8ff
+border-size=2
+border-radius=8
+padding=10
+margin=10
+width=360
+default-timeout=6000
+max-visible=5
+
+[urgency=critical]
+border-color=#9b0000
+default-timeout=0

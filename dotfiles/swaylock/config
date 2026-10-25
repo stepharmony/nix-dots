@@ -1,0 +1,19 @@
+# swaylock — Niri session screen lock (Super+Alt+L, swayidle).
+# Deployed by hjem to ~/.config/swaylock/config. Reference: man swaylock
+daemonize
+show-failed-attempts
+ignore-empty-password
+color=18181b
+indicator-radius=100
+indicator-thickness=10
+inside-color=18181bd0
+inside-clear-color=27272ad0
+ring-color=7fc8ff
+ring-clear-color=a1a1aa
+ring-ver-color=7fc8ff
+ring-wrong-color=9b0000
+key-hl-color=e4e4e7
+bs-hl-color=9b0000
+text-color=e4e4e7
+line-color=00000000
+separator-color=00000000

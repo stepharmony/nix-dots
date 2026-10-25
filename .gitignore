@@ -3,3 +3,6 @@ result*
 
 # dev scratch — untracked, files stay on disk
 scratch/
+
+# python bytecode (e.g. from `qtile check`)
+__pycache__/

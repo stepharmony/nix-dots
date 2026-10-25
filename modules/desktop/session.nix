@@ -1,5 +1,7 @@
-# Compositor-agnostic Wayland session stack (Niri):
-# bar, launcher, notifications, idle/lock, theming, utils, blue-light filter.
+# Compositor-agnostic Wayland session stack (Niri): the classic tools niri's
+# upstream default config expects — waybar, fuzzel, mako, swaylock/swayidle —
+# plus utils and the sunsetr blue-light filter. Everything here is only
+# *installed*; niri's config.kdl spawns it, so none of it runs in Plasma.
 # The `_`-prefixed modules are plain NixOS modules — import-tree skips them
 # at the flake level (paths containing `/_`) and only this aspect pulls them in.
 { flake, ... }:
@@ -10,14 +12,6 @@
     ./session/_launcher.nix
     ./session/_notifications.nix
     ./session/_idle-lock.nix
-    # Gruvbox/Niri GTK theming — disabled for now (the dconf file-db leaks
-    # org/gnome keys into every session and the oomox icons are unused on
-    # x11). Re-import this line to restore it for Niri testing.
-    # FIX BEFORE RE-IMPORT: dotfiles/niri/rofi/config.rasi still pins
-    # icon-theme "oomox-gruvbox-dark" — with this module parked that theme is
-    # in no closure, so rofi would ship missing icons again (swap it to an
-    # installed theme, e.g. "Mint-Y-Teal").
-    # ./session/_theming.nix
     ./session/_utils.nix
     ./session/_sunsetr.nix
   ];

@@ -1,0 +1,54 @@
+// Waybar — Niri session bar (spawned by niri's config.kdl, so it never runs
+// in Plasma). Deployed by hjem to ~/.config/waybar/config.jsonc.
+// Module reference: https://github.com/Alexays/Waybar/wiki
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "spacing": 6,
+
+    "modules-left": ["niri/workspaces", "niri/window"],
+    "modules-center": ["clock"],
+    "modules-right": ["pulseaudio", "network", "battery", "tray"],
+
+    "niri/workspaces": {
+        "format": "{index}"
+    },
+
+    "niri/window": {
+        "format": "{title}",
+        "max-length": 60
+    },
+
+    "clock": {
+        "format": "{:%a %d %b  %H:%M}",
+        "tooltip-format": "<tt>{calendar}</tt>"
+    },
+
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": "󰝟 muted",
+        "format-icons": { "default": ["󰕿", "󰖀", "󰕾"] },
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+        "scroll-step": 5
+    },
+
+    "network": {
+        "format-wifi": "󰤨 {essid}",
+        "format-ethernet": "󰈀 wired",
+        "format-disconnected": "󰤭 offline",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
+    },
+
+    // Hides itself on manus (no battery there).
+    "battery": {
+        "format": "{icon} {capacity}%",
+        "format-charging": "󰂄 {capacity}%",
+        "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"],
+        "states": { "warning": 25, "critical": 10 }
+    },
+
+    "tray": {
+        "spacing": 8
+    }
+}

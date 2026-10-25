@@ -1,7 +1,7 @@
-# Wayland session stack (Niri) — rofi launcher (Wayland-native
-# since 2.0). Config deployed by hjem to the default ~/.config/rofi location.
+# Wayland session stack (Niri) — fuzzel launcher (Mod+D) and dmenu for the
+# clipboard picker. Config deployed by hjem to ~/.config/fuzzel/fuzzel.ini.
 { pkgs, ... }:
 
 {
-  environment.systemPackages = [ pkgs.rofi ];
+  environment.systemPackages = [ pkgs.fuzzel ];
 }

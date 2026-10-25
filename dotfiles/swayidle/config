@@ -1,0 +1,6 @@
+# swayidle — Niri session idle management (spawned by config.kdl as
+# `swayidle -w`). Deployed by hjem to ~/.config/swayidle/config.
+# Times in seconds. swaylock reads ~/.config/swaylock/config.
+timeout 300 'swaylock'
+timeout 600 'niri msg action power-off-monitors'
+before-sleep 'swaylock'

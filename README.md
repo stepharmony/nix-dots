@@ -46,9 +46,9 @@ modules/
   hardware/intel.nix       # laptop iGPU aspect
   xremap.nix               # Graphite remapping (system daemon + per-session bridge)
   desktop.nix              # Plasma 6 — the default SDDM session on both hosts
-  desktop/session.nix      # compositor-agnostic Wayland stack (bar packages,
-                           # launcher, notifications, idle/lock, utils,
-                           # sunsetr; gruvbox theming parked — see session.nix)
+  desktop/session.nix      # Wayland session stack for Niri: waybar, fuzzel, mako,
+                           # swaylock/swayidle, clipboard/media utils, sunsetr
+                           # (installed only — niri's config.kdl spawns them)
   desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
   desktop/x11.nix          # xfce + qtile behind lightdm (x11 specialisation only)
   specialisations.nix      # x11 boot entry next to the Wayland default
@@ -56,12 +56,10 @@ modules/
   systems.nix              # systems = [ x86_64-linux ]
 overlays/                  # packages pinned ahead of nixpkgs; wired via common.nix
 pkgs/                      # custom package expressions used by overlays (see TIPS.md)
-dotfiles/                  # sources deployed into $HOME by hjem: niri config.kdl +
-                           # rice (rofi, swayidle/swaylock, sunsetr — each lands in
-                           # its default ~/.config location),
-                           # quickshell/island (custom gruvbox dynamic island —
-                           # spawned as `qs -c island`, Mod+N = notification center),
-                           # matugen (wallpaper -> Material You palette -> island);
+dotfiles/                  # sources deployed into $HOME by hjem, each to its
+                           # default ~/.config location: niri/config.kdl (upstream
+                           # niri default + nix-dots edits) + wallpaper, waybar,
+                           # fuzzel, mako, swayidle, swaylock, sunsetr;
                            # qtile/config.py (x11 boot entry; upstream default + edits);
                            # xremap system service config (deployed to /etc by xremap.nix)
 ```
@@ -236,10 +234,10 @@ reboot
       QWERTY by design)
 - [ ] Both SDDM sessions present: Plasma (default) and Niri —
       niri config lives at `~/.config/niri/config.kdl` (hjem-managed store
-      symlink; source in `dotfiles/niri/`). The Niri session spawns the
-      quickshell island + the rice stack, all reading their default
-      `~/.config` locations — nothing depends on the repo path.
-- [ ] hjem deployed the rice: `ls -l ~/.config/niri/config.kdl ~/.config/rofi`
+      symlink; source in `dotfiles/niri/`). The Niri session spawns waybar,
+      mako, swayidle, swaybg, sunsetr and the cliphist watcher, all reading
+      their default `~/.config` locations — nothing depends on the repo path.
+- [ ] hjem deployed the session configs: `ls -l ~/.config/niri/config.kdl ~/.config/waybar`
       should show store symlinks
 - [ ] `nix fmt` and `nix flake check` work from the repo
 
