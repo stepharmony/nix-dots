@@ -51,6 +51,9 @@
           # matugen: wallpaper -> Material You palette -> island colors
           "matugen/config.toml".source = ../dotfiles/matugen/config.toml;
           "matugen/templates/island-colors.json".source = ../dotfiles/matugen/templates/island-colors.json;
+
+          # Qtile (x11 boot entry only) — upstream default config + Graphite edits
+          "qtile/config.py".source = ../dotfiles/qtile/config.py;
         };
       };
     };

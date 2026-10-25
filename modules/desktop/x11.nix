@@ -1,4 +1,4 @@
-# X11 desktop aspect — xfce behind lightdm.
+# X11 desktop aspect — xfce (default) and qtile behind lightdm.
 # Lives in the `x11` specialization (modules/specialisations.nix); the
 # Wayland base stays untouched.
 { flake, ... }:
@@ -13,6 +13,9 @@
       services.xserver.displayManager.lightdm.enable = true;
 
       services.xserver.desktopManager.xfce.enable = true;
+
+      # Tiling WM alternative; config in dotfiles/qtile/config.py (hjem).
+      services.xserver.windowManager.qtile.enable = true;
 
       # Cinnamon removed 2026-10: unstable on spectre. Worth retrying with
       # the next major Linux Mint release (Cinnamon ships with it) — re-add:

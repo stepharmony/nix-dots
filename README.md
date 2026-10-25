@@ -50,7 +50,7 @@ modules/
                            # launcher, notifications, idle/lock, utils,
                            # sunsetr; gruvbox theming parked — see session.nix)
   desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
-  desktop/x11.nix          # xfce behind lightdm (x11 specialisation only)
+  desktop/x11.nix          # xfce + qtile behind lightdm (x11 specialisation only)
   specialisations.nix      # x11 boot entry next to the Wayland default
   formatter.nix            # nix fmt wrapper (perSystem)
   systems.nix              # systems = [ x86_64-linux ]
@@ -62,6 +62,7 @@ dotfiles/                  # sources deployed into $HOME by hjem: niri config.kd
                            # quickshell/island (custom gruvbox dynamic island —
                            # spawned as `qs -c island`, Mod+N = notification center),
                            # matugen (wallpaper -> Material You palette -> island);
+                           # qtile/config.py (x11 boot entry; upstream default + edits);
                            # xremap system service config (deployed to /etc by xremap.nix)
 ```
 
