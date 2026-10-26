@@ -97,11 +97,28 @@
         micro
         steam-run
         kdePackages.kate
-        (discord.override {
-          # OpenASAR is behaving strangely, removed
-          # until further notice
-          # withOpenASAR = true;
-          withVencord = true;
+        # Under niri, Discord runs through XWayland: natively on Wayland it
+        # comes up hugely oversized at spectre's fractional 1.75 scale (window
+        # flips between over- and undersized; --disable-features=
+        # WaylandFractionalScaleV1 doesn't help). NIRI_SOCKET only exists in
+        # niri sessions, so Plasma keeps native Wayland. The flag lands after
+        # the inner wrapper's --ozone-platform=wayland, and the last one wins.
+        (symlinkJoin {
+          name = "discord-niri-x11";
+          paths = [
+            (discord.override {
+              # OpenASAR is behaving strangely, removed
+              # until further notice
+              # withOpenASAR = true;
+              withVencord = true;
+            })
+          ];
+          nativeBuildInputs = [ makeWrapper ];
+          postBuild = ''
+            for b in discord Discord; do
+              wrapProgram $out/bin/$b --add-flags "\''${NIRI_SOCKET:+--ozone-platform=x11}"
+            done
+          '';
         })
         floorp-bin
         firefox
