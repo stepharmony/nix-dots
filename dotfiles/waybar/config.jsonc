@@ -37,7 +37,9 @@
         "format-wifi": "󰤨 {essid}",
         "format-ethernet": "󰈀 wired",
         "format-disconnected": "󰤭 offline",
-        "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
+        // Network list lives in the nm-applet tray icon; this opens the editor.
+        "on-click": "nm-connection-editor"
     },
 
     // Hides itself on manus (no battery there).

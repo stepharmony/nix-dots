@@ -304,6 +304,9 @@ spawn-at-startup "polkit-agent"
 spawn-at-startup "sunsetr"
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
 spawn-sh-at-startup "swaybg -m fill -i ~/.config/niri/wallpaper.png"
+// nix-dots: NetworkManager tray icon (wifi list, password prompts, VPNs) in
+// waybar's tray; --indicator = StatusNotifierItem, which waybar shows.
+spawn-at-startup "nm-applet" "--indicator"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
