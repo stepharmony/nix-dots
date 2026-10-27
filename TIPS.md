@@ -224,6 +224,35 @@ cat /sys/power/state                                       # spectre must list "
 systemctl hibernate                                        # spectre only
 ```
 
+### Laptop power (spectre)
+
+All in `modules/hardware/laptop.nix`. Automatic:
+
+- **auto-cpufreq**: `powersave` governor on AC *and* battery (intel_pstate's
+  powersave is dynamic, it still boosts). EPP `balance_performance` on AC,
+  `balance_power` on battery. The old `performance` governor on AC pinned
+  clocks high, left the charger little headroom under load (slow charging)
+  and made every EPP write fail with EBUSY.
+- **Lenovo platform profile** (firmware power limits + fans): `balanced` on
+  AC, `low-power` on battery, set only on plug/unplug.
+- **thermald** (Intel thermal daemon, recommended on Meteor Lake).
+- **Refresh rate** (niri only): `refresh-rate watch` sets 120 Hz on AC and
+  60 Hz on battery. auto-cpufreq can't do this, it never touches the display.
+
+Manual (each sticks until the next plug/unplug):
+
+```bash
+power-mode toggle      # performance <-> balanced/low-power (waybar click, Mod+Alt+P)
+refresh-rate toggle    # 60 <-> 120 Hz (waybar click, Mod+Alt+R); also 60 / 120 / status
+battery-cap on|off     # Lenovo conservation mode: stop charging at ~80% (status: no arg)
+cat /sys/firmware/acpi/platform_profile        # current profile
+cat /sys/class/power_supply/BAT0/power_now      # battery draw in µW
+journalctl -u auto-cpufreq -b | grep -c busy   # should be 0
+```
+
+`power-mode` and `battery-cap` write sysfs through one root helper
+(`laptop-sysfs`, fixed arguments only) with a NOPASSWD sudo rule.
+
 ### xremap (Graphite layout, graphical session only)
 
 Two units, official multi-DE architecture:

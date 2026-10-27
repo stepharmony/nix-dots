@@ -44,10 +44,12 @@ modules/
   winpodx.nix              # Windows apps as native windows (rootless Podman)
   hardware/nvidia.nix      # desktop GPU aspect
   hardware/intel.nix       # laptop iGPU aspect
+  hardware/laptop.nix      # laptop power (spectre): auto-cpufreq + thermald,
+                           # `power-mode`, `battery-cap`, `refresh-rate`
   xremap.nix               # Graphite remapping (system daemon + per-session bridge)
   desktop.nix              # Plasma 6 — the default SDDM session on both hosts
   desktop/session.nix      # Wayland session stack for Niri: waybar, fuzzel, mako,
-                           # swaylock/swayidle, clipboard/media utils, sunsetr
+                           # swaylock/swayidle, clipboard/media utils, nm-applet, sunsetr
                            # (installed only — niri's config.kdl spawns them)
   desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
   desktop/x11.nix          # xfce + qtile behind lightdm (x11 specialisation only)
@@ -235,8 +237,9 @@ reboot
 - [ ] Both SDDM sessions present: Plasma (default) and Niri —
       niri config lives at `~/.config/niri/config.kdl` (hjem-managed store
       symlink; source in `dotfiles/niri/`). The Niri session spawns waybar,
-      mako, swayidle, swaybg, sunsetr and the cliphist watcher, all reading
-      their default `~/.config` locations — nothing depends on the repo path.
+      mako, swayidle, swaybg, sunsetr, nm-applet, `refresh-rate watch` and the
+      cliphist watcher, all reading their default `~/.config` locations —
+      nothing depends on the repo path.
 - [ ] hjem deployed the session configs: `ls -l ~/.config/niri/config.kdl ~/.config/waybar`
       should show store symlinks
 - [ ] `nix fmt` and `nix flake check` work from the repo
