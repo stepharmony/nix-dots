@@ -9,7 +9,7 @@
 
     "modules-left": ["niri/workspaces", "niri/window"],
     "modules-center": ["clock"],
-    "modules-right": ["pulseaudio", "network", "custom/power", "battery", "tray"],
+    "modules-right": ["pulseaudio", "network", "custom/refresh", "custom/power", "battery", "tray"],
 
     "niri/workspaces": {
         "format": "{index}"
@@ -40,6 +40,16 @@
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
         // Network list lives in the nm-applet tray icon; this opens the editor.
         "on-click": "nm-connection-editor"
+    },
+
+    // Internal panel refresh rate (refresh-rate, modules/hardware/laptop.nix);
+    // click toggles 60/120 Hz. Empty (hidden) on manus.
+    "custom/refresh": {
+        "exec": "refresh-rate status 2>/dev/null",
+        "interval": 10,
+        "signal": 8,
+        "on-click": "refresh-rate toggle",
+        "tooltip": false
     },
 
     // Lenovo platform profile (modules/hardware/laptop.nix); click toggles

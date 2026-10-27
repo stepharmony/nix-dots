@@ -35,6 +35,7 @@ window#waybar {
 #clock,
 #pulseaudio,
 #network,
+#custom-refresh,
 #custom-power,
 #battery,
 #tray {

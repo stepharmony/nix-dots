@@ -96,6 +96,66 @@
           fi
         '';
       };
+
+      # refresh-rate [toggle|low|high|60|120|status|watch] — the internal
+      # panel's (eDP) refresh rate under niri, using the modes niri reports at
+      # the current resolution (low = slowest, high = fastest; 60/120 are
+      # aliases). `watch` (spawned by config.kdl) sets high on AC and low on
+      # battery, re-applying only when the AC state changes, so a manual
+      # toggle sticks until the next plug/unplug. auto-cpufreq can't do this:
+      # it only touches CPU/firmware/battery settings, not the display.
+      refreshRate = pkgs.writeShellApplication {
+        name = "refresh-rate";
+        runtimeInputs = with pkgs; [
+          gawk
+          jq
+          procps
+          systemd
+        ];
+        text = ''
+          outputs=$(niri msg --json outputs 2>/dev/null) || exit 0
+          name=$(jq -r 'keys[] | select(startswith("eDP"))' <<<"$outputs" | head -n1)
+          [[ -n $name ]] || exit 0
+
+          # w h current low high (refresh rates in mHz, as niri reports them)
+          read -r w h current low high < <(jq -r --arg n "$name" '
+            .[$n] | .modes[.current_mode // 0] as $c
+            | [.modes[] | select(.width == $c.width and .height == $c.height) | .refresh_rate] as $r
+            | "\($c.width) \($c.height) \($c.refresh_rate) \($r | min) \($r | max)"' <<<"$outputs")
+
+          set_rate() {
+            niri msg output "$name" mode "''${w}x''${h}@$(awk -v r="$1" 'BEGIN { printf "%.3f", r / 1000 }')"
+            pkill -RTMIN+8 waybar || true
+          }
+          on_ac() { grep -qs 1 /sys/class/power_supply/ADP*/online; }
+
+          case ''${1:-status} in
+            status) echo "󰍹 $(((current + 500) / 1000))Hz" ;;
+            toggle) if [[ $current == "$high" ]]; then set_rate "$low"; else set_rate "$high"; fi ;;
+            low | 60) set_rate "$low" ;;
+            high | 120) set_rate "$high" ;;
+            watch)
+              last=
+              apply() {
+                local ac=0
+                if on_ac; then ac=1; fi
+                [[ $ac == "$last" ]] && return 0
+                last=$ac
+                if [[ $ac == 1 ]]; then set_rate "$high"; else set_rate "$low"; fi
+              }
+              apply || true
+              udevadm monitor --udev --subsystem-match=power_supply | while read -r _; do
+                niri msg version >/dev/null 2>&1 || exit 0 # niri gone: stop
+                apply || true
+              done
+              ;;
+            *)
+              echo "usage: refresh-rate [toggle|low|high|60|120|status|watch]" >&2
+              exit 1
+              ;;
+          esac
+        '';
+      };
     in
     {
       # auto-cpufreq instead of power-profiles-daemon (they conflict).
@@ -148,6 +208,7 @@
       environment.systemPackages = [
         powerMode
         batteryCap
+        refreshRate
       ];
     };
 }

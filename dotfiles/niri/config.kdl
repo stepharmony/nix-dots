@@ -307,6 +307,8 @@ spawn-sh-at-startup "swaybg -m fill -i ~/.config/niri/wallpaper.png"
 // nix-dots: NetworkManager tray icon (wifi list, password prompts, VPNs) in
 // waybar's tray; --indicator = StatusNotifierItem, which waybar shows.
 spawn-at-startup "nm-applet" "--indicator"
+// nix-dots: internal panel 120 Hz on AC, 60 Hz on battery (no-op on manus).
+spawn-at-startup "refresh-rate" "watch"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -419,6 +421,7 @@ binds {
     // nix-dots: laptop power profile, performance <-> default for AC/battery
     // (modules/hardware/laptop.nix; a no-op on manus).
     Mod+Alt+P hotkey-overlay-title="Toggle Performance Mode" { spawn "power-mode" "toggle"; }
+    Mod+Alt+R hotkey-overlay-title="Toggle Refresh Rate (60/120 Hz)" { spawn "refresh-rate" "toggle"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
