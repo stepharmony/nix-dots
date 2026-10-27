@@ -416,6 +416,10 @@ binds {
     // Mod+Shift+C because upstream already uses Mod+Ctrl+C below.
     Mod+Shift+C hotkey-overlay-title="Clipboard History: cliphist" { spawn-sh "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"; }
 
+    // nix-dots: laptop power profile, performance <-> default for AC/battery
+    // (modules/hardware/laptop.nix; a no-op on manus).
+    Mod+Alt+P hotkey-overlay-title="Toggle Performance Mode" { spawn "power-mode" "toggle"; }
+
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
     // For example, this is a standard bind to toggle the screen reader (orca).

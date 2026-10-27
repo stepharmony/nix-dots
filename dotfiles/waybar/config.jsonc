@@ -9,7 +9,7 @@
 
     "modules-left": ["niri/workspaces", "niri/window"],
     "modules-center": ["clock"],
-    "modules-right": ["pulseaudio", "network", "battery", "tray"],
+    "modules-right": ["pulseaudio", "network", "custom/power", "battery", "tray"],
 
     "niri/workspaces": {
         "format": "{index}"
@@ -40,6 +40,17 @@
         "tooltip-format": "{ifname}: {ipaddr}/{cidr}",
         // Network list lives in the nm-applet tray icon; this opens the editor.
         "on-click": "nm-connection-editor"
+    },
+
+    // Lenovo platform profile (modules/hardware/laptop.nix); click toggles
+    // performance. power-mode only exists on spectre, so on manus the output
+    // is empty and waybar hides the module.
+    "custom/power": {
+        "exec": "power-mode status 2>/dev/null",
+        "interval": 5,
+        "signal": 9,
+        "on-click": "power-mode toggle",
+        "tooltip": false
     },
 
     // Hides itself on manus (no battery there).

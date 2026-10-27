@@ -22,6 +22,7 @@
         flake.modules.nixos.specialisations
         flake.modules.nixos.xremap
         flake.modules.nixos.intel
+        flake.modules.nixos.laptop
         flake.modules.nixos.gaming
         flake.modules.nixos.music
         flake.modules.nixos.study
@@ -32,27 +33,6 @@
       ];
 
       networking.hostName = "spectre";
-
-      # auto-cpufreq attempts
-      # (hopefully provides slightly better battery life than current)
-      # But first, we need to disable power-profiles-daemon:
-      services.power-profiles-daemon.enable = false;
-
-      services.auto-cpufreq = {
-        enable = true;
-        settings = {
-          battery = {
-            governor = "powersave";
-            energy_performance_preference = "power";
-            turbo = "auto";
-          };
-          charger = {
-            governor = "performance";
-            energy_performance_preference = "performance";
-            turbo = "auto";
-          };
-        };
-      };
 
       # Disk for disko (wipe/format target at install; the installed fstab
       # references partitions by-partuuid, so this never changes after).

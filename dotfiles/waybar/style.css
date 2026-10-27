@@ -35,6 +35,7 @@ window#waybar {
 #clock,
 #pulseaudio,
 #network,
+#custom-power,
 #battery,
 #tray {
     padding: 0 10px;
