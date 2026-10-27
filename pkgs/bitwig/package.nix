@@ -45,6 +45,7 @@
   zlib,
   wayland,
   fontconfig,
+  gsettings-desktop-schemas,
 }:
 let
   version = "6.1";
@@ -95,6 +96,16 @@ let
   '';
 
   pluginLibPath = lib.makeLibraryPath (fhsLibs ++ [ xcbShmShim ]);
+
+  # Prebuilt GTK helpers that plugins spawn (u-he's ~/.u-he/<Product>/dialog.64
+  # file picker, e.g. Hive's "Install Soundset…") abort with "No GSettings
+  # schemas are installed on the system": NixOS has no global schema dir and
+  # they aren't wrapped like nixpkgs GTK apps. GSETTINGS_SCHEMA_DIR takes a
+  # colon-separated list.
+  schemaPath = lib.concatMapStringsSep ":" glib.getSchemaPath [
+    gtk3
+    gsettings-desktop-schemas
+  ];
 
   unwrapped = stdenv.mkDerivation {
     pname = "bitwig-studio-unwrapped";
@@ -199,6 +210,7 @@ let
       --bind "$TMPDIR"/VampTransforms "$APP_DIR"/libexec/resources/VampTransforms \
       --dev-bind /dev /dev \
       --setenv LD_LIBRARY_PATH ${pluginLibPath} \
+      --setenv GSETTINGS_SCHEMA_DIR ${schemaPath} \
       "''${BINDS[@]}" \
       "$APP_DIR"/libexec/bitwig-studio \
       || true
