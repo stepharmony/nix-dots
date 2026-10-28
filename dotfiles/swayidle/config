@@ -4,3 +4,5 @@
 timeout 300 'swaylock'
 timeout 600 'niri msg action power-off-monitors'
 before-sleep 'swaylock'
+# loginctl lock-session (e.g. power-menu's Lock) — swaylock forks once locked.
+lock 'swaylock -f'
