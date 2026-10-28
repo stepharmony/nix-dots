@@ -50,7 +50,7 @@ let
         mv "$out.tmp" "$out"
         # qtile's gammastep (x11.nix) can't hot-reload: stop it, and its
         # gammastep-tz loop restarts it with the new coordinates.
-        pkill -x '\.?gammastep(-wrapped)?' || true
+        pkill -x '\.?gammastep(-wrapped)?' 2>/dev/null || true
       fi
     '';
   };

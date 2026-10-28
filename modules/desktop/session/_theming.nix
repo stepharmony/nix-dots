@@ -101,8 +101,10 @@ let
       }
 
       # signal <SIG> <name>: nixpkgs wraps many binaries, so the process may
-      # be called .<name>-wrapped (comm is what pkill -x matches).
-      signal() { pkill "-$1" -x "\.?$2(-wrapped)?" || true; }
+      # be called .<name>-wrapped (comm is what pkill -x matches). -O 3: never
+      # signal a process that just started and may not have its handler yet
+      # (the default action for USR1/USR2 is to terminate).
+      signal() { pkill "-$1" -O 3 -x "\.?$2(-wrapped)?" 2>/dev/null || true; }
 
       reload() {
         if [[ -n ''${NIRI_SOCKET:-} ]]; then

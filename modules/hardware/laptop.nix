@@ -59,7 +59,7 @@
                 target=performance
               fi
               ${sysfs} profile "$target"
-              pkill -RTMIN+9 waybar || true
+              pkill -RTMIN+9 -O 3 -x '\.?waybar(-wrapped)?' 2>/dev/null || true
               notify-send -t 1500 "Power mode" "$target" || true
               ;;
             *)
@@ -125,7 +125,10 @@
 
           set_rate() {
             niri msg output "$name" mode "''${w}x''${h}@$(awk -v r="$1" 'BEGIN { printf "%.3f", r / 1000 }')"
-            pkill -RTMIN+8 waybar || true
+            # -O 3: a waybar that is still starting has no handler for this
+            # signal yet, and its default action is to terminate — the
+            # watcher's first apply at login used to kill the bar.
+            pkill -RTMIN+8 -O 3 -x '\.?waybar(-wrapped)?' 2>/dev/null || true
           }
           on_ac() { grep -qs 1 /sys/class/power_supply/ADP*/online; }
 
