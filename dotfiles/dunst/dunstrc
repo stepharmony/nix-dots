@@ -5,7 +5,9 @@
 [global]
     font = JetBrainsMono Nerd Font 11
     width = 360
-    offset = (10, 10)
+    # Below qtile's 30 px top bar, with a 10 px gap. Logical pixels: dunst
+    # multiplies offsets by its HiDPI scale, as qtile's px() does the bar.
+    offset = (10, 40)
     origin = top-right
     padding = 10
     horizontal_padding = 10
