@@ -2,7 +2,7 @@
 # (libqtile/resources/), deployed by hjem to ~/.config/qtile/config.py.
 # Runs in the x11 boot entry only (modules/desktop/x11.nix).
 #
-# nix-dots edits: terminal = konsole; focus/shuffle/grow on the arrow keys
+# nix-dots edits: terminal = kitty, Mod+e = Thunar, XDG_CURRENT_DESKTOP; focus/shuffle/grow on the arrow keys
 # instead of h/j/k/l — xremap remaps below the WM, so keys arrive as
 # *Graphite* letters and vim-style positional binds land in odd places.
 # Mnemonic letter binds (w = kill, f = fullscreen, r = run, …) are kept.
@@ -17,7 +17,11 @@ from libqtile.config import Click, Drag, Group, Key, Match, Output, Screen
 from libqtile.lazy import lazy
 
 mod = "mod4"
-terminal = "konsole"  # nix-dots: same terminal as the Niri session
+terminal = "kitty"  # nix-dots: same terminal as the Niri session
+
+# nix-dots: the qtile xsession sets no XDG_CURRENT_DESKTOP; name it so apps
+# spawned from here pick up ~/.config/qtile-mimeapps.list (tiling defaults).
+os.environ["XDG_CURRENT_DESKTOP"] = "qtile"
 
 keys = [
     # A list of available commands that can be bound to keys can be found
@@ -52,6 +56,7 @@ keys = [
         desc="Toggle between split and unsplit sides of stack",
     ),
     Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
+    Key([mod], "e", lazy.spawn("thunar"), desc="Launch file manager"),  # nix-dots
     # Toggle between different layouts as defined below
     Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
     Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),

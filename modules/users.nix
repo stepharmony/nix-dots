@@ -36,6 +36,11 @@
 
           # Qtile (x11 boot entry only) — upstream default config + Graphite edits
           "qtile/config.py".source = ../dotfiles/qtile/config.py;
+
+          # Tiling-session apps (niri + qtile): terminal + per-session defaults
+          "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
+          "niri-mimeapps.list".source = ../dotfiles/xdg/tiling-mimeapps.list;
+          "qtile-mimeapps.list".source = ../dotfiles/xdg/tiling-mimeapps.list;
         };
       };
     };

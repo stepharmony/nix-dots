@@ -1,0 +1,44 @@
+# Default apps for the tiling sessions only. Deployed by hjem as
+# ~/.config/niri-mimeapps.list and ~/.config/qtile-mimeapps.list: XDG reads
+# <desktop>-mimeapps.list before mimeapps.list when XDG_CURRENT_DESKTOP
+# matches, so Plasma keeps its own defaults. Apps: modules/desktop/session/_apps.nix
+
+[Default Applications]
+x-scheme-handler/http=floorp.desktop
+x-scheme-handler/https=floorp.desktop
+text/html=floorp.desktop
+application/xhtml+xml=floorp.desktop
+
+inode/directory=thunar.desktop
+
+application/pdf=org.pwmt.zathura.desktop
+application/epub+zip=org.pwmt.zathura.desktop
+
+image/png=imv.desktop
+image/jpeg=imv.desktop
+image/gif=imv.desktop
+image/webp=imv.desktop
+image/bmp=imv.desktop
+image/tiff=imv.desktop
+image/avif=imv.desktop
+image/heif=imv.desktop
+image/jxl=imv.desktop
+image/svg+xml=imv.desktop
+
+video/mp4=mpv.desktop
+video/x-matroska=mpv.desktop
+video/webm=mpv.desktop
+video/quicktime=mpv.desktop
+video/x-msvideo=mpv.desktop
+audio/mpeg=mpv.desktop
+audio/flac=mpv.desktop
+audio/ogg=mpv.desktop
+audio/x-wav=mpv.desktop
+
+application/zip=xarchiver.desktop
+application/x-7z-compressed=xarchiver.desktop
+application/x-tar=xarchiver.desktop
+application/x-compressed-tar=xarchiver.desktop
+application/x-xz-compressed-tar=xarchiver.desktop
+application/x-zstd-compressed-tar=xarchiver.desktop
+application/vnd.rar=xarchiver.desktop
