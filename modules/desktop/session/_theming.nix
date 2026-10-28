@@ -183,12 +183,17 @@ let
         exit 1
       fi
 
-      idx=$(for f in "''${files[@]}"; do
-        thumb=$cache/$(printf '%s %s' "$f" "$(stat -c %Y "$f")" | sha1sum | cut -c1-40).png
-        [[ -e $thumb ]] || ffmpeg -loglevel error -y -i "$f" -vf scale=320:-2 -frames:v 1 "$thumb" || true
-        name=''${f##*/}
-        printf '%s\0icon\x1f%s\n' "''${name%.*}" "$thumb"
-      done | rofi -dmenu -i -show-icons -p wallpaper -format i -theme "$HOME/.config/rofi/wallpaper.rasi") || exit 0
+      # rofi shows the list while it is still being written; picking before
+      # the end closes the pipe. Stop writing then, and judge the pipeline
+      # by rofi alone (with pipefail the failed write counted as a cancel).
+      idx=$(
+        set +o pipefail
+        for f in "''${files[@]}"; do
+          thumb=$cache/$(printf '%s %s' "$f" "$(stat -c %Y "$f")" | sha1sum | cut -c1-40).png
+          [[ -e $thumb ]] || ffmpeg -loglevel error -y -i "$f" -vf scale=320:-2 -frames:v 1 "$thumb" || true
+          name=''${f##*/}
+          printf '%s\0icon\x1f%s\n' "''${name%.*}" "$thumb" 2>/dev/null || break
+        done | rofi -dmenu -i -show-icons -p wallpaper -format i -theme "$HOME/.config/rofi/wallpaper.rasi") || exit 0
 
       [[ -n $idx ]] && exec wallpaper "''${files[idx]}"
     '';
