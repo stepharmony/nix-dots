@@ -6,7 +6,7 @@
 # - keybindings follow niri's config.kdl (Mod+Shift+/ lists them in rofi):
 #   apps, rofi + clipboard, media keys, screenshots, power/refresh toggles,
 #   power menu; Mod+wheel switches workspaces
-# - top bar styled after waybar, with volume, refresh rate, power profile,
+# - top bar, edge to edge like waybar: volume, refresh rate, power profile,
 #   battery, tray and a power-menu button
 # - colours + wallpaper from matugen (`wallpaper`; colors.json), GTK/Qt env
 #   and XDG_CURRENT_DESKTOP for the tiling defaults
@@ -416,7 +416,6 @@ screens = [
             ],
             px(30),
             background=colors["bg"],
-            margin=[px(6), px(8), 0, px(8)],
         ),
         background="#000000",
         wallpaper=wallpaper if os.path.exists(wallpaper) else logo,
