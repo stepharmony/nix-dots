@@ -310,6 +310,8 @@ spawn-at-startup "mako"
 spawn-at-startup "swayidle" "-w"
 spawn-at-startup "polkit-agent"
 spawn-at-startup "sunsetr"
+// Calendar popup behind waybar's clock (dotfiles/quickshell/calendar/).
+spawn-at-startup "qs" "-c" "calendar"
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
 spawn-sh-at-startup "swaybg -m fill -i ~/.local/state/wallpaper/current"
 // nix-dots: NetworkManager tray icon (wifi list, password prompts, VPNs) in

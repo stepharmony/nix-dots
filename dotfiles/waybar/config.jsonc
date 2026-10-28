@@ -22,8 +22,10 @@
     "clock": {
         "format": "{:%a %d %b  %H:%M}",
         "tooltip-format": "<tt>{calendar}</tt>",
-        // Events live in GNOME Calendar (Google via Online Accounts).
-        "on-click": "gnome-calendar"
+        // Quickshell calendar popup (dotfiles/quickshell/calendar/); GNOME
+        // Calendar if it isn't running. Right-click: GNOME Calendar.
+        "on-click": "qs ipc -c calendar call calendar toggle || gnome-calendar",
+        "on-click-right": "gnome-calendar"
     },
 
     "pulseaudio": {
