@@ -28,7 +28,7 @@
           "niri/wallpaper.png".source = ../dotfiles/niri/wallpaper.png; # swaybg
           "waybar/config.jsonc".source = ../dotfiles/waybar/config.jsonc;
           "waybar/style.css".source = ../dotfiles/waybar/style.css;
-          "fuzzel/fuzzel.ini".source = ../dotfiles/fuzzel/fuzzel.ini;
+          "rofi/config.rasi".source = ../dotfiles/rofi/config.rasi;
           "mako/config".source = ../dotfiles/mako/config;
           "swayidle/config".source = ../dotfiles/swayidle/config;
           "swaylock/config".source = ../dotfiles/swaylock/config;
@@ -36,6 +36,7 @@
 
           # Qtile (x11 boot entry only) — upstream default config + Graphite edits
           "qtile/config.py".source = ../dotfiles/qtile/config.py;
+          "dunst/dunstrc".source = ../dotfiles/dunst/dunstrc;
 
           # Tiling-session apps (niri + qtile): terminal + per-session defaults
           "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;

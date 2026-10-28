@@ -2,17 +2,20 @@
 # (libqtile/resources/), deployed by hjem to ~/.config/qtile/config.py.
 # Runs in the x11 boot entry only (modules/desktop/x11.nix).
 #
-# nix-dots edits: terminal = kitty, Mod+e = Thunar, XDG_CURRENT_DESKTOP; focus/shuffle/grow on the arrow keys
+# nix-dots edits: terminal = kitty, Mod+e = Thunar, Mod+r = rofi, Mod+Alt+l =
+# lock, autostart (dunst, nm-applet, polkit agent, xss-lock + i3lock),
+# XDG_CURRENT_DESKTOP; focus/shuffle/grow on the arrow keys
 # instead of h/j/k/l — xremap remaps below the WM, so keys arrive as
 # *Graphite* letters and vim-style positional binds land in odd places.
 # Mnemonic letter binds (w = kill, f = fullscreen, r = run, …) are kept.
 # Removed the bar's "default config" hint labels.
 
 import os
+import subprocess
 from collections.abc import Callable
 
 import libqtile.resources
-from libqtile import bar, layout, qtile, widget
+from libqtile import bar, hook, layout, qtile, widget
 from libqtile.config import Click, Drag, Group, Key, Match, Output, Screen
 from libqtile.lazy import lazy
 
@@ -69,7 +72,9 @@ keys = [
     Key([mod], "t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
     Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    # nix-dots: rofi instead of the bar prompt; lock mirrors niri's Super+Alt+L.
+    Key([mod], "r", lazy.spawn("rofi -show drun"), desc="App launcher (rofi)"),
+    Key([mod, "mod1"], "l", lazy.spawn("loginctl lock-session"), desc="Lock the screen"),
 ]
 
 # Add key bindings to switch VTs in Wayland.
@@ -237,3 +242,17 @@ idle_inhibitors = []  # type: list
 # We choose LG3D to maximize irony: it is a 3D non-reparenting WM written in
 # java that happens to be on java's whitelist.
 wmname = "LG3D"
+
+
+# nix-dots: session companions (installed by modules/desktop/x11.nix and the
+# session aspect). xss-lock locks on `loginctl lock-session` (Mod+Alt+l) and
+# before suspend; nm-applet sits in the bar's Systray.
+@hook.subscribe.startup_once
+def autostart():
+    for cmd in (
+        ["dunst"],
+        ["nm-applet"],
+        ["polkit-agent"],
+        ["xss-lock", "--transfer-sleep-lock", "--", "i3lock", "--nofork", "--color=18181b"],
+    ):
+        subprocess.Popen(cmd)

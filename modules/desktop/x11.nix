@@ -23,7 +23,13 @@
 
       # GTK desktops' utilities: disk usage analyzer + X11 clipboard CLI.
       # (The Wayland side has its own in session/_utils.nix: wl-clipboard.)
+      # qtile companions (spawned by its config.py autostart; rofi, kitty and
+      # the other tiling apps come from the session aspect): notifications,
+      # lock-on-idle/suspend, screen locker.
       environment.systemPackages = with pkgs; [
+        dunst
+        xss-lock
+        i3lock
         baobab
         xclip
         qalculate-gtk

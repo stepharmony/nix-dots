@@ -1,0 +1,35 @@
+# dunst — notification daemon for qtile (spawned from its autostart; niri
+# uses mako, Plasma its own). Deployed by hjem to ~/.config/dunst/dunstrc.
+# Reference: man 5 dunst. Test with: notify-send "hello" "from dunst"
+
+[global]
+    font = JetBrainsMono Nerd Font 11
+    width = 360
+    offset = (10, 10)
+    origin = top-right
+    padding = 10
+    horizontal_padding = 10
+    frame_width = 2
+    corner_radius = 8
+    gap_size = 6
+    notification_limit = 5
+    icon_theme = oxygen
+    enable_recursive_icon_lookup = true
+
+[urgency_low]
+    background = "#18181bf0"
+    foreground = "#a1a1aa"
+    frame_color = "#27272a"
+    timeout = 4
+
+[urgency_normal]
+    background = "#18181bf0"
+    foreground = "#e4e4e7"
+    frame_color = "#7fc8ff"
+    timeout = 6
+
+[urgency_critical]
+    background = "#18181bf0"
+    foreground = "#e4e4e7"
+    frame_color = "#9b0000"
+    timeout = 0

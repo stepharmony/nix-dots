@@ -1,5 +1,5 @@
 # Compositor-agnostic Wayland session stack (Niri): the classic tools niri's
-# upstream default config expects — waybar, fuzzel, mako, swaylock/swayidle —
+# upstream default config expects — waybar, rofi, mako, swaylock/swayidle —
 # plus utils, the sunsetr blue-light filter and the tiling default apps
 # (_apps.nix: kitty, Thunar, zathura, imv, xarchiver; also used by qtile, as
 # the x11 boot inherits this). Everything here is only *installed*; niri's

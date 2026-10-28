@@ -48,7 +48,7 @@ modules/
                            # `power-mode`, `battery-cap`, `refresh-rate`
   xremap.nix               # Graphite remapping (system daemon + per-session bridge)
   desktop.nix              # Plasma 6 — the default SDDM session on both hosts
-  desktop/session.nix      # Wayland session stack for Niri: waybar, fuzzel, mako,
+  desktop/session.nix      # Wayland session stack for Niri: waybar, rofi, mako,
                            # swaylock/swayidle, clipboard/media utils, nm-applet, sunsetr
                            # (installed only — niri's config.kdl spawns them)
   desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
@@ -61,7 +61,7 @@ pkgs/                      # custom package expressions used by overlays (see TI
 dotfiles/                  # sources deployed into $HOME by hjem, each to its
                            # default ~/.config location: niri/config.kdl (upstream
                            # niri default + nix-dots edits) + wallpaper, waybar,
-                           # fuzzel, mako, swayidle, swaylock, sunsetr;
+                           # rofi, mako, swayidle, swaylock, sunsetr;
                            # qtile/config.py (x11 boot entry; upstream default + edits);
                            # xremap system service config (deployed to /etc by xremap.nix)
 ```
