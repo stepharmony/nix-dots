@@ -7,7 +7,8 @@
 #   picker, Mod+q = close (as in niri), Mod+Alt+l = lock
 # - colours + wallpaper from matugen (`wallpaper`; colors.json), GTK/Qt env
 #   and XDG_CURRENT_DESKTOP for the tiling defaults
-# - autostart: dunst, nm-applet, polkit agent, xss-lock + i3lock
+# - autostart: dunst, nm-applet, polkit agent, xss-lock + i3lock, gammastep
+#   (blue-light filter; location from the timezone, like sunsetr in niri)
 # - focus/shuffle/grow on the arrow keys instead of h/j/k/l — xremap remaps
 #   below the WM, so keys arrive as *Graphite* letters and vim-style
 #   positional binds land in odd places. Mnemonic letter binds (f =
@@ -297,6 +298,7 @@ def autostart():
         ["dunst"],
         ["nm-applet"],
         ["polkit-agent"],
+        ["gammastep-tz"],
         ["xss-lock", "--transfer-sleep-lock", "--", "lock-x11"],
     ):
         subprocess.Popen(cmd)

@@ -17,6 +17,7 @@ let
     runtimeInputs = with pkgs; [
       coreutils
       gawk
+      procps
     ];
     text = ''
       out=''${SUNSETR_GEO:-''${XDG_CONFIG_HOME:-$HOME/.config}/sunsetr/geo.toml}
@@ -47,6 +48,9 @@ let
         mkdir -p "$(dirname "$out")"
         printf '%s\n' "$new" >"$out.tmp"
         mv "$out.tmp" "$out"
+        # qtile's gammastep (x11.nix) can't hot-reload: stop it, and its
+        # gammastep-tz loop restarts it with the new coordinates.
+        pkill -x '\.?gammastep(-wrapped)?' || true
       fi
     '';
   };
