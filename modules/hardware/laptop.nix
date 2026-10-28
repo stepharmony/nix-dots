@@ -144,9 +144,14 @@
                 if [[ $ac == 1 ]]; then set_rate "$high"; else set_rate "$low"; fi
               }
               apply || true
-              udevadm monitor --udev --subsystem-match=power_supply | while read -r _; do
-                niri msg version >/dev/null 2>&1 || exit 0 # niri gone: stop
-                apply || true
+              # Wake on power_supply events, and at least once a minute to
+              # notice that this session's niri has exited (then stop, taking
+              # udevadm along) — otherwise a logout leaves the watcher behind.
+              exec {events}< <(exec udevadm monitor --udev --subsystem-match=power_supply)
+              monitor=$!
+              trap 'kill "$monitor" 2>/dev/null' EXIT
+              while niri msg version >/dev/null 2>&1; do
+                if read -r -t 60 -u "$events" _; then apply || true; fi
               done
               ;;
             *)

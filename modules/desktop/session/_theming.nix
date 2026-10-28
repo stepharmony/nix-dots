@@ -88,7 +88,6 @@ let
       matugen
       procps
       libnotify
-      util-linux # setsid
     ];
     text = ''
       state=''${XDG_STATE_HOME:-$HOME/.local/state}/wallpaper
@@ -101,15 +100,20 @@ let
         echo ${matugenConfig} >"$state/generated"
       }
 
+      # signal <SIG> <name>: nixpkgs wraps many binaries, so the process may
+      # be called .<name>-wrapped (comm is what pkill -x matches).
+      signal() { pkill "-$1" -x "\.?$2(-wrapped)?" || true; }
+
       reload() {
         if [[ -n ''${NIRI_SOCKET:-} ]]; then
-          pkill -x swaybg || true
-          setsid -f swaybg -m fill -i "$current" >/dev/null 2>&1
+          # Through niri, so swaybg gets its own scope like the startup one.
+          signal TERM swaybg
+          niri msg action spawn -- swaybg -m fill -i "$current" || true
         fi
-        pkill -USR2 -x waybar || true # reload style (niri reloads colors.kdl itself)
+        signal USR2 waybar # reload style (niri reloads colors.kdl itself)
         if command -v makoctl >/dev/null; then makoctl reload 2>/dev/null || true; fi
         if command -v dunstctl >/dev/null; then dunstctl reload 2>/dev/null || true; fi
-        pkill -USR1 -x kitty || true
+        signal USR1 kitty
         if [[ ''${XDG_CURRENT_DESKTOP:-} == qtile ]] && command -v qtile >/dev/null; then
           qtile cmd-obj -f reload_config >/dev/null 2>&1 || true
         fi
