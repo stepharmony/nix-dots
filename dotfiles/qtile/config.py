@@ -3,20 +3,21 @@
 # Runs in the x11 boot entry only (modules/desktop/x11.nix).
 #
 # nix-dots edits:
-# - apps: terminal = kitty, Mod+e = Thunar, Mod+r = rofi, Mod+w = wallpaper
-#   picker, Mod+q = close (as in niri), Mod+Alt+l = lock
+# - keybindings follow niri's config.kdl (Mod+Shift+/ lists them in rofi):
+#   apps, rofi + clipboard, media keys, screenshots, power/refresh toggles,
+#   power menu; Mod+wheel switches workspaces
+# - top bar styled after waybar, with volume, refresh rate, power profile,
+#   battery, tray and a power-menu button
 # - colours + wallpaper from matugen (`wallpaper`; colors.json), GTK/Qt env
 #   and XDG_CURRENT_DESKTOP for the tiling defaults
 # - HiDPI: scale guessed from the output DPI like niri (Xft.dpi, xsettingsd
 #   for GTK, cursor size); the bar's pixel sizes go through px()
-# - autostart: dunst, nm-applet, blueman-applet, polkit agent, calendar
-#   reminders, xss-lock + i3lock, gammastep (blue-light filter; location
-#   from the timezone, like sunsetr in niri)
-# - focus/shuffle/grow on the arrow keys instead of h/j/k/l — xremap remaps
-#   below the WM, so keys arrive as *Graphite* letters and vim-style
-#   positional binds land in odd places. Mnemonic letter binds (f =
-#   fullscreen, t = floating, …) are kept.
-# - removed the bar's "default config" hint labels.
+# - autostart: numlock, clipboard daemon, refresh-rate watcher, dunst,
+#   nm-applet, blueman-applet, polkit agent, calendar reminders, xss-lock +
+#   i3lock, gammastep (blue-light filter; location from the timezone, like
+#   sunsetr in niri)
+# - arrow keys, not h/j/k/l, as in niri — xremap remaps below the WM, so
+#   keys arrive as *Graphite* letters and positional binds land oddly.
 
 import json
 import os
@@ -97,6 +98,8 @@ colors = {
     "accent": "#7fc8ff",
     "on_accent": "#18181b",
     "inactive": "#3f3f46",
+    "muted": "#71717a",
+    "warning": "#f9e2af",
     "error": "#9b0000",
 }
 try:
@@ -106,57 +109,114 @@ except (OSError, ValueError):
     pass
 wallpaper = os.path.expanduser("~/.local/state/wallpaper/current")
 
+# nix-dots: helpers for the niri-style binds below and the bar.
+def _run(cmd, *widgets):
+    """Run cmd (briefly blocking), then refresh the named bar widgets."""
+
+    def run(qtile):
+        subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        for name in widgets:
+            if name in qtile.widgets_map:
+                qtile.widgets_map[name].force_update()
+
+    return lazy.function(run)
+
+
+@lazy.function
+def _window_to_next_group(qtile, step=1):
+    if qtile.current_window:
+        i = qtile.groups.index(qtile.current_group)
+        qtile.current_window.togroup(qtile.groups[(i + step) % len(qtile.groups)].name, switch_group=True)
+
+
+@lazy.function
+def _screenshot_window(qtile):
+    if qtile.current_window:
+        subprocess.Popen(["screenshot-x11", "window", str(qtile.current_window.wid)])
+
+
+@lazy.function
+def _show_keys(qtile):
+    """niri's hotkey overlay (Mod+Shift+/): every bind with a description, in rofi."""
+    names = {mod: "Mod", "mod1": "Alt", "control": "Ctrl", "shift": "Shift"}
+    lines = [
+        f"{'+'.join([names.get(m, m) for m in k.modifiers] + [k.key]):<28} {k.desc}" for k in keys if k.desc
+    ]
+    p = subprocess.Popen(["rofi", "-dmenu", "-i", "-p", "keys", "-no-custom"], stdin=subprocess.PIPE, text=True)
+    p.stdin.write("\n".join(lines))
+    p.stdin.close()
+
+
+volume = "@DEFAULT_AUDIO_SINK@"
+
+# nix-dots: binds follow niri's config.kdl (same muscle memory in both
+# sessions); qtile-only extras are marked. Columns layout: a column holds a
+# stack of windows, like niri's columns.
 keys = [
-    # A list of available commands that can be bound to keys can be found
-    # at https://docs.qtile.org/en/latest/manual/config/lazy.html
-    # Switch between windows
-    Key([mod], "Left", lazy.layout.left(), desc="Move focus to left"),
-    Key([mod], "Right", lazy.layout.right(), desc="Move focus to right"),
-    Key([mod], "Down", lazy.layout.down(), desc="Move focus down"),
-    Key([mod], "Up", lazy.layout.up(), desc="Move focus up"),
-    Key([mod], "space", lazy.layout.next(), desc="Move window focus to other window"),
-    # Move windows between left/right columns or move up/down in current stack.
-    # Moving out of range in Columns layout will create new column.
-    Key([mod, "shift"], "Left", lazy.layout.shuffle_left(), desc="Move window to the left"),
-    Key([mod, "shift"], "Right", lazy.layout.shuffle_right(), desc="Move window to the right"),
-    Key([mod, "shift"], "Down", lazy.layout.shuffle_down(), desc="Move window down"),
-    Key([mod, "shift"], "Up", lazy.layout.shuffle_up(), desc="Move window up"),
-    # Grow windows. If current window is on the edge of screen and direction
-    # will be to screen edge - window would shrink.
-    Key([mod, "control"], "Left", lazy.layout.grow_left(), desc="Grow window to the left"),
-    Key([mod, "control"], "Right", lazy.layout.grow_right(), desc="Grow window to the right"),
-    Key([mod, "control"], "Down", lazy.layout.grow_down(), desc="Grow window down"),
-    Key([mod, "control"], "Up", lazy.layout.grow_up(), desc="Grow window up"),
-    Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
-    # Toggle between split and unsplit sides of stack.
-    # Split = all windows displayed
-    # Unsplit = 1 window displayed, like Max layout, but still with
-    # multiple stack panes
+    Key([mod, "shift"], "slash", _show_keys(), desc="Show these keybindings"),
+    # Apps
+    Key([mod], "t", lazy.spawn(terminal), desc="Terminal: kitty"),
+    Key([mod], "Return", lazy.spawn(terminal), desc="Terminal: kitty (qtile)"),
+    Key([mod], "e", lazy.spawn("thunar"), desc="Files: Thunar"),
+    Key([mod], "w", lazy.spawn("wallpaper-pick"), desc="Pick a wallpaper"),
+    Key([mod], "d", lazy.spawn("rofi -show drun"), desc="Run an application: rofi"),
     Key(
         [mod, "shift"],
-        "Return",
-        lazy.layout.toggle_split(),
-        desc="Toggle between split and unsplit sides of stack",
+        "c",
+        lazy.spawn(["rofi", "-modi", "clipboard:greenclip print", "-show", "clipboard", "-run-command", "{cmd}"]),
+        desc="Clipboard history: greenclip",
     ),
-    Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
-    Key([mod], "e", lazy.spawn("thunar"), desc="Launch file manager"),  # nix-dots
-    # Toggle between different layouts as defined below
-    Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
-    # nix-dots: Mod+q closes (as in niri); Mod+w is the wallpaper picker.
-    Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
-    Key([mod], "w", lazy.spawn("wallpaper-pick"), desc="Pick a wallpaper"),
-    Key(
-        [mod],
-        "f",
-        lazy.window.toggle_fullscreen(),
-        desc="Toggle fullscreen on the focused window",
-    ),
-    Key([mod], "t", lazy.window.toggle_floating(), desc="Toggle floating on the focused window"),
-    Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
-    # nix-dots: rofi instead of the bar prompt; lock mirrors niri's Super+Alt+L.
-    Key([mod], "r", lazy.spawn("rofi -show drun"), desc="App launcher (rofi)"),
     Key([mod, "mod1"], "l", lazy.spawn("loginctl lock-session"), desc="Lock the screen"),
+    Key([mod, "mod1"], "p", _run(["power-mode", "toggle"], "powermode"), desc="Toggle performance mode"),
+    Key([mod, "mod1"], "r", _run(["refresh-rate", "toggle"], "refresh"), desc="Toggle refresh rate (60/120 Hz)"),
+    Key([mod, "shift"], "e", lazy.spawn("power-menu"), desc="Power menu"),
+    Key(["control", "mod1"], "Delete", lazy.spawn("power-menu"), desc="Power menu"),
+    Key([mod, "shift"], "p", lazy.spawn("xset dpms force off"), desc="Turn off the monitors"),
+    # Media keys
+    Key([], "XF86AudioRaiseVolume", _run(["wpctl", "set-volume", volume, "0.1+", "-l", "1.0"], "volume")),
+    Key([], "XF86AudioLowerVolume", _run(["wpctl", "set-volume", volume, "0.1-"], "volume")),
+    Key([], "XF86AudioMute", _run(["wpctl", "set-mute", volume, "toggle"], "volume")),
+    Key([], "XF86AudioMicMute", lazy.spawn("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle")),
+    Key([], "XF86AudioPlay", lazy.spawn("playerctl play-pause")),
+    Key([], "XF86AudioStop", lazy.spawn("playerctl stop")),
+    Key([], "XF86AudioPrev", lazy.spawn("playerctl previous")),
+    Key([], "XF86AudioNext", lazy.spawn("playerctl next")),
+    Key([], "XF86MonBrightnessUp", lazy.spawn("brightnessctl --class=backlight set +10%")),
+    Key([], "XF86MonBrightnessDown", lazy.spawn("brightnessctl --class=backlight set 10%-")),
+    # Screenshots (saved to ~/Pictures/Screenshots and copied, as in niri)
+    Key([], "Print", lazy.spawn("screenshot-x11 region"), desc="Screenshot a region"),
+    Key(["control"], "Print", lazy.spawn("screenshot-x11 screen"), desc="Screenshot the screen"),
+    Key(["mod1"], "Print", _screenshot_window(), desc="Screenshot the window"),
+    # Windows
+    Key([mod], "q", lazy.window.kill(), desc="Close the window"),
+    Key([mod], "Left", lazy.layout.left(), desc="Focus left"),
+    Key([mod], "Right", lazy.layout.right(), desc="Focus right"),
+    Key([mod], "Down", lazy.layout.down(), desc="Focus down"),
+    Key([mod], "Up", lazy.layout.up(), desc="Focus up"),
+    Key([mod, "control"], "Left", lazy.layout.shuffle_left(), desc="Move window left"),
+    Key([mod, "control"], "Right", lazy.layout.shuffle_right(), desc="Move window right"),
+    Key([mod, "control"], "Down", lazy.layout.shuffle_down(), desc="Move window down"),
+    Key([mod, "control"], "Up", lazy.layout.shuffle_up(), desc="Move window up"),
+    Key([mod, "shift"], "Left", lazy.prev_screen(), desc="Focus monitor left"),
+    Key([mod, "shift"], "Right", lazy.next_screen(), desc="Focus monitor right"),
+    # niri's ±10% width/height: Columns grows towards a side instead.
+    Key([mod], "minus", lazy.layout.grow_left(), desc="Grow column to the left"),
+    Key([mod], "equal", lazy.layout.grow_right(), desc="Grow column to the right"),
+    Key([mod, "shift"], "minus", lazy.layout.grow_up(), desc="Grow window upwards"),
+    Key([mod, "shift"], "equal", lazy.layout.grow_down(), desc="Grow window downwards"),
+    Key([mod, "control"], "r", lazy.layout.normalize(), desc="Reset window sizes"),
+    Key([mod], "f", lazy.window.toggle_maximize(), desc="Maximize the window"),
+    Key([mod, "shift"], "f", lazy.window.toggle_fullscreen(), desc="Fullscreen the window"),
+    Key([mod], "v", lazy.window.toggle_floating(), desc="Toggle floating"),
+    Key([mod, "shift"], "w", lazy.next_layout(), desc="Toggle tabbed (Max) layout"),
+    Key([mod], "Tab", lazy.next_layout(), desc="Next layout (qtile)"),
+    Key([mod, "shift"], "Return", lazy.layout.toggle_split(), desc="Toggle column stacking (qtile)"),
+    # Workspaces (groups)
+    Key([mod], "Page_Down", lazy.screen.next_group(), desc="Next workspace"),
+    Key([mod], "Page_Up", lazy.screen.prev_group(), desc="Previous workspace"),
+    Key([mod, "control"], "Page_Down", _window_to_next_group(1), desc="Move window to next workspace"),
+    Key([mod, "control"], "Page_Up", _window_to_next_group(-1), desc="Move window to previous workspace"),
+    Key([mod, "control", "shift"], "r", lazy.reload_config(), desc="Reload the qtile config"),
 ]
 
 # Add key bindings to switch VTs in Wayland.
@@ -183,14 +243,14 @@ for i in groups:
                 [mod],
                 i.name,
                 lazy.group[i.name].toscreen(),
-                desc=f"Switch to group {i.name}",
+                desc=f"Focus workspace {i.name}",
             ),
-            # mod + shift + group number = switch to & move focused window to group
+            # nix-dots: mod + ctrl + number, as niri's move-column-to-workspace
             Key(
-                [mod, "shift"],
+                [mod, "control"],
                 i.name,
                 lazy.window.togroup(i.name, switch_group=True),
-                desc=f"Switch to & move focused window to group {i.name}",
+                desc=f"Move window to workspace {i.name}",
             ),
             # Or, use below if you prefer not to switch to that group.
             # # mod + shift + group number = move focused window to group
@@ -229,37 +289,134 @@ widget_defaults = dict(
 extension_defaults = widget_defaults.copy()
 
 logo = os.path.join(os.path.dirname(libqtile.resources.__file__), "logo.png")
+
+
+# nix-dots: the bar mirrors waybar in niri (dotfiles/waybar/): workspaces and
+# window title, clock in the middle, then volume, refresh rate, power
+# profile, battery, tray and a power-menu button. Status text comes from the
+# same commands waybar uses; laptop-only modules are left out where their
+# command or battery doesn't exist (manus).
+def _out(cmd):
+    try:
+        return subprocess.run(cmd, capture_output=True, text=True, timeout=2).stdout.strip()
+    except (OSError, subprocess.TimeoutExpired):
+        return ""
+
+
+def _volume_text():
+    out = _out(["wpctl", "get-volume", volume])  # "Volume: 0.45 [MUTED]"
+    m = re.search(r"([\d.]+)", out)
+    if not m:
+        return ""
+    if "MUTED" in out:
+        return f'<span foreground="{colors["muted"]}">󰝟 muted</span>'
+    pct = round(float(m[1]) * 100)
+    return f"{'󰕿󰖀󰕾'[min(2, pct // 34)]} {pct}%"
+
+
+_batteries = [os.path.join("/sys/class/power_supply", b) for b in os.listdir("/sys/class/power_supply") if b.startswith("BAT")]
+
+
+def _battery_text():
+    try:
+        with open(os.path.join(_batteries[0], "capacity")) as f:
+            pct = int(f.read())
+        with open(os.path.join(_batteries[0], "status")) as f:
+            status = f.read().strip()
+    except (OSError, ValueError, IndexError):
+        return ""
+    if status == "Charging":
+        return f"󰂄 {pct}%"
+    text = f"{'󰁺󰁼󰁾󰂀󰁹'[min(4, pct // 20)]} {pct}%"
+    for limit, color in ((10, colors["error"]), (25, colors["warning"])):
+        if pct <= limit:
+            return f'<span foreground="{color}">{text}</span>'
+    return text
+
+
+def _pill(w):
+    """Module look: a raised block on the bar, spaced like waybar's modules."""
+    w.background = colors["bg_alt"]
+    w.padding = px(10)
+    return [w, widget.Spacer(length=px(6))]
+
+
+_status = [
+    *_pill(
+        widget.GenPollText(
+            name="volume",
+            func=_volume_text,
+            update_interval=2,
+            mouse_callbacks={
+                "Button1": _run(["wpctl", "set-mute", volume, "toggle"], "volume"),
+                "Button3": lazy.spawn("pavucontrol"),
+                "Button4": _run(["wpctl", "set-volume", volume, "0.05+", "-l", "1.0"], "volume"),
+                "Button5": _run(["wpctl", "set-volume", volume, "0.05-"], "volume"),
+            },
+        )
+    ),
+]
+if shutil.which("refresh-rate"):
+    _status += _pill(
+        widget.GenPollText(
+            name="refresh",
+            func=lambda: _out(["refresh-rate", "status"]),
+            update_interval=10,
+            mouse_callbacks={"Button1": _run(["refresh-rate", "toggle"], "refresh")},
+        )
+    )
+if shutil.which("power-mode"):
+    _status += _pill(
+        widget.GenPollText(
+            name="powermode",
+            func=lambda: _out(["power-mode", "status"]),
+            update_interval=5,
+            mouse_callbacks={"Button1": _run(["power-mode", "toggle"], "powermode")},
+        )
+    )
+if _batteries:
+    _status += _pill(widget.GenPollText(name="battery", func=_battery_text, update_interval=30))
+
 screens = [
     Screen(
-        bottom=bar.Bar(
+        top=bar.Bar(
             [
-                widget.CurrentLayout(),
                 widget.GroupBox(
                     active=colors["fg"],
                     inactive=colors["fg_dim"],
                     highlight_method="block",
+                    rounded=True,
+                    margin_x=0,
+                    padding_x=px(8),
                     this_current_screen_border=colors["accent"],
+                    other_current_screen_border=colors["inactive"],
                     block_highlight_text_color=colors["on_accent"],
                     urgent_border=colors["error"],
+                    disable_drag=True,
                 ),
-                widget.Prompt(),
-                widget.WindowName(),
-                widget.Chord(
-                    chords_colors={
-                        "launch": ("#ff0000", "#ffffff"),
-                    },
-                    name_transform=lambda name: name.upper(),
+                widget.CurrentLayout(foreground=colors["fg_dim"], padding=px(10)),
+                widget.WindowName(max_chars=60, empty_group_string=""),
+                widget.Clock(
+                    format="%a %d %b  %H:%M",
+                    foreground=colors["accent"],
+                    padding=px(10),
+                    mouse_callbacks={"Button1": lazy.spawn("gnome-calendar")},
                 ),
-                # NB Systray is incompatible with Wayland, consider using StatusNotifier instead
-                # widget.StatusNotifier(),
-                widget.Systray(icon_size=px(20)),
-                widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
-                widget.QuickExit(),
+                widget.Spacer(),
+                *_status,
+                widget.Systray(icon_size=px(20), padding=px(8)),
+                widget.Spacer(length=px(6)),
+                widget.TextBox(
+                    "󰐥",
+                    foreground=colors["on_accent"],
+                    background=colors["accent"],
+                    padding=px(12),
+                    mouse_callbacks={"Button1": lazy.spawn("power-menu")},
+                ),
             ],
-            px(26),
+            px(30),
             background=colors["bg"],
-            # border_width=[2, 0, 2, 0],  # Draw top and bottom borders
-            # border_color=["ff00ff", "000000", "ff00ff", "000000"]  # Borders are magenta
+            margin=[px(6), px(8), 0, px(8)],
         ),
         background="#000000",
         wallpaper=wallpaper if os.path.exists(wallpaper) else logo,
@@ -286,6 +443,9 @@ mouse = [
     Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
     Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
     Click([mod], "Button2", lazy.window.bring_to_front()),
+    # nix-dots: Mod+wheel switches workspaces, as in niri.
+    Click([mod], "Button5", lazy.screen.next_group()),
+    Click([mod], "Button4", lazy.screen.prev_group()),
 ]
 
 dgroups_key_binder = None
@@ -348,6 +508,9 @@ wmname = "LG3D"
 def autostart():
     for cmd in (
         ["xsettingsd", "-c", _xsettings],  # first: GTK scaling (see above)
+        ["numlockx", "on"],
+        ["greenclip", "daemon"],
+        ["refresh-rate", "watch"],  # spectre only: 120 Hz on AC, 60 on battery
         ["dunst"],
         ["nm-applet"],
         ["blueman-applet"],

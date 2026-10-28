@@ -17,6 +17,21 @@
       # Tiling WM alternative; config in dotfiles/qtile/config.py (hjem).
       services.xserver.windowManager.qtile.enable = true;
 
+      # Keyboard and pointer as in niri's config.kdl input block (niri does
+      # its own input, so these only reach the X server). XFCE may override
+      # them with its own settings dialogs.
+      services.xserver.xkb.options = "terminate:ctrl_alt_bksp,compose:ralt";
+      services.xserver.autoRepeatDelay = 250;
+      services.xserver.autoRepeatInterval = 40; # ms → 25 Hz, niri's repeat-rate
+      services.libinput = {
+        touchpad = {
+          tapping = true;
+          naturalScrolling = true;
+          accelProfile = "flat";
+        };
+        mouse.accelProfile = "flat";
+      };
+
       # Cinnamon removed 2026-10: unstable on spectre. Worth retrying with
       # the next major Linux Mint release (Cinnamon ships with it) — re-add:
       #   services.xserver.desktopManager.cinnamon.enable = true;
@@ -33,6 +48,36 @@
         xrandr
         xrdb
         xsettingsd
+        numlockx # numlock on at login, like niri's `numlock`
+        haskellPackages.greenclip # clipboard history daemon + rofi picker (Mod+Shift+C)
+        # screenshot-x11 region|screen|window <id> — niri's Print / Ctrl+Print /
+        # Alt+Print: saved where niri saves them and copied to the clipboard.
+        (writeShellApplication {
+          name = "screenshot-x11";
+          runtimeInputs = [
+            coreutils
+            maim
+            slop
+            xclip
+            libnotify
+          ];
+          text = ''
+            dir=$HOME/Pictures/Screenshots
+            mkdir -p "$dir"
+            file=$dir/"Screenshot from $(date '+%Y-%m-%d %H-%M-%S').png"
+            case ''${1:-region} in
+              region) maim --select --hidecursor "$file" || exit 0 ;;
+              screen) maim --hidecursor "$file" ;;
+              window) maim --hidecursor --window "''${2:?window id}" "$file" ;;
+              *)
+                echo "usage: screenshot-x11 region|screen|window <id>" >&2
+                exit 1
+                ;;
+            esac
+            xclip -selection clipboard -t image/png <"$file"
+            notify-send -t 2000 -i "$file" "Screenshot" "Saved and copied" || true
+          '';
+        })
         xss-lock
         i3lock
         # i3lock in the wallpaper palette's surface colour (written by matugen;

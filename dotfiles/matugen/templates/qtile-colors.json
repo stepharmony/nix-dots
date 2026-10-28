@@ -6,5 +6,7 @@
   "accent": "{{colors.primary.default.hex}}",
   "on_accent": "{{colors.on_primary.default.hex}}",
   "inactive": "{{colors.outline_variant.default.hex}}",
+  "muted": "{{colors.outline.default.hex}}",
+  "warning": "{{colors.tertiary.default.hex}}",
   "error": "{{colors.error.default.hex}}"
 }

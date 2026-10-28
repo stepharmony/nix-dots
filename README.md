@@ -56,7 +56,8 @@ modules/
                            # (installed only — niri's config.kdl spawns them)
   desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
   desktop/x11.nix          # xfce + qtile behind lightdm (x11 specialisation only);
-                           # qtile companions: dunst, xss-lock + i3lock
+                           # qtile companions: dunst, xss-lock + i3lock, greenclip,
+                           # screenshot-x11, xsettingsd; niri-like input settings
   specialisations.nix      # x11 boot entry next to the Wayland default
   formatter.nix            # nix fmt wrapper (perSystem)
   systems.nix              # systems = [ x86_64-linux ]
