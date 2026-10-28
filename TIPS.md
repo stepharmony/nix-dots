@@ -373,9 +373,10 @@ qtile.
   - `QT_QPA_PLATFORMTHEME=qt6ct`: Fusion plus a generated colour scheme.
     `qt6ct.conf` is hjem-managed, so the qt6ct GUI can't save changes.
 
-  libadwaita (GTK4) apps ignore `GTK_THEME`; they take the palette from a
-  generated `~/.config/gtk-4.0/colors.css` instead (imported by `gtk.css`
-  there), in every session. Restart them to pick up a new wallpaper.
+  libadwaita (GTK4) apps ignore `GTK_THEME`; they take the palette from the
+  generated `~/.config/gtk-4.0/gtk.css` instead, in every session (dark
+  variant via the dconf `color-scheme` default). Restart them to pick up a
+  new wallpaper.
 - **Generated, not in the repo**: `~/.config/swaylock/config` (swaylock has no
   include) and the i3lock colour. To change the lock screen, edit the
   template.
