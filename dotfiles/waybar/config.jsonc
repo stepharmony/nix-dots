@@ -67,8 +67,12 @@
         "tooltip": false
     },
 
-    // Hides itself on manus (no battery there).
+    // Only the laptop's own battery: left to itself, the module also watches
+    // peripherals (a Logitech receiver's hidpp_battery_0) and crashes waybar
+    // when one disappears. No BAT0 on manus, so waybar drops the module.
     "battery": {
+        "bat": "BAT0",
+        "adapter": "ADP1",
         "format": "{icon} {capacity}%",
         "format-charging": "󰂄 {capacity}%",
         "format-icons": ["󰁺", "󰁼", "󰁾", "󰂀", "󰁹"],
