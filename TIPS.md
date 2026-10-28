@@ -347,10 +347,10 @@ keymap:
 
 ## Tiling sessions: default apps + wallpaper theming (niri, qtile)
 
-Plasma keeps its own apps and look; everything here applies only in niri and
+XFCE keeps its own apps and look; everything here applies only in niri and
 qtile.
 
-- **Default apps**: kitty, Thunar, zathura (Okular stays for annotations), imv,
+- **Default apps**: kitty, Thunar, zathura, imv,
   mpv, xarchiver, Floorp for links. Set per session in
   `dotfiles/xdg/tiling-mimeapps.list`, deployed as `niri-mimeapps.list` and
   `qtile-mimeapps.list`. XDG only reads those when `XDG_CURRENT_DESKTOP`
@@ -373,9 +373,9 @@ qtile.
   - `QT_QPA_PLATFORMTHEME=qt6ct`: Fusion plus a generated colour scheme.
     `qt6ct.conf` is hjem-managed, so the qt6ct GUI can't save changes.
 
-  libadwaita (GTK4) apps ignore `GTK_THEME` and only follow light/dark. KDE
-  apps partly read Plasma's `kdeglobals`. That's why the tiling defaults are
-  GTK3 or toolkit-free.
+  libadwaita (GTK4) apps ignore `GTK_THEME`; they take the palette from a
+  generated `~/.config/gtk-4.0/colors.css` instead (imported by `gtk.css`
+  there), in every session. Restart them to pick up a new wallpaper.
 - **Generated, not in the repo**: `~/.config/swaylock/config` (swaylock has no
   include) and the i3lock colour. To change the lock screen, edit the
   template.
@@ -391,7 +391,7 @@ hicolor theme from the *first* data dir providing it (XDG_DATA_HOME wins) and
 honors that index's `Directories=` list — a rewrite listing only
 `scalable/apps` makes every hicolor-served app icon a placeholder in the
 taskbar/start menu, while desktop icons (`breeze`, `Mint-*`) keep working.
-Restore the canonical index and re-login (plasmashell caches it per process):
+Restore the canonical index and re-login:
 
 ```bash
 cp "$(nix eval --raw nixpkgs#hicolor-icon-theme)/share/icons/hicolor/index.theme" \
@@ -413,7 +413,7 @@ user dir: `~/.local/share/icons/hicolor/icon-theme.cache` and
 
 `tuvpn` (defined in `modules/study.nix`) wraps openconnect with the flags from
 TU Wien's [OpenConnect KB page](https://colab.tuwien.ac.at/spaces/SVCSP/pages/141888142/OpenConnect).
-The KDE VPN menu can't do TUvpn: the 2FA flow needs `--no-external-auth`,
+NetworkManager's VPN UI (nm-applet) can't do TUvpn: the 2FA flow needs `--no-external-auth`,
 which NetworkManager doesn't pass.
 
 ```bash
@@ -440,8 +440,8 @@ TUVPN_PROFILE=2_Alles_getunnelt tuvpn   # route all traffic through TU instead o
 xwayland-satellite 0.8.2's popup handling regressed: Steam menus (Friends,
 right-click, top bar) close within ~0.3s under Niri. Worked around by a
 **confirmed pin to satellite 0.8.1** in `modules/desktop/niri/_core.nix`
-(verified 2026-09-03). Games are unaffected; Steam client works fully on
-Plasma (kwin's embedded Xwayland has no such issue).
+(verified 2026-09-03). Games are unaffected; the Steam client works fully in
+the x11 boot (XFCE, qtile).
 
 Removal procedure: when nixpkgs ships a fixed satellite release, revert the
 pin to plain `pkgs.xwayland-satellite`, switch, and test Steam dropdowns in a

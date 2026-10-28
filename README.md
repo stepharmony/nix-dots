@@ -4,8 +4,8 @@ NixOS flake for two machines, both installed with [disko](https://github.com/nix
 
 | Flake ref | Machine | User | Hardware / key bits |
 |---|---|---|---|
-| `.#manus` | desktop | `rykard` | AMD + NVIDIA (open kernel module, latest driver), latest kernel, Plasma 6 (Wayland) + Niri sessions, PipeWire, chrony, 8G swapfile + zswap, **no hibernation** |
-| `.#spectre` | laptop | `rykard` | Intel CPU + iGPU, Plasma 6 (Wayland) + Niri sessions, PipeWire, chrony, 32G swapfile + zswap, **hibernation enabled**, automatic timezone (geoclue2) |
+| `.#manus` | desktop | `rykard` | AMD + NVIDIA (open kernel module, latest driver), latest kernel, niri (Wayland, via ly) + x11 boot (XFCE, qtile), PipeWire, chrony, 8G swapfile + zswap, **no hibernation** |
+| `.#spectre` | laptop | `rykard` | Intel CPU + iGPU, niri (Wayland, via ly) + x11 boot (XFCE, qtile), PipeWire, chrony, 32G swapfile + zswap, **hibernation enabled**, automatic timezone (geoclue2) |
 
 Both disks are pinned by-id via `hostDisk` in `modules/hosts/*.nix` — manus:
 `nvme-KINGSTON_SNVS500G_50026B72828C5281`, spectre: `nvme-SKHynix_HFS001TEJ9X115N_AYCBN03291020BS3U`.
@@ -47,7 +47,7 @@ modules/
   hardware/laptop.nix      # laptop power (spectre): auto-cpufreq + thermald,
                            # `power-mode`, `battery-cap`, `refresh-rate`
   xremap.nix               # Graphite remapping (system daemon + per-session bridge)
-  desktop.nix              # Plasma 6 — the default SDDM session on both hosts
+  desktop.nix              # ly display manager + Oxygen cursor/icons (both hosts)
   desktop/session.nix      # tiling-session stack (niri; qtile shares the apps):
                            # waybar, rofi, mako, swaylock/swayidle, utils, nm-applet,
                            # sunsetr; default apps (kitty, Thunar, zathura, imv);
@@ -193,7 +193,7 @@ exit
 ```
 
 Why here: inside the graphical session xremap remaps to Graphite, but the
-console TTYs and the SDDM greeter stay **QWERTY** — xremap only runs inside a
+console TTYs and the ly greeter stay **QWERTY** — xremap only runs inside a
 logged-in session. Setting the password in the ISO means never having to type
 it blind on a TTY, and the QWERTY TTYs match plain muscle memory anyway.
 
@@ -237,9 +237,9 @@ reboot
       timezone is managed by automatic-timezoned, see `systemctl status automatic-timezoned`)
 - [ ] Weekly TRIM timer: `systemctl status fstrim.timer`
 - [ ] xremap active with the Graphite layout: `systemctl status xremap` (system daemon)
-      and `systemctl --user status xremap-bridge` (session bridge; TTYs and SDDM stay
+      and `systemctl --user status xremap-bridge` (session bridge; TTYs and ly stay
       QWERTY by design)
-- [ ] Both SDDM sessions present: Plasma (default) and Niri —
+- [ ] ly greeter defaults to Niri —
       niri config lives at `~/.config/niri/config.kdl` (hjem-managed store
       symlink; source in `dotfiles/niri/`). The Niri session spawns waybar,
       mako, swayidle, swaybg, sunsetr, nm-applet, `refresh-rate watch` and the
@@ -252,7 +252,7 @@ reboot
 **manus (desktop) only:**
 
 - NVIDIA driver (open kernel module, latest) should be loaded: `lsmod | grep nvidia`
-- Plasma (Wayland) session is available from SDDM
+- niri isn't holding ~1 GB of VRAM: `nvidia-smi` (application profile in `hardware/nvidia.nix`)
 
 **spectre (laptop) only:**
 

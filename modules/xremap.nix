@@ -5,10 +5,10 @@
 #
 #   systemd.user.services.xremap-bridge  (per graphical session)
 #     feeds the active window from the running DE to the system service,
-#     so application filters work under both KDE and Niri. The bridge
+#     so application filters work under niri, XFCE and qtile. The bridge
 #     binary variant must match the running DE — picked at start.
 #
-# Replaces the old user-service setup; TTYs and the SDDM greeter stay QWERTY.
+# Replaces the old user-service setup; TTYs and the ly greeter stay QWERTY.
 # Config: dotfiles/xremap/graphite.yml (the old keyd/kanata experiments live
 # in git history). Alt+Esc toggles Graphite/QWERTY via xremap's native
 # set_mode — config-internal, works in every DE and on TTYs; every boot
@@ -25,21 +25,17 @@
     }:
 
     let
-      xremapKde = pkgs.xremap.passthru.kde;
       xremapNiri = pkgs.xremap.passthru.niri;
       xremapX11 = pkgs.xremap.passthru.x11;
       xremapSocket = pkgs.xremap.passthru.socket;
 
       # The bridge variant must match the running DE; detect from the session env.
-      # niri first, KDE for Plasma, the generic X11 (wmctrl) bridge for xfce/
-      # qtile/anything with a display — and a graceful idle when nothing is
-      # supported, instead of crash-looping (Restart = always, no start limit).
+      # niri first, the generic X11 (wmctrl) bridge for xfce/qtile/anything
+      # with a display — and a graceful idle when nothing is supported,
+      # instead of crash-looping (Restart = always, no start limit).
       bridgeWrapper = pkgs.writeShellScriptBin "xremap-bridge" ''
         if [ "$XDG_CURRENT_DESKTOP" = "niri" ] || [ -n "$NIRI_SOCKET" ]; then
           exec ${xremapNiri}/bin/xremap --bridge
-        fi
-        if [ "$XDG_CURRENT_DESKTOP" = "KDE" ]; then
-          exec ${xremapKde}/bin/xremap --bridge
         fi
         if [ -n "$DISPLAY" ]; then
           exec ${xremapX11}/bin/xremap --bridge

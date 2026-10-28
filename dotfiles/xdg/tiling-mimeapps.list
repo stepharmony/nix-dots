@@ -1,7 +1,7 @@
 # Default apps for the tiling sessions only. Deployed by hjem as
 # ~/.config/niri-mimeapps.list and ~/.config/qtile-mimeapps.list: XDG reads
 # <desktop>-mimeapps.list before mimeapps.list when XDG_CURRENT_DESKTOP
-# matches, so Plasma keeps its own defaults. Apps: modules/desktop/session/_apps.nix
+# matches, so XFCE keeps its own defaults. Apps: modules/desktop/session/_apps.nix
 
 [Default Applications]
 x-scheme-handler/http=floorp.desktop

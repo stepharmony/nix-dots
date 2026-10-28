@@ -30,7 +30,7 @@ input {
             // from org.freedesktop.locale1. You can control these using
             // localectl set-x11-keymap.
 
-            // nix-dots: Right Alt as the Compose key (Plasma has its own setting).
+            // nix-dots: Right Alt as the Compose key.
             options "compose:ralt"
         }
 
@@ -297,7 +297,7 @@ layout {
 spawn-sh-at-startup "exec waybar >\"$XDG_RUNTIME_DIR/waybar.log\" 2>&1"
 
 // nix-dots: GTK and Qt apps launched from niri follow the wallpaper palette
-// (modules/desktop/session/_theming.nix). Plasma never sets these.
+// (modules/desktop/session/_theming.nix). XFCE never sets these.
 environment {
     GTK_THEME "Matugen"
     QT_QPA_PLATFORMTHEME "qt6ct"
@@ -305,7 +305,7 @@ environment {
 
 // nix-dots: the rest of the session stack. Each reads its config from its
 // default ~/.config location (deployed by hjem); packages come from
-// modules/desktop/session/. Spawned here, so none of it runs in Plasma.
+// modules/desktop/session/. Spawned here, so none of it runs in XFCE.
 spawn-at-startup "mako"
 spawn-at-startup "swayidle" "-w"
 spawn-at-startup "polkit-agent"

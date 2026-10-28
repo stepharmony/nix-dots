@@ -24,8 +24,8 @@
       # WirePlumber loses the audio graph across suspend/resume (no sinks in the
       # graph while ALSA devices stay healthy) — restart it at suspend time so
       # wake sees a fresh graph. Runtime-scoped to Niri: the unit exists in every
-      # session, but XDG_CURRENT_DESKTOP (imported into the user manager by both
-      # DEs) is re-evaluated at each start — Plasma suspends (=KDE) skip it.
+      # session, but XDG_CURRENT_DESKTOP (imported into the user manager by the
+      # session) is re-evaluated at each start — other sessions skip it.
       systemd.user.services.restart-wireplumber-on-suspend = {
         description = "Restart WirePlumber before suspend (Niri sessions only)";
         wantedBy = [ "suspend.target" ];

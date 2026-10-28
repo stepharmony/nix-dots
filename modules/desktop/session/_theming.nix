@@ -1,9 +1,9 @@
 # Wallpaper-driven theming for the tiling sessions (niri + qtile) — matugen
 # turns the wallpaper into a Material You palette and renders every template
 # in dotfiles/matugen/templates/ next to the hjem-managed configs, which
-# include/import those generated files. Plasma is untouched: GTK and Qt only
-# follow the palette where niri/qtile set GTK_THEME=Matugen and
-# QT_QPA_PLATFORMTHEME=qt6ct (libadwaita apps ignore GTK_THEME).
+# include/import those generated files. GTK3 and Qt follow the palette where
+# niri/qtile set GTK_THEME=Matugen and QT_QPA_PLATFORMTHEME=qt6ct (XFCE keeps
+# its own look).
 #
 #   wallpaper <image>   set wallpaper + regenerate + reload running bits
 #   wallpaper init      first-login seed (systemd user unit below)

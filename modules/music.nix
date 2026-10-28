@@ -117,7 +117,7 @@
         };
         xdg.config.files."skoll/config.toml".text = ''
           mpv_path = "${lib.getExe pkgs.mpv}"
-          file_dialog = ["${lib.getExe pkgs.kdePackages.kdialog}", "--title", "Open Video", "--getopenfilename", "/home/${username}"]
+          file_dialog = ["${lib.getExe pkgs.zenity}", "--file-selection", "--title=Open Video", "--filename=/home/${username}/"]
         '';
       };
 

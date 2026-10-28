@@ -32,7 +32,7 @@ terminal = "kitty"  # nix-dots: same terminal as the Niri session
 # spawned from here pick up ~/.config/qtile-mimeapps.list (tiling defaults).
 os.environ["XDG_CURRENT_DESKTOP"] = "qtile"
 # GTK and Qt apps launched from qtile follow the wallpaper palette
-# (modules/desktop/session/_theming.nix); XFCE and Plasma never set these.
+# (modules/desktop/session/_theming.nix); XFCE never sets these.
 os.environ["GTK_THEME"] = "Matugen"
 os.environ["QT_QPA_PLATFORMTHEME"] = "qt6ct"
 

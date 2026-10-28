@@ -1,4 +1,4 @@
-# Niri session core: SDDM session, xdg portals, gnome-keyring, integrated
+# Niri session core: display-manager session, xdg portals, gnome-keyring, integrated
 # xwayland, plus the pinned xwayland-satellite for X11 apps.
 {
   config,
@@ -35,9 +35,9 @@ let
   };
 in
 {
-  # SDDM session, xdg portals (screencast via portal-gnome), gnome-keyring,
-  # and niri's integrated xwayland for X11 apps. The nixpkgs module
-  # mkDefaults the SDDM default session to niri — desktop.nix overrides.
+  # Display-manager session, xdg portals (screencast via portal-gnome),
+  # gnome-keyring, and niri's integrated xwayland for X11 apps. The nixpkgs
+  # module mkDefaults the default session to niri.
   programs.niri.enable = true;
 
   # niri spawns xwayland-satellite on demand for X11 apps (Steam, Proton

@@ -1,9 +1,9 @@
-# Tiling-session default apps (niri + qtile; Plasma keeps Dolphin, Okular,
-# Konsole, ...). Chosen to be GTK3 or toolkit-free, so the per-session
+# Tiling-session default apps (niri + qtile; XFCE keeps its own). Chosen
+# to be GTK3 or toolkit-free, so the per-session
 # theming (GTK_THEME / qt6ct, set only by niri and qtile) fully applies.
 # Defaults per session: dotfiles/xdg/tiling-mimeapps.list, deployed as
 # niri-mimeapps.list and qtile-mimeapps.list (XDG reads those only when
-# XDG_CURRENT_DESKTOP matches, so Plasma's defaults are untouched).
+# XDG_CURRENT_DESKTOP matches, so XFCE's defaults are untouched).
 { pkgs, ... }:
 
 {

@@ -1,5 +1,5 @@
 # dunst — notification daemon for qtile (spawned from its autostart; niri
-# uses mako, Plasma its own). Deployed by hjem to ~/.config/dunst/dunstrc.
+# uses mako, XFCE its own). Deployed by hjem to ~/.config/dunst/dunstrc.
 # Reference: man 5 dunst. Test with: notify-send "hello" "from dunst"
 
 [global]

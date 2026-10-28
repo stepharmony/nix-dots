@@ -1,5 +1,4 @@
-// Waybar — Niri session bar (spawned by niri's config.kdl, so it never runs
-// in Plasma). Deployed by hjem to ~/.config/waybar/config.jsonc.
+// Waybar — Niri session bar (spawned by niri's config.kdl). Deployed by hjem to ~/.config/waybar/config.jsonc.
 // Module reference: https://github.com/Alexays/Waybar/wiki
 {
     "layer": "top",

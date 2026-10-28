@@ -1,5 +1,5 @@
 # Graphite layout for xremap (converted from the dormant dotfiles/keyd/graphite.conf).
-# Applied inside the graphical session only — TTYs and the SDDM greeter stay QWERTY.
+# Applied inside the graphical session only — TTYs and the ly greeter stay QWERTY.
 #
 # Key names: https://github.com/emberian/evdev/blob/1d020f11b283b0648427a2844b6b980f1a268221/src/scancodes.rs
 # KEY_ prefix optional, case-insensitive.

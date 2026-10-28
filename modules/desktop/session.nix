@@ -3,7 +3,7 @@
 # plus utils, the sunsetr blue-light filter and the tiling default apps
 # (_apps.nix: kitty, Thunar, zathura, imv, xarchiver; also used by qtile, as
 # the x11 boot inherits this). Everything here is only *installed*; niri's
-# config.kdl spawns it, so none of it runs in Plasma.
+# config.kdl (and qtile's autostart) spawns it, so none of it runs in XFCE.
 # The `_`-prefixed modules are plain NixOS modules — import-tree skips them
 # at the flake level (paths containing `/_`) and only this aspect pulls them in.
 { flake, ... }:

@@ -1,46 +1,21 @@
-# Plasma 6 (Wayland) — the default SDDM session on both hosts.
+# Display manager + shared theme for the Wayland (base) boot on both hosts.
+# ly lists every installed session; niri's module mkDefaults it as the
+# default. The x11 specialisation swaps ly for lightdm (specialisations.nix).
 { flake, ... }:
 
 {
   flake.modules.nixos.desktop =
+    { pkgs, ... }:
     {
-      config,
-      lib,
-      pkgs,
-      ...
-    }:
-    {
-      # Enable the KDE Plasma Desktop Environment.
-      services.displayManager.sddm.enable = true;
-      services.desktopManager.plasma6.enable = true;
+      # TTY greeter; its PAM stack includes `login`, so gnome-keyring unlocks
+      # at login like before.
+      services.displayManager.ly.enable = true;
 
-      # Keep Plasma as the SDDM default even with niri enabled
-      # (the niri module mkDefaults its own session; lower number wins).
-      services.displayManager.defaultSession = lib.mkOverride 900 "plasma";
-
-      # Oxygen theme family (selectable in System Settings → Colors & Themes).
-      # filelight is Plasma's analyzer — base boot only; the x11
-      # specialisation (force-disabled plasma6) gets baobab instead (x11.nix).
-      environment.systemPackages =
-        with pkgs;
-        [
-          kdePackages.oxygen
-          kdePackages.oxygen-sounds
-          kdePackages.oxygen-icons
-        ]
-        ++ lib.optionals config.services.desktopManager.plasma6.enable [
-          kdePackages.filelight
-          haruna
-          qalculate-qt
-          kdePackages.kio-fuse
-          kdePackages.kio-extras
-          kdePackages.korganizer
-          kdePackages.kdepim-runtime
-          kdePackages.kdepim-addons
-          kdePackages.akonadi
-          kdePackages.akonadi-calendar
-          kdePackages.plasma-nm
-          kdePackages.kalarm
-        ];
+      # Oxygen cursor (Oxygen_White) and icons — referenced by the GTK
+      # settings.ini, qt6ct and rofi, so they outlive Plasma.
+      environment.systemPackages = with pkgs; [
+        kdePackages.oxygen
+        kdePackages.oxygen-icons
+      ];
     };
 }
