@@ -315,6 +315,8 @@ spawn-sh-at-startup "swaybg -m fill -i ~/.local/state/wallpaper/current"
 // nix-dots: NetworkManager tray icon (wifi list, password prompts, VPNs) in
 // waybar's tray; --indicator = StatusNotifierItem, which waybar shows.
 spawn-at-startup "nm-applet" "--indicator"
+// nix-dots: Bluetooth tray icon (blueman; installed on spectre only).
+spawn-sh-at-startup "command -v blueman-applet >/dev/null && exec blueman-applet"
 // nix-dots: internal panel 120 Hz on AC, 60 Hz on battery (no-op on manus).
 spawn-at-startup "refresh-rate" "watch"
 

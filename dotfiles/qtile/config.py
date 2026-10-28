@@ -7,7 +7,7 @@
 #   picker, Mod+q = close (as in niri), Mod+Alt+l = lock
 # - colours + wallpaper from matugen (`wallpaper`; colors.json), GTK/Qt env
 #   and XDG_CURRENT_DESKTOP for the tiling defaults
-# - autostart: dunst, nm-applet, polkit agent, xss-lock + i3lock, gammastep
+# - autostart: dunst, nm-applet, blueman-applet, polkit agent, xss-lock + i3lock, gammastep
 #   (blue-light filter; location from the timezone, like sunsetr in niri)
 # - focus/shuffle/grow on the arrow keys instead of h/j/k/l — xremap remaps
 #   below the WM, so keys arrive as *Graphite* letters and vim-style
@@ -17,6 +17,7 @@
 
 import json
 import os
+import shutil
 import subprocess
 from collections.abc import Callable
 
@@ -291,14 +292,17 @@ wmname = "LG3D"
 
 # nix-dots: session companions (installed by modules/desktop/x11.nix and the
 # session aspect). xss-lock locks on `loginctl lock-session` (Mod+Alt+l) and
-# before suspend; nm-applet sits in the bar's Systray.
+# before suspend; nm-applet and blueman-applet sit in the bar's Systray.
+# Host-specific ones (blueman: spectre only) are skipped where missing.
 @hook.subscribe.startup_once
 def autostart():
     for cmd in (
         ["dunst"],
         ["nm-applet"],
+        ["blueman-applet"],
         ["polkit-agent"],
         ["gammastep-tz"],
         ["xss-lock", "--transfer-sleep-lock", "--", "lock-x11"],
     ):
-        subprocess.Popen(cmd)
+        if shutil.which(cmd[0]):
+            subprocess.Popen(cmd)

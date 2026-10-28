@@ -5,6 +5,10 @@
   flake.modules.nixos.bluetooth =
     { pkgs, ... }:
     {
+      # Pairing UI + tray applet (spawned by niri's config.kdl and qtile's
+      # autostart; both skip it on hosts without bluetooth).
+      services.blueman.enable = true;
+
       # Bluetooth for NixOS
       # Simple for the time being, unless there a need
       # for more parameters/customizability

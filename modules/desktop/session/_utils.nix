@@ -1,5 +1,5 @@
 # Wayland session stack (Niri) — utilities used by config.kdl: clipboard
-# (wl-clipboard + cliphist history), media/brightness keys, wallpaper, wifi.
+# (wl-clipboard + cliphist history), media/brightness keys, wallpaper, wifi, audio mixer.
 # Screenshots use niri's built-in UI (Print / Ctrl+Print / Alt+Print).
 { pkgs, ... }:
 
@@ -11,5 +11,6 @@
     brightnessctl
     swaybg
     networkmanagerapplet # nm-applet (tray, spawned by config.kdl) + nm-connection-editor
+    pavucontrol # audio mixer (right-click on waybar's volume)
   ];
 }
