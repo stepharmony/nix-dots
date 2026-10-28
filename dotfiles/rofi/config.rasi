@@ -30,6 +30,34 @@ configuration {
 }
 @import "colors.rasi"
 
+/* rofi merges this over its built-in default theme, whose widgets (the
+   search entry, rows, counters) read these standard variables — map them
+   all onto the palette, or they keep the default's dim blue-grey. */
+* {
+    foreground: @fg;
+    background: @bg;
+    separatorcolor: @accent;
+    border-color: @accent;
+    normal-foreground: @fg;
+    normal-background: transparent;
+    alternate-normal-foreground: @fg;
+    alternate-normal-background: transparent;
+    selected-normal-foreground: @on-accent;
+    selected-normal-background: @accent;
+    active-foreground: @accent;
+    active-background: transparent;
+    alternate-active-foreground: @accent;
+    alternate-active-background: transparent;
+    selected-active-foreground: @on-accent;
+    selected-active-background: @accent;
+    urgent-foreground: @accent;
+    urgent-background: transparent;
+    alternate-urgent-foreground: @accent;
+    alternate-urgent-background: transparent;
+    selected-urgent-foreground: @on-accent;
+    selected-urgent-background: @accent;
+}
+
 window {
     width: 40%;
     background-color: @bg;
