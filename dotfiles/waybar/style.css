@@ -56,3 +56,10 @@ window#waybar {
 #battery.critical:not(.charging) {
     color: @error;
 }
+
+/* On AC: charging, or plugged in but held (battery-cap / full). Comes
+   after .warning so it wins while charging back up from low. */
+#battery.charging,
+#battery.plugged {
+    color: @accent;
+}
