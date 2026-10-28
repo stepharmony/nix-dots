@@ -51,7 +51,8 @@ modules/
   desktop/session.nix      # tiling-session stack (niri; qtile shares the apps):
                            # waybar, rofi, mako, swaylock/swayidle, utils, nm-applet,
                            # sunsetr; default apps (kitty, Thunar, zathura, imv);
-                           # matugen wallpaper theming (`wallpaper`, `wallpaper-pick`)
+                           # matugen wallpaper theming (`wallpaper`, `wallpaper-pick`);
+                           # GNOME Calendar + EDS/Online Accounts (Google), pavucontrol
                            # (installed only — niri's config.kdl spawns them)
   desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
   desktop/x11.nix          # xfce + qtile behind lightdm (x11 specialisation only);

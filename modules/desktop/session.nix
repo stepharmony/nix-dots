@@ -18,5 +18,6 @@
     ./session/_sunsetr.nix
     ./session/_apps.nix
     ./session/_theming.nix
+    ./session/_calendar.nix
   ];
 }

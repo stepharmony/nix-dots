@@ -380,6 +380,18 @@ qtile.
   include) and the i3lock colour. To change the lock screen, edit the
   template.
 
+## Calendar (GNOME Calendar, Google)
+
+`modules/desktop/session/_calendar.nix`. One-time setup: run
+`gnome-online-accounts-gtk`, add the Google account (calendar only is
+enough), then open GNOME Calendar — clicking waybar's clock does that.
+
+- Sync and storage are evolution-data-server's; the sign-in token sits in
+  gnome-keyring (same login keyring in niri, qtile and XFCE).
+- Reminders come from `evolution-alarm-notify` as normal notifications:
+  niri starts its user unit (`systemctl --user status evolution-alarm-notify`),
+  qtile runs `calendar-reminders`, XFCE uses the XDG autostart entry.
+
 ## Icon theming landmines (hicolor index / GTK settings.ini)
 
 Two user-home files silently override what NixOS/dconf sets — both caused the
