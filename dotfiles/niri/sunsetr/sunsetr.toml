@@ -1,8 +1,10 @@
 # sunsetr — automatic blue-light filter for the Niri session.
-# Location is auto-detected from the system timezone (Europe/Bucharest);
-# refine coordinates with: sunsetr --config <this dir> geo
-# Tune night values with:   sunsetr --config <this dir> test <temp> <gamma>
+# Geo mode needs coordinates: they live in ~/.config/sunsetr/geo.toml,
+# generated from the system timezone (automatic-timezoned) by
+# sunsetr-geo-sync (modules/desktop/session/_sunsetr.nix) and hot-reloaded.
+# Tune night values with:   sunsetr test <temp> <gamma>
 
+transition_mode = "geo"
 day_temp = 6500
 day_gamma = 100
 night_temp = 3300
