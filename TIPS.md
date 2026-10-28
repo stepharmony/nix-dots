@@ -345,6 +345,41 @@ keymap:
       F9: { action: reload }
 ```
 
+## Tiling sessions: default apps + wallpaper theming (niri, qtile)
+
+Plasma keeps its own apps and look; everything here applies only in niri and
+qtile.
+
+- **Default apps**: kitty, Thunar, zathura (Okular stays for annotations), imv,
+  mpv, xarchiver, Floorp for links. Set per session in
+  `dotfiles/xdg/tiling-mimeapps.list`, deployed as `niri-mimeapps.list` and
+  `qtile-mimeapps.list`. XDG only reads those when `XDG_CURRENT_DESKTOP`
+  matches, and qtile's config.py sets it, because its xsession doesn't.
+- **Wallpaper → palette**:
+  - `wallpaper <image>`, or `wallpaper-pick` (`Mod+W` in both sessions: a
+    rofi thumbnail grid of `~/Pictures/Wallpapers`). This runs matugen, which
+    renders `dotfiles/matugen/templates/*` into colour files next to each
+    hjem-managed config (`colors.kdl`, `colors.css`, `colors.rasi`, ...),
+    and those configs include them.
+  - The running bar, notifications, kitty and qtile reload. niri reloads by
+    itself. GTK/Qt apps that are already open need a restart.
+  - The current wallpaper is a symlink at `~/.local/state/wallpaper/current`.
+  - The `wallpaper-init` user unit seeds the palette at login, from the repo's
+    default wallpaper, and again after a switch that changes the templates.
+    Run `wallpaper init` once by hand right after such a switch.
+- **GTK / Qt**: niri (`environment {}`) and qtile (`os.environ`) set:
+  - `GTK_THEME=Matugen`: a generated adw-gtk3-dark override in
+    `~/.local/share/themes/Matugen`.
+  - `QT_QPA_PLATFORMTHEME=qt6ct`: Fusion plus a generated colour scheme.
+    `qt6ct.conf` is hjem-managed, so the qt6ct GUI can't save changes.
+
+  libadwaita (GTK4) apps ignore `GTK_THEME` and only follow light/dark. KDE
+  apps partly read Plasma's `kdeglobals`. That's why the tiling defaults are
+  GTK3 or toolkit-free.
+- **Generated, not in the repo**: `~/.config/swaylock/config` (swaylock has no
+  include) and the i3lock colour. To change the lock screen, edit the
+  template.
+
 ## Icon theming landmines (hicolor index / GTK settings.ini)
 
 Two user-home files silently override what NixOS/dconf sets — both caused the

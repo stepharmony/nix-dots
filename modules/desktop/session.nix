@@ -17,5 +17,6 @@
     ./session/_utils.nix
     ./session/_sunsetr.nix
     ./session/_apps.nix
+    ./session/_theming.nix
   ];
 }

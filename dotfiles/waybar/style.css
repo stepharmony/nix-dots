@@ -1,5 +1,7 @@
-/* Waybar — plain dark starting point. Colours mirror niri's default
-   focus ring (#7fc8ff) so the bar and the compositor match. */
+/* Waybar — plain dark starting point. Colours come from colors.css,
+   generated from the wallpaper by matugen (`wallpaper`, see
+   modules/desktop/session/_theming.nix). */
+@import "colors.css";
 
 * {
     font-family: "JetBrainsMono Nerd Font", monospace;
@@ -10,25 +12,25 @@
 }
 
 window#waybar {
-    background: rgba(24, 24, 27, 0.92);
-    color: #e4e4e7;
+    background: alpha(@bg, 0.92);
+    color: @fg;
 }
 
 #workspaces button {
     padding: 0 8px;
-    color: #a1a1aa;
+    color: @fg_dim;
     background: transparent;
 }
 
 #workspaces button.focused,
 #workspaces button.active {
-    color: #18181b;
-    background: #7fc8ff;
+    color: @on_accent;
+    background: @accent;
 }
 
 #workspaces button.urgent {
-    background: #9b0000;
-    color: #e4e4e7;
+    background: @error;
+    color: @fg;
 }
 
 #window,
@@ -44,13 +46,13 @@ window#waybar {
 
 #pulseaudio.muted,
 #network.disconnected {
-    color: #71717a;
+    color: @muted;
 }
 
 #battery.warning {
-    color: #fbbf24;
+    color: @warning;
 }
 
 #battery.critical:not(.charging) {
-    color: #f87171;
+    color: @error;
 }

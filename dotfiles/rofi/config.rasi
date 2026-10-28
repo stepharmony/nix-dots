@@ -15,7 +15,8 @@ configuration {
     display-window: "";
 }
 
-/* Palette — matches waybar / niri's default focus ring. */
+/* Fallback palette (waybar / niri default focus ring); colors.rasi, generated
+   from the wallpaper by matugen (`wallpaper`), overrides it when present. */
 * {
     bg: #18181bf0;
     bg-alt: #27272a;
@@ -27,6 +28,7 @@ configuration {
     background-color: transparent;
     text-color: @fg;
 }
+@import "colors.rasi"
 
 window {
     width: 40%;

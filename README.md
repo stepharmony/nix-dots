@@ -48,11 +48,14 @@ modules/
                            # `power-mode`, `battery-cap`, `refresh-rate`
   xremap.nix               # Graphite remapping (system daemon + per-session bridge)
   desktop.nix              # Plasma 6 — the default SDDM session on both hosts
-  desktop/session.nix      # Wayland session stack for Niri: waybar, rofi, mako,
-                           # swaylock/swayidle, clipboard/media utils, nm-applet, sunsetr
+  desktop/session.nix      # tiling-session stack (niri; qtile shares the apps):
+                           # waybar, rofi, mako, swaylock/swayidle, utils, nm-applet,
+                           # sunsetr; default apps (kitty, Thunar, zathura, imv);
+                           # matugen wallpaper theming (`wallpaper`, `wallpaper-pick`)
                            # (installed only — niri's config.kdl spawns them)
   desktop/niri/            # niri aspect: default.nix + _core.nix (satellite pin)
-  desktop/x11.nix          # xfce + qtile behind lightdm (x11 specialisation only)
+  desktop/x11.nix          # xfce + qtile behind lightdm (x11 specialisation only);
+                           # qtile companions: dunst, xss-lock + i3lock
   specialisations.nix      # x11 boot entry next to the Wayland default
   formatter.nix            # nix fmt wrapper (perSystem)
   systems.nix              # systems = [ x86_64-linux ]
@@ -60,9 +63,11 @@ overlays/                  # packages pinned ahead of nixpkgs; wired via common.
 pkgs/                      # custom package expressions used by overlays (see TIPS.md)
 dotfiles/                  # sources deployed into $HOME by hjem, each to its
                            # default ~/.config location: niri/config.kdl (upstream
-                           # niri default + nix-dots edits) + wallpaper, waybar,
-                           # rofi, mako, swayidle, swaylock, sunsetr;
-                           # qtile/config.py (x11 boot entry; upstream default + edits);
+                           # niri default + nix-dots edits) + default wallpaper,
+                           # waybar, rofi, mako, swayidle, sunsetr; qtile/config.py
+                           # (x11 boot entry) + dunst; kitty, zathura; per-session
+                           # default apps (xdg/); matugen/templates (colour files
+                           # generated next to those configs);
                            # xremap system service config (deployed to /etc by xremap.nix)
 ```
 

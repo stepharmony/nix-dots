@@ -30,6 +30,12 @@
         dunst
         xss-lock
         i3lock
+        # i3lock in the wallpaper palette's surface colour (written by matugen;
+        # xss-lock runs this, so each lock picks up the current colour).
+        (writeShellScriptBin "lock-x11" ''
+          color=$(cat "''${XDG_STATE_HOME:-$HOME/.local/state}/wallpaper/i3lock-color" 2>/dev/null || echo 18181b)
+          exec ${i3lock}/bin/i3lock --nofork --color="$color"
+        '')
         baobab
         xclip
         qalculate-gtk

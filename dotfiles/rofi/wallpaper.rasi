@@ -1,0 +1,21 @@
+/* rofi theme for wallpaper-pick (Mod+W): a thumbnail grid on top of the
+   launcher theme. Deployed by hjem to ~/.config/rofi/wallpaper.rasi. */
+@import "config.rasi"
+
+window { width: 70%; }
+
+listview {
+    columns: 4;
+    lines: 3;
+    spacing: 10px;
+    flow: horizontal;
+}
+
+element {
+    orientation: vertical;
+    padding: 8px;
+    spacing: 6px;
+}
+
+element-icon { size: 180px; }
+element-text { horizontal-align: 0.5; }

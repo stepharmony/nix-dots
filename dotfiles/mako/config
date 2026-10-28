@@ -6,6 +6,8 @@ font=JetBrainsMono Nerd Font 11
 background-color=#18181bf0
 text-color=#e4e4e7
 border-color=#7fc8ff
+# Wallpaper palette (matugen, `wallpaper`) overrides the colours above.
+include=~/.config/mako/colors
 border-size=2
 border-radius=8
 padding=10
