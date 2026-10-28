@@ -28,6 +28,11 @@
       # lock-on-idle/suspend, screen locker.
       environment.systemPackages = with pkgs; [
         dunst
+        # HiDPI in qtile: config.py reads the output DPI (xrandr), sets
+        # Xft.dpi (xrdb) and tells GTK the scale through XSETTINGS.
+        xrandr
+        xrdb
+        xsettingsd
         xss-lock
         i3lock
         # i3lock in the wallpaper palette's surface colour (written by matugen;
