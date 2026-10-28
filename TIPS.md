@@ -236,14 +236,14 @@ All in `modules/hardware/laptop.nix`. Automatic:
 - **Lenovo platform profile** (firmware power limits + fans): `balanced` on
   AC, `low-power` on battery, set only on plug/unplug.
 - **thermald** (Intel thermal daemon, recommended on Meteor Lake).
-- **Refresh rate** (niri only): `refresh-rate watch` sets 120 Hz on AC and
+- **Refresh rate** (niri and qtile): `refresh-rate watch` sets 120 Hz on AC and
   60 Hz on battery. auto-cpufreq can't do this, it never touches the display.
 
 Manual (each sticks until the next plug/unplug):
 
 ```bash
-power-mode toggle      # performance <-> balanced/low-power (waybar click, Mod+Alt+P)
-refresh-rate toggle    # 60 <-> 120 Hz (waybar click, Mod+Alt+R); also 60 / 120 / status
+power-mode toggle      # performance <-> balanced/low-power (bar click, Mod+Alt+P)
+refresh-rate toggle    # 60 <-> 120 Hz (bar click, Mod+Alt+R); also 60 / 120 / status
 battery-cap on|off     # Lenovo conservation mode: stop charging at ~80% (status: no arg)
 cat /sys/firmware/acpi/platform_profile        # current profile
 cat /sys/class/power_supply/BAT0/power_now      # battery draw in µW

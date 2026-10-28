@@ -98,9 +98,10 @@
       };
 
       # refresh-rate [toggle|low|high|60|120|status|watch] — the internal
-      # panel's (eDP) refresh rate under niri, using the modes niri reports at
-      # the current resolution (low = slowest, high = fastest; 60/120 are
-      # aliases). `watch` (spawned by config.kdl) sets high on AC and low on
+      # panel's (eDP) refresh rate under niri (niri msg) or X11/qtile
+      # (xrandr), using the modes reported at the current resolution (low =
+      # slowest, high = fastest; 60/120 are aliases). `watch` (spawned by
+      # niri's config.kdl and qtile's autostart) sets high on AC and low on
       # battery, re-applying only when the AC state changes, so a manual
       # toggle sticks until the next plug/unplug. auto-cpufreq can't do this:
       # it only touches CPU/firmware/battery settings, not the display.
@@ -111,20 +112,54 @@
           jq
           procps
           systemd
+          xrandr
         ];
         text = ''
-          outputs=$(niri msg --json outputs 2>/dev/null) || exit 0
-          name=$(jq -r 'keys[] | select(startswith("eDP"))' <<<"$outputs" | head -n1)
-          [[ -n $name ]] || exit 0
+          # name w h current low high (refresh rates in mHz)
+          if [[ -n ''${NIRI_SOCKET:-} ]]; then
+            backend=niri
+            outputs=$(niri msg --json outputs 2>/dev/null) || exit 0
+            read -r name w h current low high < <(jq -r '
+              to_entries[] | select(.key | startswith("eDP")) | .key as $n | .value
+              | .modes[.current_mode // 0] as $c
+              | [.modes[] | select(.width == $c.width and .height == $c.height) | .refresh_rate] as $r
+              | "\($n) \($c.width) \($c.height) \($c.refresh_rate) \($r | min) \($r | max)"' <<<"$outputs" | head -n1)
+          elif [[ -n ''${DISPLAY:-} ]]; then
+            backend=x11
+            # Mode lines under the eDP output at its current resolution;
+            # "*" marks the current rate, "+" the preferred one.
+            read -r name w h current low high < <(xrandr --query 2>/dev/null | awk '
+              /^[^ ]/ {
+                inout = !name && $1 ~ /^eDP/ && $2 == "connected" && match($0, /[0-9]+x[0-9]+\+/)
+                if (inout) { name = $1; res = substr($0, RSTART, RLENGTH - 1) }
+                next
+              }
+              inout && $1 == res {
+                for (i = 2; i <= NF; i++) {
+                  r = $i; cur = r ~ /\*/; gsub(/[*+]/, "", r)
+                  if (r == "") continue
+                  m = int(r * 1000 + 0.5)
+                  if (cur) c = m
+                  if (!lo || m < lo) lo = m
+                  if (m > hi) hi = m
+                }
+              }
+              END { if (name) { split(res, a, "x"); print name, a[1], a[2], c, lo, hi } }')
+          else
+            exit 0
+          fi
+          [[ -n ''${name:-} ]] || exit 0
 
-          # w h current low high (refresh rates in mHz, as niri reports them)
-          read -r w h current low high < <(jq -r --arg n "$name" '
-            .[$n] | .modes[.current_mode // 0] as $c
-            | [.modes[] | select(.width == $c.width and .height == $c.height) | .refresh_rate] as $r
-            | "\($c.width) \($c.height) \($c.refresh_rate) \($r | min) \($r | max)"' <<<"$outputs")
+          alive() {
+            if [[ $backend == niri ]]; then niri msg version >/dev/null 2>&1; else xrandr --query >/dev/null 2>&1; fi
+          }
 
           set_rate() {
-            niri msg output "$name" mode "''${w}x''${h}@$(awk -v r="$1" 'BEGIN { printf "%.3f", r / 1000 }')"
+            if [[ $backend == niri ]]; then
+              niri msg output "$name" mode "''${w}x''${h}@$(awk -v r="$1" 'BEGIN { printf "%.3f", r / 1000 }')"
+            else
+              xrandr --output "$name" --mode "''${w}x''${h}" --rate "$(awk -v r="$1" 'BEGIN { printf "%.2f", r / 1000 }')"
+            fi
             # -O 3: a waybar that is still starting has no handler for this
             # signal yet, and its default action is to terminate — the
             # watcher's first apply at login used to kill the bar.
@@ -148,12 +183,13 @@
               }
               apply || true
               # Wake on power_supply events, and at least once a minute to
-              # notice that this session's niri has exited (then stop, taking
-              # udevadm along) — otherwise a logout leaves the watcher behind.
+              # notice that this session's niri/X server has exited (then
+              # stop, taking udevadm along) — otherwise a logout leaves the
+              # watcher behind.
               exec {events}< <(exec udevadm monitor --udev --subsystem-match=power_supply)
               monitor=$!
               trap 'kill "$monitor" 2>/dev/null' EXIT
-              while niri msg version >/dev/null 2>&1; do
+              while alive; do
                 if read -r -t 60 -u "$events" _; then apply || true; fi
               done
               ;;
