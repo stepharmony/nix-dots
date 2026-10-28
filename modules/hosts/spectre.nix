@@ -47,6 +47,15 @@
       # (Limine does not auto-detect DPI; ~"2x2" matches the CachyOS look).
       boot.loader.limine.style.graphicalTerminal.font.scale = "2x2";
 
+      # Same for the text console, which is where ly (the greeter) and the
+      # TTYs draw: Terminus 32px instead of the tiny 8x16 default. earlySetup
+      # loads it in the initrd, so boot messages use it too.
+      console = {
+        font = "ter-v32n";
+        packages = [ pkgs.terminus_font ];
+        earlySetup = true;
+      };
+
       # Match the desktop kernel.
       boot.kernelPackages = pkgs.linuxPackages_latest;
 
