@@ -49,10 +49,9 @@ ShellRoot {
             focus: true
             Keys.onEscapePressed: Cal.hide()
 
-            // Clicks on the card stay on the card; the wheel flips pages.
+            // Clicks on the card stay on the card.
             MouseArea {
                 anchors.fill: parent
-                onWheel: wheel => Cal.step(wheel.angleDelta.y > 0 ? -1 : 1)
             }
 
             RowLayout {
@@ -62,6 +61,7 @@ ShellRoot {
 
                 // ── left: date, events, time zones ──
                 ColumnLayout {
+                    id: leftPane
                     Layout.preferredWidth: 410
                     Layout.fillHeight: true
                     spacing: 0
@@ -437,6 +437,26 @@ ShellRoot {
                                 }
                             }
                         }
+                    }
+                }
+            }
+
+            // The wheel flips pages — over the grid side only, so the event
+            // list's overscroll doesn't. On top of the grid but click- and
+            // hover-transparent. A page per notch; touchpad deltas add up.
+            MouseArea {
+                property real pending: 0
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
+                anchors.right: parent.right
+                anchors.left: parent.left
+                anchors.leftMargin: leftPane.width + 2
+                acceptedButtons: Qt.NoButton
+                onWheel: wheel => {
+                    pending += wheel.angleDelta.y;
+                    while (Math.abs(pending) >= 120) {
+                        Cal.step(pending > 0 ? -1 : 1);
+                        pending -= pending > 0 ? 120 : -120;
                     }
                 }
             }
