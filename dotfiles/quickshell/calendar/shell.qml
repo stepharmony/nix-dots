@@ -97,7 +97,7 @@ ShellRoot {
                             id: event
                             required property var modelData
                             width: ListView.view.width
-                            height: 50
+                            height: Math.max(body.implicitHeight, 36) + 14
 
                             Rectangle {
                                 x: 16
@@ -107,36 +107,53 @@ ShellRoot {
                                 radius: 2
                                 color: event.modelData.color || Theme.accent
                             }
-                            Column {
+                            // Times on the left; title with the description
+                            // (grey, two lines at most) beside them.
+                            Row {
+                                id: body
                                 anchors.left: parent.left
                                 anchors.right: parent.right
                                 anchors.leftMargin: 30
                                 anchors.rightMargin: 14
                                 anchors.verticalCenter: parent.verticalCenter
-                                spacing: 2
+                                spacing: 10
 
-                                Row {
-                                    width: parent.width
-                                    spacing: 10
+                                Column {
+                                    id: times
+                                    spacing: 2
                                     Text {
-                                        id: startTime
                                         text: Cal.startLabel(event.modelData, Cal.selected)
                                         color: Theme.fg
                                         font.pixelSize: 14
                                     }
                                     Text {
-                                        width: parent.width - startTime.width - 10
+                                        visible: text !== ""
+                                        text: Cal.endLabel(event.modelData, Cal.selected)
+                                        color: Theme.fgDim
+                                        font.pixelSize: 13
+                                    }
+                                }
+                                Column {
+                                    width: parent.width - times.width - parent.spacing
+                                    spacing: 2
+                                    Text {
+                                        width: parent.width
                                         text: event.modelData.summary
                                         elide: Text.ElideRight
                                         color: Theme.fg
                                         font.pixelSize: 14
                                     }
-                                }
-                                Text {
-                                    visible: text !== ""
-                                    text: Cal.endLabel(event.modelData, Cal.selected)
-                                    color: Theme.fgDim
-                                    font.pixelSize: 13
+                                    Text {
+                                        width: parent.width
+                                        visible: text !== ""
+                                        text: event.modelData.description || ""
+                                        textFormat: Text.PlainText
+                                        wrapMode: Text.Wrap
+                                        maximumLineCount: 2
+                                        elide: Text.ElideRight
+                                        color: Theme.fgDim
+                                        font.pixelSize: 13
+                                    }
                                 }
                             }
                         }

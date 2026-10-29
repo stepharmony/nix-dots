@@ -5,12 +5,16 @@ Quickshell calendar popup; prints JSON on stdout.
   calendar-events zones <Area/City>...            time now in each zone
 """
 
+import html
 import json
+import re
 import sys
 from datetime import date, datetime, time, timedelta
 from zoneinfo import ZoneInfo
 
 LOCAL = datetime.now().astimezone().tzinfo
+# connect_sync()'s "don't wait for connected" value: (guint32) -1.
+NO_WAIT = 0xFFFFFFFF
 
 
 def to_local(t):
@@ -22,6 +26,13 @@ def to_local(t):
     zone = t.get_timezone() or ICalGLib.Timezone.get_utc_timezone()
     stamp = t.as_timet_with_zone(zone)
     return datetime.fromtimestamp(stamp, LOCAL), False
+
+
+def plain(text):
+    """Event description as plain text (Google's web UI stores HTML)."""
+    text = re.sub(r"<br\s*/?>|</p>|</div>|</li>", "\n", text, flags=re.I)
+    text = html.unescape(re.sub(r"<[^>]+>", "", text))
+    return "\n".join(line.strip() for line in text.splitlines() if line.strip())
 
 
 def events(first, last):
@@ -43,7 +54,10 @@ def events(first, last):
         if not ext.get_selected():
             continue
         try:
-            client = ECal.Client.connect_sync(source, ECal.ClientSourceType.EVENTS, 10, None)
+            # Don't wait for the backend to report "connected" (a webcal
+            # subscription never does, so every call sat out the timeout):
+            # EDS answers from its cache and syncs in the background.
+            client = ECal.Client.connect_sync(source, ECal.ClientSourceType.EVENTS, NO_WAIT, None)
         except Exception as err:  # offline account, broken backend, ...
             print(f"calendar-events: {source.get_display_name()}: {err}", file=sys.stderr)
             continue
@@ -57,6 +71,7 @@ def events(first, last):
             # The same calendar subscribed twice (e.g. holidays) shows once.
             found[(comp.get_summary(), s, e, source.get_display_name())] = {
                 "summary": comp.get_summary() or "",
+                "description": plain(comp.get_description() or ""),
                 "start": s.isoformat(),
                 "end": e.isoformat(),
                 "allDay": all_day,
