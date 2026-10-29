@@ -19,5 +19,6 @@
     ./session/_apps.nix
     ./session/_theming.nix
     ./session/_calendar.nix
+    ./session/_sticky.nix
   ];
 }

@@ -39,6 +39,7 @@ window#waybar {
 #network,
 #custom-refresh,
 #custom-power,
+#custom-sticky,
 #battery,
 #tray {
     padding: 0 10px;

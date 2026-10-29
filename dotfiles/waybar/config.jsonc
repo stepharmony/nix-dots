@@ -6,7 +6,7 @@
     "height": 30,
     "spacing": 6,
 
-    "modules-left": ["niri/workspaces", "niri/window"],
+    "modules-left": ["niri/workspaces", "custom/sticky", "niri/window"],
     "modules-center": ["clock"],
     "modules-right": ["pulseaudio", "network", "custom/refresh", "custom/power", "battery", "tray"],
 
@@ -17,6 +17,17 @@
     "niri/window": {
         "format": "{title}",
         "max-length": 60
+    },
+
+    // 󰐃 while the focused window is sticky (niri-sticky,
+    // modules/desktop/session/_sticky.nix); empty, so hidden, otherwise.
+    // Refreshed by signal on focus changes and toggles; a click unpins.
+    "custom/sticky": {
+        "exec": "niri-sticky status 2>/dev/null",
+        "interval": "once",
+        "signal": 10,
+        "on-click": "niri-sticky toggle",
+        "tooltip-format": "Sticky: follows you across workspaces"
     },
 
     "clock": {

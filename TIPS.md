@@ -393,6 +393,15 @@ enough), then open GNOME Calendar — clicking waybar's clock does that.
   niri starts its user unit (`systemctl --user status evolution-alarm-notify`),
   qtile runs `calendar-reminders`, XFCE uses the XDG autostart entry.
 
+## Sticky windows (niri)
+
+`modules/desktop/session/_sticky.nix`. Mod+P marks the focused window: it is
+floated and follows you to every workspace you switch to (`niri-sticky watch`,
+spawned at startup). Waybar shows 󰐃 next to the workspaces while a sticky
+window is focused; Mod+P again, or a click on the pin, unmarks it. niri has
+no sticky option of its own and can't recolour one window's border from a
+script, hence the bar icon.
+
 ## Icon theming landmines (hicolor index / GTK settings.ini)
 
 Two user-home files silently override what NixOS/dconf sets — both caused the

@@ -321,6 +321,8 @@ spawn-at-startup "nm-applet" "--indicator"
 spawn-sh-at-startup "command -v blueman-applet >/dev/null && exec blueman-applet"
 // nix-dots: internal panel 120 Hz on AC, 60 Hz on battery (no-op on manus).
 spawn-at-startup "refresh-rate" "watch"
+// nix-dots: windows marked sticky (Mod+P) follow you across workspaces.
+spawn-at-startup "niri-sticky" "watch"
 
 // To run a shell command (with variables, pipes, etc.), use spawn-sh-at-startup:
 // spawn-sh-at-startup "qs -c ~/source/qs/MyAwesomeShell"
@@ -436,6 +438,8 @@ binds {
     // (modules/hardware/laptop.nix; a no-op on manus).
     Mod+Alt+P hotkey-overlay-title="Toggle Performance Mode" { spawn "power-mode" "toggle"; }
     Mod+Alt+R hotkey-overlay-title="Toggle Refresh Rate (60/120 Hz)" { spawn "refresh-rate" "toggle"; }
+    // nix-dots: the focused window follows you across workspaces (modules/desktop/session/_sticky.nix).
+    Mod+P hotkey-overlay-title="Toggle Sticky Window" { spawn "niri-sticky" "toggle"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
