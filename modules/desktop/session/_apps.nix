@@ -17,7 +17,14 @@
   programs.thunar = {
     enable = true;
     plugins = with pkgs; [
-      thunar-archive-plugin
+      # The plugin looks for <manager>.tap only in its own libexec, but
+      # xarchiver ships xarchiver.tap in its package — without the link,
+      # "Create Archive" finds "no suitable archive manager".
+      (thunar-archive-plugin.overrideAttrs (old: {
+        postInstall = (old.postInstall or "") + ''
+          ln -s ${xarchiver}/libexec/thunar-archive-plugin/xarchiver.tap $out/libexec/thunar-archive-plugin/
+        '';
+      }))
       thunar-volman
     ];
   };
