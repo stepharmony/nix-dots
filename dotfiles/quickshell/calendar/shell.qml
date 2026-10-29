@@ -96,8 +96,29 @@ ShellRoot {
                         delegate: Item {
                             id: event
                             required property var modelData
+                            // A click shows the whole title and description
+                            // when either is cut off; another click folds it.
+                            property bool expanded: false
+                            readonly property bool expandable: expanded || title.truncated || description.truncated
                             width: ListView.view.width
                             height: Math.max(body.implicitHeight, 36) + 14
+
+                            Rectangle {
+                                anchors.fill: parent
+                                anchors.leftMargin: 8
+                                anchors.rightMargin: 8
+                                radius: 6
+                                color: Theme.bgAlt
+                                visible: event.expandable && eventArea.containsMouse
+                            }
+                            MouseArea {
+                                id: eventArea
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: event.expandable ? Qt.PointingHandCursor : Qt.ArrowCursor
+                                onClicked: if (event.expandable)
+                                    event.expanded = !event.expanded
+                            }
 
                             Rectangle {
                                 x: 16
@@ -108,7 +129,7 @@ ShellRoot {
                                 color: event.modelData.color || Theme.accent
                             }
                             // Times on the left; title with the description
-                            // (grey, two lines at most) beside them.
+                            // (grey, two lines at most until expanded) beside them.
                             Row {
                                 id: body
                                 anchors.left: parent.left
@@ -137,19 +158,22 @@ ShellRoot {
                                     width: parent.width - times.width - parent.spacing
                                     spacing: 2
                                     Text {
+                                        id: title
                                         width: parent.width
                                         text: event.modelData.summary
-                                        elide: Text.ElideRight
+                                        wrapMode: event.expanded ? Text.Wrap : Text.NoWrap
+                                        elide: event.expanded ? Text.ElideNone : Text.ElideRight
                                         color: Theme.fg
                                         font.pixelSize: 14
                                     }
                                     Text {
+                                        id: description
                                         width: parent.width
                                         visible: text !== ""
                                         text: event.modelData.description || ""
                                         textFormat: Text.PlainText
                                         wrapMode: Text.Wrap
-                                        maximumLineCount: 2
+                                        maximumLineCount: event.expanded ? 1000 : 2
                                         elide: Text.ElideRight
                                         color: Theme.fgDim
                                         font.pixelSize: 13
