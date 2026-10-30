@@ -393,6 +393,20 @@ enough), then open GNOME Calendar — clicking waybar's clock does that.
   niri starts its user unit (`systemctl --user status evolution-alarm-notify`),
   qtile runs `calendar-reminders`, XFCE uses the XDG autostart entry.
 
+## Virtual machines (virt-manager)
+
+`modules/virtualisation.nix` (spectre). A VirtualBox `.vdi` runs best converted
+to qcow2, QEMU's native format; the original stays untouched:
+
+```bash
+qemu-img convert -p -f vdi -O qcow2 disk.vdi disk.qcow2
+```
+
+Then in virt-manager: New VM → "Import existing disk image". The VM's boot
+firmware must match the guest's (BIOS or UEFI, under "Customize configuration
+before install" → Overview → Firmware). The network starts with
+`sudo virsh net-start default` (`net-autostart default` keeps it on at boot).
+
 ## Sticky windows (niri)
 
 `modules/desktop/session/_sticky.nix`. Mod+P marks the focused window: it is

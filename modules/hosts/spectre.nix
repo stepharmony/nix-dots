@@ -29,6 +29,7 @@
         flake.modules.nixos.dev
         flake.modules.nixos.hdl
         flake.modules.nixos.winpodx
+        flake.modules.nixos.virtualisation
         flake.modules.nixos.bluetooth
       ];
 
