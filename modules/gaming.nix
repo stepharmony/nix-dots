@@ -12,6 +12,9 @@
         protontricks.enable = true;
       };
 
+      # nested compositor for games that misbehave as plain niri/XWayland windows
+      programs.gamescope.enable = true;
+
       environment.systemPackages = with pkgs; [
         prismlauncher
         protonplus
