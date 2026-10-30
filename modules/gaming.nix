@@ -8,6 +8,8 @@
       programs.steam = {
         enable = true;
         package = pkgs.millennium-steam;
+        # protontricks-launch runs Windows tools (e.g. trainers) inside a game's prefix
+        protontricks.enable = true;
       };
 
       environment.systemPackages = with pkgs; [
