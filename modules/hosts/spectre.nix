@@ -24,6 +24,7 @@
         flake.modules.nixos.intel
         flake.modules.nixos.laptop
         flake.modules.nixos.gaming
+        flake.modules.nixos.editing
         flake.modules.nixos.music
         flake.modules.nixos.study
         flake.modules.nixos.dev
