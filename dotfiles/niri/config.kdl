@@ -312,6 +312,8 @@ spawn-at-startup "polkit-agent"
 spawn-at-startup "sunsetr"
 // Calendar popup behind waybar's clock (dotfiles/quickshell/calendar/).
 spawn-at-startup "qs" "-c" "calendar"
+// GPU Screen Recorder overlay, hidden until Alt+Z (see binds).
+spawn-at-startup "gsr-ui" "launch-daemon"
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
 spawn-sh-at-startup "swaybg -m fill -i ~/.local/state/wallpaper/current"
 // nix-dots: NetworkManager tray icon (wifi list, password prompts, VPNs) in
@@ -440,6 +442,9 @@ binds {
     Mod+Alt+R hotkey-overlay-title="Toggle Refresh Rate (60/120 Hz)" { spawn "refresh-rate" "toggle"; }
     // nix-dots: the focused window follows you across workspaces (modules/desktop/session/_sticky.nix).
     Mod+P hotkey-overlay-title="Toggle Sticky Window" { spawn "niri-sticky" "toggle"; }
+    // nix-dots: bound here because gsr-ui's own hotkeys need a setuid
+    // gsr-global-hotkeys, whose virtual keyboard xremap would grab (keyboard lock).
+    Alt+Z repeat=false hotkey-overlay-title="GPU Screen Recorder" { spawn "gsr-ui-cli" "toggle-show"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.
