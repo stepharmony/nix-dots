@@ -1,0 +1,10 @@
+# helix — deployed by hjem to ~/.config/helix/config.toml.
+# Reference: https://docs.helix-editor.com/configuration.html
+# Reload a running helix: :config-reload (the wallpaper script sends USR1).
+
+# Written by matugen (dotfiles/matugen/templates/helix-theme.toml):
+# tokyonight with the UI in the wallpaper palette.
+theme = "matugen"
+
+[editor.soft-wrap]
+enable = true

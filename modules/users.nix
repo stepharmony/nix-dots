@@ -40,6 +40,7 @@
           # Tiling-session apps (niri + qtile): terminal + per-session defaults
           "kitty/kitty.conf".source = ../dotfiles/kitty/kitty.conf;
           "zathura/zathurarc".source = ../dotfiles/zathura/zathurarc;
+          "helix/config.toml".source = ../dotfiles/helix/config.toml;
           "niri-mimeapps.list".source = ../dotfiles/xdg/tiling-mimeapps.list;
           "qtile-mimeapps.list".source = ../dotfiles/xdg/tiling-mimeapps.list;
         };

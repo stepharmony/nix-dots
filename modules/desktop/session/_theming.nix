@@ -67,6 +67,7 @@ let
     "mako-colors" = "~/.config/mako/colors";
     "dunst-colors.conf" = "~/.config/dunst/dunstrc.d/50-matugen.conf";
     "kitty-colors.conf" = "~/.config/kitty/colors.conf";
+    "helix-theme.toml" = "~/.config/helix/themes/matugen.toml";
     "zathura-colors" = "~/.config/zathura/colors";
     "swaylock-config" = "~/.config/swaylock/config";
     "qtile-colors.json" = "~/.config/qtile/colors.json";
@@ -131,6 +132,7 @@ let
         if command -v makoctl >/dev/null; then makoctl reload 2>/dev/null || true; fi
         if command -v dunstctl >/dev/null; then dunstctl reload 2>/dev/null || true; fi
         signal USR1 kitty
+        signal USR1 hx # re-reads config.toml and the matugen theme
         if [[ ''${XDG_CURRENT_DESKTOP:-} == qtile ]] && command -v qtile >/dev/null; then
           qtile cmd-obj -f reload_config >/dev/null 2>&1 || true
         fi
