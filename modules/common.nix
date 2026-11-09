@@ -120,7 +120,8 @@
         })
         floorp-bin
         firefox
-        brave-origin
+        helium # overlay: pkgs/helium (brave/brave-origin left nixpkgs)
+        helium-update
         unrar
         google-chrome
         git

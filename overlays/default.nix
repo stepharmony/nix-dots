@@ -28,4 +28,10 @@ final: prev: {
       };
     }
   );
+
+  # Helium — Chromium-based browser, not in nixpkgs: the signed upstream
+  # tarball, verified at build time. helium-update bumps it separately from
+  # nixpkgs; each launch notifies when outdated. See pkgs/helium/.
+  helium = final.callPackage ../pkgs/helium/package.nix { };
+  helium-update = final.callPackage ../pkgs/helium/update.nix { };
 }

@@ -16,6 +16,13 @@ Current contents:
   links both into `~/.clap` and `~/Bitwig Studio/Extensions`. Bump: change
   `version` + `src.hash`, set `cargoHash = lib.fakeHash;`, build once, paste
   the hash from the error. See `../pkgs/skoll/`.
+- **helium** — not in nixpkgs: the upstream x86_64 tarball
+  ([imputnet/helium-linux](https://github.com/imputnet/helium-linux)),
+  repackaged like nixpkgs' google-chrome. The build verifies its OpenPGP
+  signature against the vendored `pubkey.asc`. Bump: run `helium-update`
+  (verifies the newest release and rewrites `source.json`), then
+  `nh os switch`. Every launch notifies when a newer release exists. See
+  `../pkgs/helium/`.
 
 The general pin/retire workflow (including the dormant reference in
 `pkgs/dormant/`) is documented in TIPS.md "Custom packages & overlays".
