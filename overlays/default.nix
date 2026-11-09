@@ -8,4 +8,24 @@ final: prev: {
   # Skoll — video-to-picture sync CLAP + Bitwig extension, not in nixpkgs.
   # Built from source; deployed into ~/.clap etc. by music.nix. See pkgs/skoll/.
   skoll = final.callPackage ../pkgs/skoll/package.nix { };
+
+  # Vencord 1.15.16 (nixpkgs: 1.15.11): Discord's 2026-11-04 rspack client
+  # update breaks older Vencord ("i.A is not a constructor", stuck on the
+  # loading screen). Drop once nixpkgs ships >= 1.15.16. Upstream now pins
+  # @types/react itself, so nixpkgs' fix-deps.patch/postPatch are dropped.
+  vencord = prev.vencord.overrideAttrs (
+    finalAttrs: old: {
+      version = "1.15.16";
+      src = old.src.override {
+        tag = "v${finalAttrs.version}";
+        hash = "sha256-aUJubLJpyLAZWiOezqFxPY6oVPgWVPQpajFqrJvrO9U=";
+      };
+      patches = [ ];
+      postPatch = "";
+      pnpmDeps = old.pnpmDeps.overrideAttrs {
+        inherit (finalAttrs) src patches postPatch;
+        outputHash = "sha256-HS8uZNepvDefjrsG3buVLFCVv7sHvazcwdpcT3EQ/78=";
+      };
+    }
+  );
 }
