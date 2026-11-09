@@ -154,7 +154,7 @@ let
           ln -sfn "$img" "$current"
           generate "$img"
           reload
-          notify-send -t 2000 "Wallpaper" "$(basename "$img") — palette applied" || true
+          notify-send -t 5000 "Wallpaper" "$(basename "$img") — palette applied" || true
           ;;
       esac
     '';
