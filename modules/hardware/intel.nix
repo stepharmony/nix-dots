@@ -26,11 +26,13 @@
       #   intel-media-driver
       # ];
 
-      # Switch from older i915 drivers to xe
-      boot.kernelParams = [
-        "i915.force_probe=!7d55"
-        "xe.force_probe=7d55"
-      ];
+      # Off for now: the iGPU (Meteor Lake, PCI ID 7d55) stays on the kernel's
+      # default i915 driver. Forcing xe may be needed again for DaVinci
+      # Resolve; uncomment to switch drivers.
+      # boot.kernelParams = [
+      #   "i915.force_probe=!7d55"
+      #   "xe.force_probe=7d55"
+      # ];
 
       # Set the VA-API driver explicitly to
       # the modern Intel Media Driver
