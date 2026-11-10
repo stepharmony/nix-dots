@@ -9,7 +9,7 @@
 # GNOME Calendar. qtile keeps its own clock.
 #
 # Reminders: EDS's evolution-alarm-notify shows them as ordinary
-# notifications (mako/dunst). niri starts its user unit through
+# notifications (quickshell notif/dunst). niri starts its user unit through
 # graphical-session.target; qtile's autostart runs `calendar-reminders`;
 # XFCE picks up the XDG autostart entry by itself.
 {

@@ -71,7 +71,7 @@ let
     "zathura-colors" = "~/.config/zathura/colors";
     "swaylock-config" = "~/.config/swaylock/config";
     "qtile-colors.json" = "~/.config/qtile/colors.json";
-    "quickshell-colors.json" = "~/.config/quickshell/calendar/colors.json";
+    "quickshell-colors.json" = "~/.config/quickshell/colors.json";
     "qt6ct-colors.conf" = "~/.config/qt6ct/colors/matugen.conf";
     "i3lock-color" = "~/.local/state/wallpaper/i3lock-color";
   };

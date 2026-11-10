@@ -1,5 +1,5 @@
 # Niri — scrollable-tiling Wayland compositor, the main desktop.
-# The session stack it spawns (waybar, rofi, mako, swaylock/swayidle,
+# The session stack it spawns (waybar, rofi, quickshell notif, swaylock/swayidle,
 # utils, sunsetr) is installed by the `session` aspect
 # (modules/desktop/session.nix) — this aspect only owns the Niri session
 # itself, the default session in ly (desktop.nix).

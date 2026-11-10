@@ -1,5 +1,5 @@
-// Wallpaper palette — colors.json is rendered next to this file by matugen
-// (`wallpaper`, modules/desktop/session/_theming.nix) and re-read on change.
+// Wallpaper palette — colors.json is rendered into ~/.config/quickshell/ by matugen
+// (`wallpaper`, modules/desktop/session/_theming.nix), shared with ../notif, and re-read on change.
 // The defaults only show until the first `wallpaper init`.
 pragma Singleton
 import QtQuick
@@ -20,7 +20,7 @@ Singleton {
     property color line: "#47483b"
 
     FileView {
-        path: (Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config") + "/quickshell/calendar/colors.json"
+        path: (Quickshell.env("XDG_CONFIG_HOME") || Quickshell.env("HOME") + "/.config") + "/quickshell/colors.json"
         watchChanges: true
         onFileChanged: reload()
         onLoaded: {

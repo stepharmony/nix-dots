@@ -306,12 +306,13 @@ environment {
 // nix-dots: the rest of the session stack. Each reads its config from its
 // default ~/.config location (deployed by hjem); packages come from
 // modules/desktop/session/. Spawned here, so none of it runs in XFCE.
-spawn-at-startup "mako"
 spawn-at-startup "swayidle" "-w"
 spawn-at-startup "polkit-agent"
 spawn-at-startup "sunsetr"
-// Calendar popup behind waybar's clock (dotfiles/quickshell/calendar/).
+// Calendar popup behind waybar's clock (dotfiles/quickshell/calendar/) and
+// the notification daemon (dotfiles/quickshell/notif/).
 spawn-at-startup "qs" "-c" "calendar"
+spawn-at-startup "qs" "-c" "notif"
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
 spawn-sh-at-startup "swaybg -m fill -i ~/.local/state/wallpaper/current"
 // nix-dots: NetworkManager tray icon (wifi list, password prompts, VPNs) in
@@ -442,6 +443,7 @@ binds {
     Mod+P hotkey-overlay-title="Toggle Sticky Window" { spawn "niri-sticky" "toggle"; }
     // nix-dots: bound here because gsr-ui's own hotkeys need a setuid
     // gsr-global-hotkeys, whose virtual keyboard xremap would grab (keyboard lock).
+    Mod+Shift+N hotkey-overlay-title="Notification history" { spawn "qs" "ipc" "-c" "notif" "call" "notifs" "toggle"; }
     Alt+Z repeat=false hotkey-overlay-title="GPU Screen Recorder" { spawn "gsr-ui-cli" "toggle-show"; }
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.

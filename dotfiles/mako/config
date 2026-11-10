@@ -1,5 +1,6 @@
-# mako — notification daemon for the Niri session (spawned by config.kdl;
-# qtile uses dunst). Deployed by hjem to ~/.config/mako/config.
+# mako — fallback notification daemon for the Niri session (niri normally runs
+# the Quickshell one, dotfiles/quickshell/notif/; qtile uses dunst). Deployed
+# by hjem to ~/.config/mako/config.
 # Reference: man 5 mako. Test with: notify-send "hello" "from mako"
 
 font=Obel Mono, JetBrainsMono Nerd Font 11
