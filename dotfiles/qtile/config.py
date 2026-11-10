@@ -281,7 +281,7 @@ layouts = [
 ]
 
 widget_defaults = dict(
-    font="JetBrainsMono Nerd Font",
+    font="Obel Mono",
     fontsize=px(13),
     foreground=colors["fg"],
     padding=px(3),

@@ -34,4 +34,7 @@ final: prev: {
   # nixpkgs; each launch notifies when outdated. See pkgs/helium/.
   helium = final.callPackage ../pkgs/helium/package.nix { };
   helium-update = final.callPackage ../pkgs/helium/update.nix { };
+
+  # Obel Mono — monospaced font, not in nixpkgs; variable TTFs vendored.
+  obel-mono = final.callPackage ../pkgs/obel-mono/package.nix { };
 }

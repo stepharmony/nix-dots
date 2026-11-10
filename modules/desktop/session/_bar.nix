@@ -5,9 +5,13 @@
 {
   environment.systemPackages = [ pkgs.waybar ];
 
-  # Bar, launcher and notification font: JetBrains Mono with the full Nerd
-  # Font glyph set — one font covers text and module icons alike.
-  fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
+  # Obel Mono (overlays/, not in nixpkgs yet) is the session's text font;
+  # JetBrains Mono with the full Nerd Font glyph set stays as the fallback
+  # for icons, which Obel Mono lacks. System defaults: modules/fonts.nix.
+  fonts.packages = [
+    pkgs.nerd-fonts.jetbrains-mono
+    pkgs.obel-mono
+  ];
 
   # EasyEffects' own "start on login" is an XDG autostart entry, which runs
   # alongside waybar; when it wins the race there is no tray

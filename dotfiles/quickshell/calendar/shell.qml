@@ -277,7 +277,7 @@ ShellRoot {
                         }
                         TextButton {
                             text: "󰐃"
-                            font.family: "JetBrainsMono Nerd Font"
+                            font.family: "Obel Mono"
                             font.pixelSize: 17
                             active: Cal.pinned
                             dim: !Cal.pinned

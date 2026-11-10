@@ -23,6 +23,10 @@ Current contents:
   (verifies the newest release and rewrites `source.json`), then
   `nh os switch`. Every launch notifies when a newer release exists. See
   `../pkgs/helium/`.
+- **obel-mono** — not in nixpkgs: Obel Mono, the session's monospaced font
+  ([typographic.systems](https://typographic.systems/obel-mono/), OFL). The
+  release zip has no stable URL, so the variable TTFs are vendored. Bump:
+  replace `fonts/*.ttf` and `version`. See `../pkgs/obel-mono/`.
 
 The general pin/retire workflow (including the dormant reference in
 `pkgs/dormant/`) is documented in TIPS.md "Custom packages & overlays".

@@ -16,6 +16,7 @@
         flake.modules.nixos.users
         flake.modules.nixos.disk
         flake.modules.nixos.pipewire
+        flake.modules.nixos.fonts
         flake.modules.nixos.desktop
         flake.modules.nixos.session
         flake.modules.nixos.niri

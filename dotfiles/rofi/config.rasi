@@ -8,7 +8,7 @@ configuration {
     show-icons: true;
     icon-theme: "oxygen"; /* same as the GTK/KDE settings */
     terminal: "kitty";
-    font: "JetBrainsMono Nerd Font 12";
+    font: "Obel Mono, JetBrainsMono Nerd Font 12";
     drun-display-format: "{name}";
     display-drun: "";
     display-run: "";

@@ -4,7 +4,7 @@
 @import "colors.css";
 
 * {
-    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-family: "Obel Mono", "JetBrainsMono Nerd Font", monospace;
     font-size: 13px;
     border: none;
     border-radius: 0;

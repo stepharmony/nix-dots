@@ -2,7 +2,7 @@
 # qtile uses dunst). Deployed by hjem to ~/.config/mako/config.
 # Reference: man 5 mako. Test with: notify-send "hello" "from mako"
 
-font=JetBrainsMono Nerd Font 11
+font=Obel Mono, JetBrainsMono Nerd Font 11
 background-color=#18181bf0
 text-color=#e4e4e7
 border-color=#7fc8ff
