@@ -1,6 +1,7 @@
-// Calendar state: what is shown, the events and time-zone clocks (both from
-// `calendar-events`, modules/desktop/session/_calendar.nix), and the IPC
-// target waybar's clock calls:  qs ipc -c calendar call calendar toggle
+// Calendar state: what is shown, the events, the event search and the
+// time-zone clocks (all from `calendar-events`,
+// modules/desktop/session/_calendar.nix), and the IPC target waybar's
+// clock calls:  qs ipc -c calendar call calendar toggle
 pragma Singleton
 import QtQuick
 import Quickshell
@@ -22,6 +23,20 @@ Singleton {
     property var eventsByDay: ({}) // "YYYY-MM-DD" -> events touching that day
     property var zones: []
 
+    // Search: upcoming events over the next year whose title or description
+    // contain every word typed, soonest first.
+    property bool searching: false
+    property string query: ""
+    property var searchPool: [] // fetched once per opening, sorted by start
+    property bool poolFetched: false
+    readonly property bool searchLoading: searchProc.running
+    readonly property var searchResults: {
+        const words = fold(query).split(/\s+/).filter(w => w !== "");
+        if (words.length === 0)
+            return [];
+        return searchPool.filter(ev => ev.e > now && words.every(w => ev.text.includes(w))).slice(0, 50);
+    }
+
     readonly property var locale: Qt.locale()
     readonly property var selectedEvents: eventsByDay[iso(selected)] || []
     readonly property int decade: viewYear - viewYear % 10
@@ -33,6 +48,7 @@ Singleton {
         viewMonth = now.getMonth();
         mode = "days";
         open = true;
+        poolFetched = false;
         fetchEvents();
         zonesProc.running = true;
     }
@@ -40,6 +56,67 @@ Singleton {
     function hide() {
         open = false;
         pinned = false;
+        endSearch();
+    }
+
+    function startSearch(text) {
+        query = text;
+        searching = true;
+        if (!poolFetched) {
+            poolFetched = true;
+            searchProc.command = ["calendar-events", "events", iso(now), iso(addDays(now, 365))];
+            searchProc.running = true;
+        }
+    }
+
+    function endSearch() {
+        searching = false;
+        query = "";
+    }
+
+    // A result's day, shown in the day view.
+    function jumpTo(ev) {
+        endSearch();
+        pickDay(new Date(ev.s.getFullYear(), ev.s.getMonth(), ev.s.getDate()));
+    }
+
+    // Case- and accent-insensitive matching ("modeling" finds "Modeling").
+    function fold(s) {
+        s = s.toLowerCase();
+        try {
+            s = s.normalize("NFD").replace(/[̀-ͯ]/g, "");
+        } catch (e) {}
+        return s;
+    }
+
+    function storePool(text) {
+        let list;
+        try {
+            list = JSON.parse(text);
+        } catch (e) {
+            return;
+        }
+        for (const ev of list) {
+            ev.s = new Date(ev.start);
+            ev.e = new Date(ev.end);
+            ev.text = fold(ev.summary + " " + (ev.description || ""));
+        }
+        searchPool = list.sort((a, b) => a.s - b.s);
+    }
+
+    // "Today", "Tomorrow", else "Thu 13 Nov" (with the year if not this one).
+    function dayLabel(d) {
+        if (sameDay(d, now))
+            return "Today";
+        if (sameDay(d, addDays(now, 1)))
+            return "Tomorrow";
+        return capital(d.toLocaleDateString(locale, d.getFullYear() === now.getFullYear() ? "ddd d MMM" : "ddd d MMM yyyy"));
+    }
+
+    function spanLabel(ev) {
+        if (ev.allDay)
+            return "All day";
+        return hhmm(ev.s) + "–" + (sameDay(ev.s, ev.e) ? hhmm(ev.e) : "…");
     }
 
     function pad(n) {
@@ -187,6 +264,13 @@ Singleton {
                 again = false;
                 cal.fetchEvents();
             }
+        }
+    }
+
+    Process {
+        id: searchProc
+        stdout: StdioCollector {
+            onStreamFinished: cal.storePool(text)
         }
     }
 

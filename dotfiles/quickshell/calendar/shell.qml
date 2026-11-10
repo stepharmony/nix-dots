@@ -2,7 +2,8 @@
 // selected day's events (evolution-data-server, i.e. what GNOME Calendar
 // shows), a few time zones, and a day / month / year grid. Runs as
 // `qs -c calendar` (spawned by niri); waybar's clock toggles it. Closes on
-// Escape or a click outside, unless pinned.
+// Escape or a click outside, unless pinned. Typing anywhere on it searches
+// the coming year's events; Enter or a click opens a result's day.
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
@@ -48,6 +49,13 @@ ShellRoot {
             clip: true
             focus: true
             Keys.onEscapePressed: Cal.hide()
+            // Any printable key starts a search with it.
+            Keys.onPressed: event => {
+                if (!Cal.searching && event.text > " " && !(event.modifiers & (Qt.ControlModifier | Qt.AltModifier | Qt.MetaModifier))) {
+                    Cal.startSearch(event.text);
+                    event.accepted = true;
+                }
+            }
 
             // Clicks on the card stay on the card.
             MouseArea {
@@ -76,8 +84,69 @@ ShellRoot {
                     }
 
                     SectionHeader {
-                        title: Cal.sameDay(Cal.selected, Cal.now) ? "Events" : "Events · " + Cal.selected.toLocaleDateString(Cal.locale, "ddd d MMM")
+                        title: Cal.searching ? "" : Cal.sameDay(Cal.selected, Cal.now) ? "Events" : "Events · " + Cal.selected.toLocaleDateString(Cal.locale, "ddd d MMM")
+
+                        // While searching, the field takes the title's place.
+                        Rectangle {
+                            visible: Cal.searching
+                            anchors.verticalCenter: parent.verticalCenter
+                            width: leftPane.width - 16 - 8 - closeSearch.width
+                            height: 30
+                            radius: 6
+                            color: Theme.bg
+                            border.color: Theme.line
+                            border.width: 1
+
+                            TextInput {
+                                id: searchField
+                                anchors.fill: parent
+                                anchors.leftMargin: 10
+                                anchors.rightMargin: 10
+                                verticalAlignment: TextInput.AlignVCenter
+                                clip: true
+                                text: Cal.query
+                                onTextEdited: Cal.query = text
+                                color: Theme.fg
+                                selectionColor: Theme.accent
+                                selectedTextColor: Theme.accentText
+                                font.pixelSize: 15
+                                Keys.onEscapePressed: Cal.endSearch()
+                                Keys.onReturnPressed: if (Cal.searchResults.length > 0)
+                                    Cal.jumpTo(Cal.searchResults[0])
+                                Keys.onEnterPressed: if (Cal.searchResults.length > 0)
+                                    Cal.jumpTo(Cal.searchResults[0])
+
+                                Text {
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    visible: parent.text === ""
+                                    text: "Search events…"
+                                    color: Theme.muted
+                                    font.pixelSize: 15
+                                }
+                            }
+                            // Focus follows the search: the field while it is
+                            // open, back to the card (Escape, typing) after.
+                            onVisibleChanged: visible ? searchField.forceActiveFocus() : card.forceActiveFocus()
+                        }
                         TextButton {
+                            id: closeSearch
+                            visible: Cal.searching
+                            text: "󰅖"
+                            font.family: "Obel Mono"
+                            font.pixelSize: 17
+                            dim: true
+                            onClicked: Cal.endSearch()
+                        }
+                        TextButton {
+                            visible: !Cal.searching
+                            text: "󰍉"
+                            font.family: "Obel Mono"
+                            font.pixelSize: 17
+                            dim: true
+                            onClicked: Cal.startSearch("")
+                        }
+                        TextButton {
+                            visible: !Cal.searching
                             text: "+  Add…"
                             onClicked: {
                                 Quickshell.execDetached(["gnome-calendar"]);
@@ -90,7 +159,7 @@ ShellRoot {
                         Layout.fillWidth: true
                         Layout.fillHeight: true
                         clip: true
-                        model: Cal.selectedEvents
+                        model: Cal.searching ? Cal.searchResults : Cal.selectedEvents
                         topMargin: 6
 
                         delegate: Item {
@@ -98,8 +167,9 @@ ShellRoot {
                             required property var modelData
                             // A click shows the whole title and description
                             // when either is cut off; another click folds it.
+                            // A search result opens its day instead.
                             property bool expanded: false
-                            readonly property bool expandable: expanded || title.truncated || description.truncated
+                            readonly property bool expandable: Cal.searching || expanded || title.truncated || description.truncated
                             width: ListView.view.width
                             height: Math.max(body.implicitHeight, 36) + 14
 
@@ -116,8 +186,12 @@ ShellRoot {
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: event.expandable ? Qt.PointingHandCursor : Qt.ArrowCursor
-                                onClicked: if (event.expandable)
-                                    event.expanded = !event.expanded
+                                onClicked: {
+                                    if (Cal.searching)
+                                        Cal.jumpTo(event.modelData);
+                                    else if (event.expandable)
+                                        event.expanded = !event.expanded;
+                                }
                             }
 
                             Rectangle {
@@ -143,13 +217,13 @@ ShellRoot {
                                     id: times
                                     spacing: 2
                                     Text {
-                                        text: Cal.startLabel(event.modelData, Cal.selected)
+                                        text: Cal.searching ? Cal.dayLabel(event.modelData.s) : Cal.startLabel(event.modelData, Cal.selected)
                                         color: Theme.fg
                                         font.pixelSize: 14
                                     }
                                     Text {
                                         visible: text !== ""
-                                        text: Cal.endLabel(event.modelData, Cal.selected)
+                                        text: Cal.searching ? Cal.spanLabel(event.modelData) : Cal.endLabel(event.modelData, Cal.selected)
                                         color: Theme.fgDim
                                         font.pixelSize: 13
                                     }
@@ -185,17 +259,20 @@ ShellRoot {
                         Text {
                             anchors.centerIn: parent
                             visible: parent.count === 0
-                            text: "No events"
+                            text: !Cal.searching ? "No events" : Cal.searchLoading ? "Loading…" : Cal.query.trim() === "" ? "Search the coming year by title or description" : "No upcoming matches"
                             color: Theme.muted
                             font.pixelSize: 14
                         }
                     }
 
+                    // Hidden while searching, so the results get the room.
                     SectionHeader {
+                        visible: !Cal.searching
                         title: "Time Zones"
                     }
 
                     Column {
+                        visible: !Cal.searching
                         Layout.fillWidth: true
                         Layout.bottomMargin: 8
 
