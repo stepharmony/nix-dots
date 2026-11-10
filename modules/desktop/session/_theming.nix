@@ -74,6 +74,8 @@ let
     "quickshell-colors.json" = "~/.config/quickshell/colors.json";
     "qt6ct-colors.conf" = "~/.config/qt6ct/colors/matugen.conf";
     "i3lock-color" = "~/.local/state/wallpaper/i3lock-color";
+    # Merged into VS Code's own settings.json by `wallpaper` (vscodeColors).
+    "vscode-colors.json" = "~/.local/state/wallpaper/vscode-colors.json";
   };
 
   matugenConfig = (pkgs.formats.toml { }).generate "matugen.toml" {
@@ -104,14 +106,36 @@ let
       matugen
       procps
       libnotify
+      jq
     ];
     text = ''
       state=''${XDG_STATE_HOME:-$HOME/.local/state}/wallpaper
       current=$state/current
       mkdir -p "$state"
 
+      # VS Code reapplies colour customizations from its settings.json live,
+      # while a theme extension's file is only read at startup. So the
+      # palette goes into the "[Tokyo Night]" customizations there (the
+      # template maps Tokyo Night's own colours and scopes, as helix does);
+      # the rest of the file stays as VS Code wrote it. jq cannot parse
+      # comments, which settings.json may have: then it is left alone.
+      vscodeColors() {
+        local settings=''${XDG_CONFIG_HOME:-$HOME/.config}/Code/User/settings.json
+        [[ -d ''${settings%/*} ]] || return 0
+        [[ -s $settings ]] || echo '{}' >"$settings"
+        if jq --indent 4 --slurpfile c "$state/vscode-colors.json" \
+          '. * $c[0] | .["workbench.colorTheme"] //= "Tokyo Night"' \
+          "$settings" >"$settings.tmp"; then
+          mv "$settings.tmp" "$settings"
+        else
+          rm -f "$settings.tmp"
+          notify-send "Wallpaper" "VS Code: settings.json is not plain JSON (comments?), colours not updated" || true
+        fi
+      }
+
       generate() {
         matugen image "$1" -c ${matugenConfig} -m dark --source-color-index 0 -q
+        vscodeColors
         # Stamp = config store path: a switch with new templates regenerates.
         echo ${matugenConfig} >"$state/generated"
       }

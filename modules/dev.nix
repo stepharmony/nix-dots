@@ -14,6 +14,8 @@
         gdb # alternative debugger, CLI workflow
         gcc # 15.3.0 — full C23 (-std=c23); C99/C11 of course
         gnumake # 4.4.1
+        vscode # 1.142.0 — Microsoft's build (unfree, covered by the global
+        # allowUnfree): the Marketplace and Microsoft-only extensions work
         opencode
         claude-code
       ];
