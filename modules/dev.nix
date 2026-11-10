@@ -16,8 +16,15 @@
         gnumake # 4.4.1
         vscode # 1.142.0 — Microsoft's build (unfree, covered by the global
         # allowUnfree): the Marketplace and Microsoft-only extensions work
+        uv # Python projects: uv installs its own Pythons (see nix-ld below)
         opencode
         claude-code
       ];
+
+      # uv's managed Pythons (python-build-standalone, what VS Code's Python
+      # extension installs through uv) are generic Linux builds; nix-ld runs
+      # them. Unlike a venv from nixpkgs' python3 they include tkinter.
+      # Also enabled by music.nix for installers; the settings merge.
+      programs.nix-ld.enable = true;
     };
 }
