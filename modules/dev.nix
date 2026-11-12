@@ -26,5 +26,8 @@
       # them. Unlike a venv from nixpkgs' python3 they include tkinter.
       # Also enabled by music.nix for installers; the settings merge.
       programs.nix-ld.enable = true;
+
+      # ~/.local/bin on PATH: where `uv tool install` puts its commands.
+      environment.localBinInPath = true;
     };
 }
